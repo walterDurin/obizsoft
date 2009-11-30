@@ -27,6 +27,7 @@ public class YandexTile extends BaseTile {
     protected static List<String> satUrls;
     protected static int nextSatUrl =0;
     protected static String traffUrl;
+    protected static String statJsUrl;
     protected static List<String> mapUrls;
     protected static int nextMapUrl =0;
     protected static String cacheDir = null;
@@ -57,6 +58,7 @@ public class YandexTile extends BaseTile {
         }
 
         traffUrl = prop.getProperty("yandex.traffic.url");
+        statJsUrl = prop.getProperty("yandex.stat_js.url");
 
         for(int i=1; i<=4; i++) {
             String url = prop.getProperty("yandex.sat.url"+i);
@@ -114,13 +116,24 @@ public class YandexTile extends BaseTile {
     }
 
     private String getTrafficTimestamp() {
-        return "1237045112";
+        HttpClient client = new HttpClient();
+        GetMethod get = new GetMethod(statJsUrl);
+        try {
+            client.executeMethod(get);
+            String fullJs = get.getResponseBodyAsString();
+            int tmPos=fullJs.indexOf("timestamp");
+            String tm = fullJs.substring(tmPos + 11, tmPos + 21);
+            log.debug("Current tm="+tm);
+            return tm;
+        } catch (IOException e) {
+            return "1237045112";
+        }
     }
 
     public String getLoadUrl() {
         switch(type){
             case YA_MAP_TYPE_TAFFIC:
-                return traffUrl+"&timestamp="+getTrafficTimestamp()+"&x=" + xNum + "&y=" + yNum + "&z=" + (level);
+                return traffUrl+"&tm="+getTrafficTimestamp()+"&x=" + xNum + "&y=" + yNum + "&z=" + (level);
             case MAP_TYPE_SAT:
                 return nextSatUrl()+"&x=" + xNum + "&y=" + yNum + "&z=" + (level);
             case MAP_TYPE_MAP:

@@ -9,8 +9,13 @@ import org.gmapper.types.DoublePoint;
 import org.gmapper.types.IntPoint;
 import org.gmapper.yandex.YandexTile;
 import org.gmapper.yandex.YandexUtils;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
+import java.io.File;
 
 /**
  * Date: 19.09.2008
@@ -207,6 +212,30 @@ public class YandexTest extends TestCase {
 
     }
 
+
+
+    //работа с тайлами пробок
+
+    public void testTrfTiles_GET_TM() throws IOException {
+        //Получаем текущую метку времени
+        String js_url = "http://trf.maps.yandex.net/trf/stat.js";
+        HttpClient client = new HttpClient();
+        GetMethod get = new GetMethod(js_url);
+        client.executeMethod(get);
+        String fullJs = get.getResponseBodyAsString();
+        int tmPos=fullJs.indexOf("timestamp");
+        String tm = fullJs.substring(tmPos + 11, tmPos + 21);
+        System.out.println("Current tm="+tm);
+
+        //загрузка тайла
+        String tileUrl="http://trf.maps.yandex.net/tiles?l=trf&x=2478&y=1285&z=12&tm=";
+        get = new GetMethod(tileUrl+tm);
+        client.executeMethod(get);
+        FileUtils.writeByteArrayToFile(new File("test_tile.png"), get.getResponseBody());
+
+
+
+    }
 
 
 }
