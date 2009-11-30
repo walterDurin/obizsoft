@@ -1,0 +1,14 @@
+	YMaps.Traffic.Loader.onLoad({
+		  timestamp: '1237045366',
+		  stat: {
+			level:3,
+			length: 132765,
+			icon: 'green',
+			time: '18:42'}
+		});
+
+
+
+http://traffic.maps.yandex.net/tiles/2000?layer=4&timestamp=1237045112&x=1296039936&y=671088640&scale=13
+ http://base01.maps.yandex.net/tiles/2000?layer=1                     &x=1296039936&y=671088640&scale=13
+
