@@ -77,7 +77,9 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
-  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
+  <component name="Encoding" useUTFGuessing="false" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="windows-1251">
+    <file url="file://$PROJECT_DIR$/src/org/gmapper/newGui/MapState.java" charset="windows-1251" />
+  </component>
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
@@ -257,7 +259,7 @@
   </component>
   <component name="ProjectFileVersion" converted="true" />
   <component name="ProjectKey">
-    <option name="state" value="svn://192.168.1.5:3690/sundbox/VovaStuff/GoogleMapper/GoogleMapper.ipr" />
+    <option name="state" value="https://obizsoft.googlecode.com/svn/trunk/Navigation/GoogleMapper/GoogleMapper.ipr" />
   </component>
   <component name="ProjectModuleManager">
     <modules>

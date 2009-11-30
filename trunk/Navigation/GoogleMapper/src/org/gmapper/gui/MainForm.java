@@ -11,17 +11,10 @@ import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import java.awt.image.BufferedImage;
-import java.awt.image.LookupOp;
 import java.awt.event.*;
 import java.awt.*;
-import java.awt.geom.Line2D;
-import java.awt.geom.AffineTransform;
 import java.util.*;
 
-import sun.java2d.loops.XORComposite;
-import sun.java2d.NullSurfaceData;
-import sun.awt.image.BufImgSurfaceData;
-import sun.awt.windows.Win32BackBufferSurfaceData;
 
 /**
  * User: Vova
