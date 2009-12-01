@@ -55,6 +55,7 @@ public class YandexTile extends BaseTile {
         try {
             prop.load(FileUtils.openInputStream(new File("settings.properties")));
         } catch (IOException e) {
+            log.error("settings.properties file not found!");
             throw new RuntimeException();
         }
 
