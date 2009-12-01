@@ -189,9 +189,12 @@ public class MapPanel extends JPanel {
     private void rollMapSource() {
         if(tileFactory instanceof YandexTileFactory) {
             tileFactory = new GoogleTileFactory();
+            googleMapStateNextNum=0;
         } else {
             tileFactory = new YandexTileFactory();
+            yaMapStateNextNum=0;
         }
+        rollMaptype();
         log.debug("Cur SOURCE: " +tileFactory.getSourceName()+ "\nCur MAP: "+state.getMapType() + "\nCur OVER: " + state.getOverlayMapType());
         drawToBuffer();
         repaint();
