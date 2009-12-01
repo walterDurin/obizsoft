@@ -9,13 +9,19 @@ import org.gmapper.types.DoublePoint;
 import org.gmapper.types.IntPoint;
 import org.gmapper.yandex.YandexTile;
 import org.gmapper.yandex.YandexUtils;
+import org.gmapper.yandex.YandexTileFactory;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
+import javax.swing.*;
+import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.awt.image.BufferedImage;
 
 /**
  * Date: 19.09.2008
@@ -234,6 +240,30 @@ public class YandexTest extends TestCase {
         FileUtils.writeByteArrayToFile(new File("test_tile.png"), get.getResponseBody());
 
 
+
+    }
+
+
+    public void testDrawTraparent() throws InterruptedException, OutOfRange, IOException {
+        JFrame frame = new JFrame();
+        frame.setSize(600, 500);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+        //http://vec03.maps.yandex.ru/tiles?l=map&v=2.10.2&x=619&y=320&z=10
+        BaseTile mapTile = TileFactory.getYndexTile(10,619,320,YandexTile.MAP_TYPE_MAP);
+        BaseTile trfTile = TileFactory.getYndexTile(10,619,320,YandexTile.YA_MAP_TYPE_TAFFIC);
+        mapTile.load();
+        trfTile.load();
+        frame.getGraphics().drawImage(mapTile.getImage(), 0, 0, null);
+
+        BufferedImage mapBuffer = new BufferedImage(256,256, BufferedImage.TYPE_INT_ARGB);
+        mapBuffer.getGraphics().drawImage(trfTile.getImage(), 0, 0, null);
+        frame.getGraphics().drawImage(mapBuffer, 0, 0, null);
+
+        BufferedImage mapBuffer2 = ImageIO.read(new ByteArrayInputStream(IOUtils.toByteArray(YandexTile.class.getResourceAsStream("/org/gmapper/yandex/404t.png"))));
+        frame.getGraphics().drawImage(mapBuffer2, 0, 0, null);
+        Thread.sleep(1000);
 
     }
 

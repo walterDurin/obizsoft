@@ -3,6 +3,7 @@ package org.gmapper.yandex;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HostConfiguration;
@@ -170,7 +171,9 @@ public class YandexTile extends BaseTile {
                 int code = client.executeMethod(proxySettings, get);
                 if (code != 200) {
                     log.error("Loading error: http-code=" + get.getStatusCode() + "; http-status" + get.getStatusText());
-                    return loaded = false;
+                    imageData = IOUtils.toByteArray(YandexTile.class.getResourceAsStream("/org/gmapper/yandex/404t.png"));
+                    return loaded = true;
+//                    return loaded = false;
                 }
                 imageData = get.getResponseBody();
                 log.debug("from http loaded");

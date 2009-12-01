@@ -44,4 +44,6 @@ public abstract class TileFactory {
     public abstract IntPoint tilePixelFromGeoCoord(DoublePoint geoCoord, int level);
 
     public abstract DoublePoint moveGeoCoord(DoublePoint mapGeoCenter, IntPoint mapShift, int level);
+
+    public abstract String getSourceName();
 }

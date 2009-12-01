@@ -16,12 +16,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/gmapper/yandex/404t.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GoogleMapper.ipr" afterPath="$PROJECT_DIR$/GoogleMapper.ipr" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GoogleMapper.iws" afterPath="$PROJECT_DIR$/GoogleMapper.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/gmapper/yandex/YandexTile.java" afterPath="$PROJECT_DIR$/src/org/gmapper/yandex/YandexTile.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/gmapper/newGui/SimpleForm.java" afterPath="$PROJECT_DIR$/src/org/gmapper/newGui/SimpleForm.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/YandexTest.java" afterPath="$PROJECT_DIR$/src/tests/YandexTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/gmapper/BaseTile.java" afterPath="$PROJECT_DIR$/src/org/gmapper/BaseTile.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/gmapper/gui/TilesLayer.java" afterPath="$PROJECT_DIR$/src/org/gmapper/gui/TilesLayer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/gmapper/yandex/YandexTileFactory.java" afterPath="$PROJECT_DIR$/src/org/gmapper/yandex/YandexTileFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/gmapper/google/GoogleTileFactory.java" afterPath="$PROJECT_DIR$/src/org/gmapper/google/GoogleTileFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GoogleMapper.iws" afterPath="$PROJECT_DIR$/GoogleMapper.iws" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/gmapper/newGui/MapPanel.java" afterPath="$PROJECT_DIR$/src/org/gmapper/newGui/MapPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/gmapper/TileFactory.java" afterPath="$PROJECT_DIR$/src/org/gmapper/TileFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/gmapper/yandex/YandexTile.java" afterPath="$PROJECT_DIR$/src/org/gmapper/yandex/YandexTile.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/settings.properties" afterPath="$PROJECT_DIR$/settings.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/gmapper/google/GoogleTile.java" afterPath="$PROJECT_DIR$/src/org/gmapper/google/GoogleTile.java" />
     </list>
     <ignored path=".idea/workspace.xml" />
     <ignored path="GoogleMapper.iws" />
@@ -54,7 +60,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/org/gmapper/yandex/YandexTile.java" line="90" class="org.gmapper.yandex.YandexTile" package="org.gmapper.yandex">
+      <breakpoint url="file://$PROJECT_DIR$/src/org/gmapper/yandex/YandexTile.java" line="91" class="org.gmapper.yandex.YandexTile" package="org.gmapper.yandex">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -67,7 +73,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/tests/YandexTest.java" line="134" class="tests.YandexTest" package="tests">
+      <breakpoint url="file://$PROJECT_DIR$/src/tests/YandexTest.java" line="140" class="tests.YandexTest" package="tests">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -93,7 +99,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/org/gmapper/google/GoogleTile.java" line="144" class="org.gmapper.google.GoogleTile" package="org.gmapper.google">
+      <breakpoint url="file://$PROJECT_DIR$/src/org/gmapper/google/GoogleTile.java" line="195" class="org.gmapper.google.GoogleTile" package="org.gmapper.google">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -147,28 +153,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="YandexTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/tests/YandexTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="227" column="0" selection-start="9602" selection-end="9602" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="YandexTile.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/org/gmapper/yandex/YandexTile.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="140" column="31" selection-start="4785" selection-end="4785" vertical-scroll-proportion="0.3617021">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="settings.properties" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/settings.properties">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="29" column="57" selection-start="1335" selection-end="1335" vertical-scroll-proportion="0.0">
+            <state line="5" column="0" selection-start="210" selection-end="210" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MapPanel.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/org/gmapper/newGui/MapPanel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="73" column="58" selection-start="2414" selection-end="2414" vertical-scroll-proportion="-1.9221967">
               <folding />
             </state>
           </provider>
@@ -177,34 +174,52 @@
       <file leaf-file-name="YandexTileFactory.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/gmapper/yandex/YandexTileFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="13" selection-start="329" selection-end="329" vertical-scroll-proportion="0.0">
+            <state line="49" column="24" selection-start="1787" selection-end="1787" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="YandexUtils.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/gmapper/yandex/YandexUtils.java">
+      <file leaf-file-name="GoogleTileFactory.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/gmapper/google/GoogleTileFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="13" selection-start="187" selection-end="187" vertical-scroll-proportion="0.0">
+            <state line="38" column="24" selection-start="1198" selection-end="1198" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GoogleTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/tests/GoogleTest.java">
+      <file leaf-file-name="TileFactory.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/gmapper/TileFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="38" selection-start="1529" selection-end="1529" vertical-scroll-proportion="0.0">
+            <state line="47" column="20" selection-start="1520" selection-end="1520" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TestProxy.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/tests/TestProxy.java">
+      <file leaf-file-name="GoogleTile.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/gmapper/google/GoogleTile.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="0" selection-start="1016" selection-end="1322" vertical-scroll-proportion="0.0">
+            <state line="226" column="87" selection-start="7068" selection-end="7068" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BaseTile.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/gmapper/BaseTile.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="27" column="93" selection-start="651" selection-end="651" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="YandexTile.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/gmapper/yandex/YandexTile.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="24" column="13" selection-start="639" selection-end="639" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -430,6 +445,58 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="GoogleMapper" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="GoogleMapper" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="GoogleMapper" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="gmapper" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="newGui" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="GoogleMapper" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="GoogleMapper" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="GoogleMapper" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="gmapper" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="google" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
     </subPane>
   </component>
   <component name="ProjectReloadState">
@@ -484,7 +551,7 @@
     <option name="showLabels" value="true" />
   </component>
   <component name="RunManager" selected="Application.New GUI">
-    <tempConfiguration default="false" name="YandexTest.testTrfTiles_GET_TM" type="JUnit" factoryName="JUnit" enabled="false" merge="false" runner="emma">
+    <tempConfiguration default="false" name="YandexTest.testDrawTraparent" type="JUnit" factoryName="JUnit" enabled="false" merge="false" runner="emma">
       <pattern>
         <option name="PATTERN" value="tests.*" />
         <option name="ENABLED" value="true" />
@@ -494,7 +561,7 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="tests" />
       <option name="MAIN_CLASS_NAME" value="tests.YandexTest" />
-      <option name="METHOD_NAME" value="testTrfTiles_GET_TM" />
+      <option name="METHOD_NAME" value="testDrawTraparent" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" />
       <option name="PARAMETERS" />
@@ -711,7 +778,7 @@
       <item index="2" class="java.lang.String" itemvalue="Application.MapConv" />
       <item index="3" class="java.lang.String" itemvalue="Application.New GUI" />
       <item index="4" class="java.lang.String" itemvalue="Application.GUI TESTS" />
-      <item index="5" class="java.lang.String" itemvalue="JUnit.YandexTest.testTrfTiles_GET_TM" />
+      <item index="5" class="java.lang.String" itemvalue="JUnit.YandexTest.testDrawTraparent" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -783,19 +850,19 @@
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32919955" sideWeight="0.5" order="9" side_tool="false" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3256705" sideWeight="0.5" order="10" side_tool="false" />
-      <window_info id="SVN Repositories" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32905483" sideWeight="0.5" order="7" side_tool="false" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32555425" sideWeight="0.5" order="10" side_tool="false" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2508117" sideWeight="0.72812134" order="0" side_tool="false" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2508117" sideWeight="0.57993" order="0" side_tool="false" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" />
       <window_info id="Web Preview" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="6" side_tool="false" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26371062" sideWeight="0.5" order="2" side_tool="false" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41190198" sideWeight="0.5" order="2" side_tool="false" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21744472" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="TCPMON" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
+      <window_info id="SVN Repositories" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3663944" sideWeight="0.5" order="7" side_tool="false" />
       <window_info id="Maven projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="5" side_tool="false" />
@@ -816,7 +883,7 @@
     <option name="PERFORM_CHECKOUT_IN_BACKGROUND" value="true" />
     <option name="PERFORM_ADD_REMOVE_IN_BACKGROUND" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adding Yandex Traffic layer" />
+    <option name="LAST_COMMIT_MESSAGE" value="many many fixes..." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
@@ -831,8 +898,9 @@
     <MESSAGE value="mkdir MapNavMapParser" />
     <MESSAGE value="delete stuff" />
     <MESSAGE value="Adjust Project" />
-    <MESSAGE value="upload JavaLibs" />
     <MESSAGE value="Adding Yandex Traffic layer" />
+    <MESSAGE value="upload JavaLibs" />
+    <MESSAGE value="many many fixes..." />
   </component>
   <component name="VssConfiguration">
     <option name="CLIENT_PATH" value="" />
@@ -880,82 +948,9 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/hack/ya-beta/Яндекс.Карты бета_files/_maps000.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="444" column="81" selection-start="13236" selection-end="13236" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hack/ya-beta/Яндекс.Карты бета.htm">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="92" selection-start="1662" selection-end="1675" vertical-scroll-proportion="0.53571427">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hack/ya-beta/YMapsData.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hack/ya-beta/YMaps.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/base-y5.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/TestProxy.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="0" selection-start="1016" selection-end="1322" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/DoubleBufferedImage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/GoogleTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="38" selection-start="1529" selection-end="1529" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_tile.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/traffikYa.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/newVersionPlan.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/gmapper/yandex/YandexTileFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="13" selection-start="329" selection-end="329" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -967,23 +962,102 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/YandexTest.java">
+    <entry file="file://$PROJECT_DIR$/src/org/gmapper/newGui/SimpleForm2.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="227" column="0" selection-start="9602" selection-end="9602" vertical-scroll-proportion="0.0">
+        <state line="23" column="0" selection-start="523" selection-end="643" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/settings.properties">
+    <entry file="file://$PROJECT_DIR$/src/org/gmapper/gui/TilesLayer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="57" selection-start="1335" selection-end="1335" vertical-scroll-proportion="0.0">
+        <state line="30" column="65" selection-start="690" selection-end="690" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tests/YandexTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="259" column="102" selection-start="10916" selection-end="10916" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/gmapper/NewMain.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="41" selection-start="387" selection-end="387" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/gmapper/newGui/MapState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="39" selection-start="430" selection-end="430" vertical-scroll-proportion="0.0">
+          <folding>
+            <marker date="1259623847000" expanded="true" signature="570:577" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/gmapper/newGui/SimpleForm.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="46" selection-start="1076" selection-end="1076" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/gmapper/yandex/YandexTile.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="140" column="31" selection-start="4785" selection-end="4785" vertical-scroll-proportion="0.3617021">
+        <state line="24" column="13" selection-start="639" selection-end="639" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/gmapper/TileFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="47" column="20" selection-start="1520" selection-end="1520" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/gmapper/yandex/YandexTileFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="49" column="24" selection-start="1787" selection-end="1787" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/gmapper/BaseTile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="93" selection-start="651" selection-end="651" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/gmapper/google/GoogleTileFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="24" selection-start="1198" selection-end="1198" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/gmapper/google/GoogleTile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="226" column="87" selection-start="7068" selection-end="7068" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/settings.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="0" selection-start="210" selection-end="210" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/gmapper/newGui/MapPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="73" column="58" selection-start="2414" selection-end="2414" vertical-scroll-proportion="-1.9221967">
           <folding />
         </state>
       </provider>

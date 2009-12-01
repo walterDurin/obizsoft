@@ -4,9 +4,13 @@ import org.gmapper.types.IntPoint;
 import org.gmapper.TileFactory;
 import org.gmapper.TileParams;
 import org.gmapper.google.GoogleTileFactory;
+import org.gmapper.google.GoogleTile;
 import org.gmapper.yandex.YandexTileFactory;
+import org.gmapper.yandex.YandexTile;
 import org.gmapper.gui.TilesLayer;
 import org.mapnav.types.GeoPoint;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,37 +24,39 @@ import java.util.ArrayList;
  * @author ognivo777@mail.ru
  */
 public class MapPanel extends JPanel {
+    private static Log log = LogFactory.getLog(MapPanel.class);
+
     private static ArrayList<MapState> yaMapStates = new ArrayList<MapState>();
-    private int yaMapStateNextNum = 0;
+    private int yaMapStateNextNum = 4;
     static {
         MapState mapState = new MapState();
-        mapState.setMapType(1);
+        mapState.setMapType(YandexTile.MAP_TYPE_SAT);
         mapState.setOverlayMapType(0);
         yaMapStates.add(mapState);
 
         mapState = new MapState();
-        mapState.setMapType(1);
-        mapState.setOverlayMapType(3);
+        mapState.setMapType(YandexTile.MAP_TYPE_SAT);
+        mapState.setOverlayMapType(YandexTile.MAP_TYPE_HYB);
         yaMapStates.add(mapState);
 
         mapState = new MapState();
-        mapState.setMapType(1);
-        mapState.setOverlayMapType(4);
+        mapState.setMapType(YandexTile.MAP_TYPE_SAT);
+        mapState.setOverlayMapType(YandexTile.YA_MAP_TYPE_TAFFIC);
         yaMapStates.add(mapState);
 
         mapState = new MapState();
-        mapState.setMapType(2);
+        mapState.setMapType(YandexTile.MAP_TYPE_MAP);
         mapState.setOverlayMapType(0);
         yaMapStates.add(mapState);
 
         mapState = new MapState();
-        mapState.setMapType(2);
-        mapState.setOverlayMapType(3);
+        mapState.setMapType(YandexTile.MAP_TYPE_MAP);
+        mapState.setOverlayMapType(YandexTile.MAP_TYPE_HYB);
         yaMapStates.add(mapState);
 
         mapState = new MapState();
-        mapState.setMapType(2);
-        mapState.setOverlayMapType(4);
+        mapState.setMapType(YandexTile.MAP_TYPE_MAP);
+        mapState.setOverlayMapType(YandexTile.YA_MAP_TYPE_TAFFIC);
         yaMapStates.add(mapState);
 
     }
@@ -59,23 +65,23 @@ public class MapPanel extends JPanel {
     private int googleMapStateNextNum = 0;
     static {
         MapState mapState = new MapState();
-        mapState.setMapType(1);
+        mapState.setMapType(GoogleTile.MAP_TYPE_SAT);
         mapState.setOverlayMapType(0);
         googleMapStates.add(mapState);
 
         mapState = new MapState();
-        mapState.setMapType(1);
-        mapState.setOverlayMapType(2);
+        mapState.setMapType(GoogleTile.MAP_TYPE_SAT);
+        mapState.setOverlayMapType(GoogleTile.MAP_TYPE_HYB);
         googleMapStates.add(mapState);
 
         mapState = new MapState();
-        mapState.setMapType(3);
+        mapState.setMapType(GoogleTile.MAP_TYPE_MAP);
         mapState.setOverlayMapType(0);
         googleMapStates.add(mapState);
 
         mapState = new MapState();
-        mapState.setMapType(3);
-        mapState.setOverlayMapType(1);
+        mapState.setMapType(GoogleTile.GOOGLE_LANDSCAPE);
+        mapState.setOverlayMapType(0);
         googleMapStates.add(mapState);
     }
 
@@ -175,6 +181,7 @@ public class MapPanel extends JPanel {
             if(googleMapStateNextNum==googleMapStates.size())
                 googleMapStateNextNum=0;
         }
+        log.debug("Cur SOURCE: " +tileFactory.getSourceName()+ "\nCur MAP: "+state.getMapType() + "\nCur OVER: " + state.getOverlayMapType());
         drawToBuffer();
         repaint();
     }
@@ -185,6 +192,7 @@ public class MapPanel extends JPanel {
         } else {
             tileFactory = new YandexTileFactory();
         }
+        log.debug("Cur SOURCE: " +tileFactory.getSourceName()+ "\nCur MAP: "+state.getMapType() + "\nCur OVER: " + state.getOverlayMapType());
         drawToBuffer();
         repaint();
     }
