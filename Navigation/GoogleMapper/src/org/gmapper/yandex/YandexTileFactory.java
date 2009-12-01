@@ -45,4 +45,8 @@ public class YandexTileFactory extends TileFactory {
         p01 = YandexUtils.mercatorToGeo(p01);
         return p01;
     }
+
+    public String getSourceName() {
+        return "Yandex";
+    }
 }

@@ -34,4 +34,8 @@ public class GoogleTileFactory extends TileFactory {
         IntPoint newMapPos = GoogleUtils.mapPosFromGeo(mapGeoCenter, level).add(mapShift);
         return GoogleUtils.geoFromMapPos(newMapPos, level);
     }
+
+    public String getSourceName() {
+        return "Google";
+    }
 }

@@ -23,6 +23,8 @@ public abstract class BaseTile {
     public static final int MAP_TYPE_HYB = 3;
     /**Я.Пробки*/
     public static final int YA_MAP_TYPE_TAFFIC = 4; 
+    /**Google.Ландшафт*/
+    public static final int GOOGLE_LANDSCAPE = 5;
 
     /**Start with 1 end with 20 or 17*/
     protected int level;

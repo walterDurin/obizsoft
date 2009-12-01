@@ -44,7 +44,7 @@ public class TilesLayer {
     public void loadMap(TileParams tileParams, int radius) {
         this.size = radius*2-1;
         this.tileParams = tileParams;
-        mapBuffer = new BufferedImage(256*size,256*size, 1);
+        mapBuffer = new BufferedImage(256*size,256*size, BufferedImage.TYPE_INT_ARGB);
         try {
             BaseTile tile = tileFactory.getTile(tileParams.getLevel(),tileParams.getPos().x, tileParams.getPos().y, tileParams.getType());
             tile.load();

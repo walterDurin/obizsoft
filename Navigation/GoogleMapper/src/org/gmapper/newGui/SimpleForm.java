@@ -35,9 +35,11 @@ public class SimpleForm extends JFrame {
         MapState state = new MapState();
 //        state.setMapGeoCenter(new DoublePoint(37.61714, 55.75207));
 //        37.873493,55.749516
-        state.setMapGeoCenter(new DoublePoint(37.873493, 55.749516));
-        state.setLevel(16);
+//        state.setMapGeoCenter(new DoublePoint(37.873493, 55.749516));
+        state.setMapGeoCenter(new DoublePoint(37.616081, 55.756189));
+        state.setLevel(10);
         state.setMapType(YandexTile.MAP_TYPE_MAP);
+        state.setOverlayMapType(0);
         ((MapPanel) mapPanel).setState(state);
         Toolkit.getDefaultToolkit().setDynamicLayout(true);
 

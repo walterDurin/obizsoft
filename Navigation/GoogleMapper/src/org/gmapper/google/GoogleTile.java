@@ -30,14 +30,26 @@ public class GoogleTile extends BaseTile {
     protected static int nextMapUrl =0;
     protected static List<String> overMapUrls;
     protected static int nextOverMapUrl =0;
+    protected static List<String> lanMapUrls;
+    protected static int nextLanMapUrl =0;
     protected static String cacheDir = null;
+
+    private static final String suffix = "s=Galileo";
+    private static int suffixNum = 2 ;
 
     protected static HostConfiguration proxySettings = new HostConfiguration();
 
+    private static int nextUrlcnt=0;
     protected static String nextSatUrl() {
+
         if(nextSatUrl !=0 && nextSatUrl == satUrls.size()) {
             nextSatUrl =0;
         }
+
+        if(nextUrlcnt++ < 2)
+            return satUrls.get(nextSatUrl);
+        nextUrlcnt = 0;
+
         return satUrls.get(nextSatUrl++);
     }
 
@@ -45,20 +57,51 @@ public class GoogleTile extends BaseTile {
         if(nextMapUrl!=0 && nextMapUrl == mapUrls.size()) {
             nextMapUrl =0;
         }
+
+        if(nextUrlcnt++ < 2)
+            return  mapUrls.get(nextMapUrl);
+        nextUrlcnt = 0;
+
         return mapUrls.get(nextMapUrl++);
     }
 
     protected static String nextOverMapUrl() {
+
         if(nextOverMapUrl!=0 && nextOverMapUrl == overMapUrls.size()) {
             nextOverMapUrl =0;
         }
+
+        if(nextUrlcnt++ < 2)
+            return overMapUrls.get(nextOverMapUrl);
+        nextUrlcnt = 0;
+
         return overMapUrls.get(nextOverMapUrl++);
+    }
+
+    protected static String nextLanMapUrl() {
+
+        if(nextLanMapUrl!=0 && nextLanMapUrl == lanMapUrls.size()) {
+            nextLanMapUrl =0;
+        }
+
+        if(nextUrlcnt++ < 2)
+            return lanMapUrls.get(nextLanMapUrl);
+        nextUrlcnt = 0;
+
+        return lanMapUrls.get(nextLanMapUrl++);
+    }
+
+    private static String getNextSuffix() {
+        if(suffixNum>=10)
+            suffixNum=2;
+        return suffix.substring(0, suffixNum++);
     }
 
     static{
         satUrls = new ArrayList<String>();
         mapUrls = new ArrayList<String>();
         overMapUrls = new ArrayList<String>();
+        lanMapUrls = new ArrayList<String>();
 
         Properties prop = new Properties();
         try {
@@ -83,6 +126,12 @@ public class GoogleTile extends BaseTile {
             String url = prop.getProperty("google.overmap.url"+i);
             if(url!=null)
                 overMapUrls.add(url);
+        }
+
+        for(int i=1; i<=4; i++) {
+            String url = prop.getProperty("google.lan.url"+i);
+            if(url!=null)
+                lanMapUrls.add(url);
         }
 
         cacheDir = prop.getProperty("google.cahceDir");
@@ -114,9 +163,9 @@ public class GoogleTile extends BaseTile {
             throw new OutOfRange(xNum);
         if(yNum<0 || yNum>max)
             throw new OutOfRange(yNum);
-        if(type!=MAP_TYPE_MAP && type!=MAP_TYPE_SAT && type!=MAP_TYPE_HYB)
+        if(type!=MAP_TYPE_MAP && type!=MAP_TYPE_SAT && type!=MAP_TYPE_HYB && type!=GOOGLE_LANDSCAPE)
             throw new OutOfRange(yNum);
-        if(type==MAP_TYPE_MAP && level>18)
+        if((type==MAP_TYPE_MAP||type==GOOGLE_LANDSCAPE) && level>18)
             throw new OutOfRange("For MAP type map max level is '18'. Found '"+level+"'");
         if((type==MAP_TYPE_SAT || type==MAP_TYPE_HYB) && level>20)
             throw new OutOfRange("For SAT type map max level is '20'. Found '"+level+"'");
@@ -136,11 +185,13 @@ public class GoogleTile extends BaseTile {
     public String getLoadUrl() {
         switch(type){
             case MAP_TYPE_SAT:
-                return nextSatUrl() + "&x=" + xNum + "&y=" + yNum + "&z=" + (level);
+                return nextSatUrl() + "&x=" + xNum + "&y=" + yNum + "&z=" + (level) + "&" + getNextSuffix();
             case MAP_TYPE_MAP:
-                return nextMapUrl() + "&x=" + xNum + "&y=" + yNum + "&z=" + (level);
+                return nextMapUrl() + "&x=" + xNum + "&y=" + yNum + "&z=" + (level) + "&" + getNextSuffix();
             case MAP_TYPE_HYB:
-                return nextOverMapUrl() + "&x=" + xNum + "&y=" + yNum + "&z=" + (level);
+                return nextOverMapUrl() + "&x=" + xNum + "&y=" + yNum + "&z=" + (level) + "&" + getNextSuffix();
+            case GOOGLE_LANDSCAPE:
+                return nextLanMapUrl() + "&x=" + xNum + "&y=" + yNum + "&z=" + (level) + "&" + getNextSuffix();
         }
         log.info(""+type);
         return null;
@@ -161,6 +212,8 @@ public class GoogleTile extends BaseTile {
                 return "map";
             case MAP_TYPE_HYB:
                 return "hyb";
+            case GOOGLE_LANDSCAPE:
+                return "lan";
         }
         return "unknow";
     }
