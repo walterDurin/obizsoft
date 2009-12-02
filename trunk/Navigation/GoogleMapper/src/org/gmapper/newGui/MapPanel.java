@@ -1,16 +1,16 @@
 package org.gmapper.newGui;
 
-import org.gmapper.types.IntPoint;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.gmapper.TileFactory;
 import org.gmapper.TileParams;
-import org.gmapper.google.GoogleTileFactory;
 import org.gmapper.google.GoogleTile;
-import org.gmapper.yandex.YandexTileFactory;
-import org.gmapper.yandex.YandexTile;
+import org.gmapper.google.GoogleTileFactory;
 import org.gmapper.gui.TilesLayer;
+import org.gmapper.types.IntPoint;
+import org.gmapper.yandex.YandexTile;
+import org.gmapper.yandex.YandexTileFactory;
 import org.mapnav.types.GeoPoint;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,6 +28,7 @@ public class MapPanel extends JPanel {
 
     private static ArrayList<MapState> yaMapStates = new ArrayList<MapState>();
     private int yaMapStateNextNum = 4;
+
     static {
         MapState mapState = new MapState();
         mapState.setMapType(YandexTile.MAP_TYPE_SAT);
@@ -63,6 +64,7 @@ public class MapPanel extends JPanel {
 
     private static ArrayList<MapState> googleMapStates = new ArrayList<MapState>();
     private int googleMapStateNextNum = 0;
+
     static {
         MapState mapState = new MapState();
         mapState.setMapType(GoogleTile.MAP_TYPE_SAT);
@@ -93,7 +95,7 @@ public class MapPanel extends JPanel {
 
     //MapDragging variables
     private IntPoint startDragPos;
-    private IntPoint inDragShift = new IntPoint(0,0);
+    private IntPoint inDragShift = new IntPoint(0, 0);
 
 
     public MapPanel(boolean isDoubleBuffered, TileFactory tileFactory, SimpleForm simpleForm) {
@@ -103,41 +105,41 @@ public class MapPanel extends JPanel {
         Toolkit.getDefaultToolkit().setDynamicLayout(true);
 
 
-
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                if(e.getButton()==MouseEvent.BUTTON1)
+                if (e.getButton() == MouseEvent.BUTTON1)
                     startDragPos = new IntPoint(e.getX(), e.getY());
-                if(e.getButton()==MouseEvent.BUTTON3) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
                     rollMapSource();
                 }
-                if(e.getButton()==MouseEvent.BUTTON2) {
+                if (e.getButton() == MouseEvent.BUTTON2) {
                     rollMaptype();
                 }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if(e.getButton()==MouseEvent.BUTTON1) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
                     moveMap();
-                    startDragPos=null;
+                    startDragPos = null;
                 }
             }
         });
 
         addMouseWheelListener(new MouseWheelListener() {
             public void mouseWheelMoved(MouseWheelEvent e) {
-                if(e.getScrollType()==MouseWheelEvent.WHEEL_UNIT_SCROLL) {
-                    scaleMap(-e.getWheelRotation(), new IntPoint((int)( e.getX() - getSize().getWidth() / 2), (int) ( e.getY() - getSize().getHeight() / 2)));
+                if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+                    scaleMap(-e.getWheelRotation(), new IntPoint((int) (e.getX() - getSize().getWidth() / 2), (int) (e.getY() - getSize().getHeight() / 2)));
                 }
             }
         });
 
         addMouseMotionListener(new MouseMotionListener() {
             public void mouseDragged(MouseEvent e) {
-                if(startDragPos!=null)
-                dragMap(new IntPoint(e.getX(), e.getY()).add(startDragPos.multiply(-1)));
+                if (startDragPos != null)
+                    dragMap(new IntPoint(e.getX(), e.getY()).add(startDragPos.multiply(-1)));
             }
+
             public void mouseMoved(MouseEvent e) {
             }
         });
@@ -145,9 +147,9 @@ public class MapPanel extends JPanel {
         addComponentListener(new ComponentListener() {
             public void componentResized(ComponentEvent e) {
                 int radius = (int) (getSize().getWidth() > getSize().getHeight() ? getSize().getWidth() : getSize().getHeight());
-                radius = radius /256;
+                radius = radius / 256;
                 radius = radius / 2 + 2;
-                if (radius != (tilesLayer.getSize()+1)/2) {
+                if (radius != (tilesLayer.getSize() + 1) / 2) {
                     drawToBuffer();
                     repaint();
                 }
@@ -167,41 +169,42 @@ public class MapPanel extends JPanel {
     }
 
     private void rollMaptype() {
-        if(tileFactory instanceof YandexTileFactory) {
+        if (tileFactory instanceof YandexTileFactory) {
             state.setMapType(yaMapStates.get(yaMapStateNextNum).getMapType());
             state.setOverlayMapType(yaMapStates.get(yaMapStateNextNum).getOverlayMapType());
             yaMapStateNextNum++;
-            if(yaMapStateNextNum==yaMapStates.size())
-                yaMapStateNextNum=0;
+            if (yaMapStateNextNum == yaMapStates.size())
+                yaMapStateNextNum = 0;
         }
-        if(tileFactory instanceof GoogleTileFactory) {
+        if (tileFactory instanceof GoogleTileFactory) {
             state.setMapType(googleMapStates.get(googleMapStateNextNum).getMapType());
             state.setOverlayMapType(googleMapStates.get(googleMapStateNextNum).getOverlayMapType());
             googleMapStateNextNum++;
-            if(googleMapStateNextNum==googleMapStates.size())
-                googleMapStateNextNum=0;
+            if (googleMapStateNextNum == googleMapStates.size())
+                googleMapStateNextNum = 0;
         }
-        log.debug("Cur SOURCE: " +tileFactory.getSourceName()+ "\nCur MAP: "+state.getMapType() + "\nCur OVER: " + state.getOverlayMapType());
+        log.debug("Cur SOURCE: " + tileFactory.getSourceName() + "\nCur MAP: " + state.getMapType() + "\nCur OVER: " + state.getOverlayMapType());
         drawToBuffer();
         repaint();
     }
 
     private void rollMapSource() {
-        if(tileFactory instanceof YandexTileFactory) {
+        if (tileFactory instanceof YandexTileFactory) {
             tileFactory = new GoogleTileFactory();
-            googleMapStateNextNum=0;
+            googleMapStateNextNum = 0;
         } else {
             tileFactory = new YandexTileFactory();
-            yaMapStateNextNum=0;
+            yaMapStateNextNum = 0;
         }
         rollMaptype();
-        log.debug("Cur SOURCE: " +tileFactory.getSourceName()+ "\nCur MAP: "+state.getMapType() + "\nCur OVER: " + state.getOverlayMapType());
+        log.debug("Cur SOURCE: " + tileFactory.getSourceName() + "\nCur MAP: " + state.getMapType() + "\nCur OVER: " + state.getOverlayMapType());
         drawToBuffer();
         repaint();
     }
 
     private void scaleMap(final int k, final IntPoint shift) {
         tilesLayer.resize(k, shift, tileFactory.tilePixelFromGeoCoord(state.getMapGeoCenter(), state.getLevel()));
+        overlayLayer.resize(k, shift, tileFactory.tilePixelFromGeoCoord(state.getMapGeoCenter(), state.getLevel()));
         repaint();
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -217,7 +220,7 @@ public class MapPanel extends JPanel {
     private void moveMap() {
         startDragPos = null;
         state.setMapGeoCenter(tileFactory.moveGeoCoord(state.getMapGeoCenter(), inDragShift.multiply(-1), state.getLevel()));
-        inDragShift = new IntPoint(0,0);
+        inDragShift = new IntPoint(0, 0);
         drawToBuffer();
         repaint();
     }
@@ -253,11 +256,11 @@ public class MapPanel extends JPanel {
         tilesLayer = new TilesLayer(tileFactory);
 
         int raduis = (int) (getSize().getWidth() > getSize().getHeight() ? getSize().getWidth() : getSize().getHeight());
-        raduis = raduis /256;
+        raduis = raduis / 256;
         raduis = raduis / 2 + 2;
 
         tilesLayer.loadMap(centerTileParams, raduis);
-        if(state.getOverlayMapType()!=0) {
+        if (state.getOverlayMapType() != 0) {
             TileParams overlayCenterTileParams = new TileParams(tilePos, state.getLevel(), state.getOverlayMapType());
             overlayLayer = new TilesLayer(tileFactory);
             overlayLayer.loadMap(overlayCenterTileParams, raduis);
@@ -271,28 +274,28 @@ public class MapPanel extends JPanel {
 
     public void draw(Graphics g) {
         IntPoint inTileCoord = tileFactory.tilePixelFromGeoCoord(state.getMapGeoCenter(), state.getLevel());
-        IntPoint panelCenter = new IntPoint((int)getSize().getWidth()/2, (int)getSize().getHeight()/2);
+        IntPoint panelCenter = new IntPoint(getSize().getWidth(), getSize().getHeight()).multiply(0.5);
         //panelCenter - tilesLayer.getCenter() - inTileCoord +128
         IntPoint drawStart = panelCenter.add(tilesLayer.getCenter().add(inTileCoord).multiply(-1)).add(128);
         drawStart = drawStart.add(inDragShift);
         g.setPaintMode();
-        g.drawImage(tilesLayer.getMapBuffer(), drawStart.x,  drawStart.y, null);
-        if(state.getOverlayMapType()!=0)
-            g.drawImage(overlayLayer.getMapBuffer(), drawStart.x,  drawStart.y, null);
-        if(tilesLayer.isLoaded())
+        g.drawImage(tilesLayer.getMapBuffer(), drawStart.x, drawStart.y, null);
+        if (state.getOverlayMapType() != 0)
+            g.drawImage(overlayLayer.getMapBuffer(), drawStart.x, drawStart.y, null);
+        if (tilesLayer.isLoaded())
             g.setColor(Color.BLACK);
         else
             g.setColor(Color.PINK);
 //        g.setXORMode(Color.BLACK);
-        g.drawOval(panelCenter.x-15, panelCenter.y-15, 30, 30);
-        g.drawLine(panelCenter.x-20, panelCenter.y,   panelCenter.x-5, panelCenter.y);
-        g.drawLine(panelCenter.x+20, panelCenter.y,   panelCenter.x+5, panelCenter.y);
-        g.drawLine(panelCenter.x,   panelCenter.y-20, panelCenter.x,   panelCenter.y-5);
-        g.drawLine(panelCenter.x,   panelCenter.y+20, panelCenter.x,   panelCenter.y+5);
+        g.drawOval(panelCenter.x - 15, panelCenter.y - 15, 30, 30);
+        g.drawLine(panelCenter.x - 20, panelCenter.y, panelCenter.x - 5, panelCenter.y);
+        g.drawLine(panelCenter.x + 20, panelCenter.y, panelCenter.x + 5, panelCenter.y);
+        g.drawLine(panelCenter.x, panelCenter.y - 20, panelCenter.x, panelCenter.y - 5);
+        g.drawLine(panelCenter.x, panelCenter.y + 20, panelCenter.x, panelCenter.y + 5);
 
         GeoPoint gp = new GeoPoint(state.getMapGeoCenter());
 
-        g.drawString("POS: "+gp, 10, (int)getSize().getHeight()-10);
+        g.drawString("POS: " + gp, 10, (int) getSize().getHeight() - 10);
     }
 
 }

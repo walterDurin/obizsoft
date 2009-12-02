@@ -22,20 +22,25 @@ public class IntPoint {
         this.y = (int) y;
     }
 
+    public IntPoint(double x, double y) {
+        this.x = (int) x;
+        this.y = (int) y;
+    }
+
     public IntPoint(int i) {
-        this(i,i);
+        this(i, i);
     }
 
     public IntPoint multiply(double k) {
-        return new IntPoint((int) (x*k), (int) (y*k));
+        return new IntPoint((int) (x * k), (int) (y * k));
     }
 
     public IntPoint multiply(IntPoint k) {
-        return new IntPoint(x*k.x, y*k.y);
+        return new IntPoint(x * k.x, y * k.y);
     }
 
     public IntPoint add(int k) {
-        return new IntPoint(x+k, y+k);
+        return new IntPoint(x + k, y + k);
     }
 
     public IntPoint round() {
@@ -43,7 +48,7 @@ public class IntPoint {
     }
 
     public IntPoint add(IntPoint k) {
-        return new IntPoint(x+k.x, y+k.y);
+        return new IntPoint(x + k.x, y + k.y);
     }
 
     @Override
@@ -53,7 +58,7 @@ public class IntPoint {
     }
 
     public boolean equals(Object obj) {
-        if(obj!=null && this.getClass().isAssignableFrom(obj.getClass())) {
+        if (obj != null && this.getClass().isAssignableFrom(obj.getClass())) {
             IntPoint p = (IntPoint) obj;
             return x == p.x && y == p.y;
         }
