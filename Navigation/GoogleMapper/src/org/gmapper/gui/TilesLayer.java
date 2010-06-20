@@ -58,10 +58,19 @@ public class TilesLayer {
                 BaseTile nextTile = tileFactory.getTile(tileParams.getLevel(), overTile.x, overTile.y, tileParams.getType());
                 nextTile.load();
                 mapBuffer.getGraphics().drawImage(nextTile.getImage(), (radius - 1 - i) * 256, (radius - 1 - i) * 256, null);
-                //Отрисовка тех что уже загружены
-                loadProcess(tileParams, radius, i, p0, d, true);
-                //Отрисовка остальных
-                loadProcess(tileParams, radius, i, p0, d, false);
+                for (IntPoint np = p0.add(d); !np.equals(p0); np = np.add(d)) {
+                    overTile = tileParams.getPos().add(np);
+                    nextTile = tileFactory.getTile(tileParams.getLevel(), overTile.x, overTile.y, tileParams.getType());
+                    nextTile.load();
+                    mapBuffer.getGraphics().drawImage(nextTile.getImage(), (radius - 1 + np.x) * 256, (radius - 1 + np.y) * 256, null);
+                    if (np.equals(new IntPoint(-i, i))) {
+                        d = new IntPoint(1, 0);
+                    } else if (np.equals(new IntPoint(i, i))) {
+                        d = new IntPoint(0, -1);
+                    } else if (np.equals(new IntPoint(i, -i))) {
+                        d = new IntPoint(-1, 0);
+                    }
+                }
             }
 
         } catch (OutOfRange outOfRange) {
