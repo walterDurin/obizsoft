@@ -3,8 +3,11 @@ package ru.lanit.dibr.utils.gui;
 import ru.lanit.dibr.utils.Configuration;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -40,31 +43,53 @@ public class LogChoicer extends JFrame {
 			}
 			pane.add(hostPane);
 		}
-		add(pane);
+		setContentPane(pane);
 		pack();
+        setResizable(false);
+        
+
 //		setSize(300, getHeight());
 	}
 
 	private void addButton(JPanel buttons, final String name, final Host host, final String file) {
-        final JButton b = new JButton(name+"  [off]  ");
+        final JButton b = new JButton(name);
+        final JCheckBox c = new JCheckBox();
+        b.setBorder(new LineBorder(Color.GRAY));
 		final String logName = host.getDescription()+":"+name;
 		b.addActionListener(new AbstractAction() {
 			LogFrame lf = null;
 			public void actionPerformed(ActionEvent e) {
 				System.out.println(e.paramString());
 				if(lf==null) {
-					lf = new LogFrame(host, file, name);
-					b.setText(name + "  [on]     ");
+					lf = new LogFrame(b, c, host, file, name);
+					b.setForeground(new Color(48, 129, 97));
+                    b.setBorder(new LineBorder(new Color(48, 129, 97)));
+                    b.setText(name);
 					logs.put(logName, lf);
+                    lf.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosing(WindowEvent e) {
+                            lf.setVisible(false);
+                                b.setBorder(new LineBorder(Color.GRAY));
+                                b.setForeground(Color.GRAY);
+                            b.setText(name);
+                        }
+                    });
 				}
 				else {
-					lf.setVisible(!lf.isVisible());
-					b.setText(name + (lf.isVisible()?"  [on]     ":"  [hidden]"));
+                    lf.setVisible(!lf.isVisible());
+                    if(lf.isVisible()) {
+                        b.setBorder(new LineBorder(new Color(48, 129, 97)));
+                        b.setForeground(new Color(48, 129, 97));
+                    } else {
+                        b.setBorder(new LineBorder(Color.GRAY));
+                        b.setForeground(Color.GRAY);
+                    }
+                    b.setText(name);
 				}
 			}
 		});
 
-		final JCheckBox c = new JCheckBox();
 		c.setSelected(false);
 		c.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
