@@ -16,9 +16,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ru/lanit/dibr/utils/gui/LogChoicer.java" afterPath="$PROJECT_DIR$/src/ru/lanit/dibr/utils/gui/LogChoicer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ru/lanit/dibr/utils/gui/LogFrame.java" afterPath="$PROJECT_DIR$/src/ru/lanit/dibr/utils/gui/LogFrame.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/settings.xml" afterPath="$PROJECT_DIR$/settings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConturMonitor.iws" afterPath="$PROJECT_DIR$/ConturMonitor.iws" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConturMonitor.iml" afterPath="$PROJECT_DIR$/ConturMonitor.iml" />
     </list>
     <ignored path="ConturMonitor.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -108,10 +108,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LogChoicer.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="LogChoicer.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ru/lanit/dibr/utils/gui/LogChoicer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="87" column="87" selection-start="3230" selection-end="3230" vertical-scroll-proportion="2.2666667">
+            <state line="87" column="87" selection-start="3230" selection-end="3230" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="settings.xml" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/settings.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="23" column="0" selection-start="2051" selection-end="2051" vertical-scroll-proportion="0.6683761">
               <folding />
             </state>
           </provider>
@@ -552,7 +561,7 @@
     <option name="PERFORM_CHECKOUT_IN_BACKGROUND" value="true" />
     <option name="PERFORM_ADD_REMOVE_IN_BACKGROUND" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Исправлен внешний вид окна списка логов: цветовая индикация открытых окон, отключение элементов управления если лог недоступен" />
+    <option name="LAST_COMMIT_MESSAGE" value="" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
@@ -645,13 +654,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/settings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="24" selection-start="1059" selection-end="1059" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/TestReadLog.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="0" selection-start="123" selection-end="123" vertical-scroll-proportion="0.0">
@@ -705,7 +707,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ru/lanit/dibr/utils/gui/LogChoicer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="87" column="87" selection-start="3230" selection-end="3230" vertical-scroll-proportion="2.2666667">
+        <state line="87" column="87" selection-start="3230" selection-end="3230" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/settings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="0" selection-start="2051" selection-end="2051" vertical-scroll-proportion="0.6683761">
           <folding />
         </state>
       </provider>
