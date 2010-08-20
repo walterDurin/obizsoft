@@ -1,0 +1,24 @@
+<settings>
+    <server name="test DEV" host="first.host" user="user" password="password">
+        <log name="WLS Admin" file="/bea/domains/integroDomain/servers/AdminServer/logs/AdminServer.log"/>
+        <log name="WLS c1" file="/bea/domains/integroDomain/logs/wli_applications_debug.wls1.log"/>
+        <log name="WLS c2" file="/bea/domains/integroDomain/logs/wli_applications_debug.wls2.log"/>
+        <log name="ALSB Admin" file="/bea/domains/alsbDomain/servers/AdminServer/logs/AdminServer.log"/>
+        <log name="ALSB c1" file="/bea/domains/alsbDomain/logs/alsb_applications_debug.alsb1.log"/>
+        <log name="ALSB c2" file="/bea/domains/alsbDomain/logs/alsb_applications_debug.alsb2.log"/>
+        <log name="Portal Admin" file="/bea/domains/portalDomain/servers/AdminServer/logs/AdminServer.log"/>
+        <log name="Portal c1" file="/bea/domains/portalDomain/logs/portal_applications_debug.p1.log"/>
+        <log name="Portal c2" file="/bea/domains/portalDomain/logs/portal_applications_debug.p2.log"/>
+    </server>
+    <server name="test QA" host="second.host" user="user" password="password">
+        <log name="WLS Admin" file="/bea/domains/integroDomain/servers/AdminServer/logs/AdminServer.log"/>
+        <log name="WLS c1" file="/bea/domains/integroDomain/logs/wli_applications_debug.wls1.log"/>
+        <log name="WLS c2" file="/bea/domains/integroDomain/logs/wli_applications_debug.wls2.log"/>
+        <log name="ALSB Admin" file="/bea/domains/alsbDomain/servers/AdminServer/logs/AdminServer.log"/>
+        <log name="ALSB c1" file="/bea/domains/alsbDomain/logs/alsb_applications_debug.alsb1.log"/>
+        <log name="ALSB c2" file="/bea/domains/alsbDomain/logs/alsb_applications_debug.alsb2.log"/>
+        <log name="Portal Admin" file="/bea/domains/portalDomain/servers/AdminServer/logs/AdminServer.log"/>
+        <log name="Portal c1" file="/bea/domains/portalDomain/logs/portal_applications_debug.p1.log"/>
+        <log name="Portal c2" file="/bea/domains/portalDomain/logs/portal_applications_debug.p2.log"/>
+    </server>
+</settings>
