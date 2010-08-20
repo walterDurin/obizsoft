@@ -32,13 +32,11 @@ public class LogChoicer extends JFrame {
 			hostLabel.setFont(new Font("Courier", Font.BOLD, 16));
 			hostPane.add(hostLabel);
 			JPanel buttons = new JPanel();
-			GridLayout mgr = new GridLayout(0, 2);
+			GridBagLayout mgr = new GridBagLayout();
 			buttons.setLayout(mgr);
 			hostPane.add(buttons);
-			int logCnt = 0;
 			for (Map.Entry<String, String> logEntry : entry.getValue().entrySet()) {
 				addButton(buttons,  logEntry.getKey(), entry.getKey(), logEntry.getValue());
-				logCnt++;
 			}
 			pane.add(hostPane);
 		}
@@ -48,7 +46,7 @@ public class LogChoicer extends JFrame {
 	}
 
 	private void addButton(JPanel buttons, final String name, final Host host, final String file) {
-		final JButton b = new JButton(name+"  [off]  ");
+        final JButton b = new JButton(name+"  [off]  ");
 		final String logName = host.getDescription()+":"+name;
 		b.addActionListener(new AbstractAction() {
 			LogFrame lf = null;
@@ -76,11 +74,15 @@ public class LogChoicer extends JFrame {
 					c.setSelected(!c.isSelected());
 			}
 		});
-//		Box box = Box.createHorizontalBox();
-//		box.add(b);
-//		box.add(c);
-//		buttons.add(box);
-		buttons.add(b);
-		buttons.add(c);
+
+        GridBagConstraints gbc =  new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.gridx = 0;
+
+		buttons.add(b, gbc);
+
+        gbc.gridx = 1;
+		buttons.add(c, gbc);
 	}
 }

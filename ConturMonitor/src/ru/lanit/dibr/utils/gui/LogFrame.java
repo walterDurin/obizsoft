@@ -18,7 +18,6 @@ public class LogFrame  extends JFrame {
 		setTitle(host.getDescription()+ " : " + name);
 		setSize(1500, 500);
 		setVisible(true);
-		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		final LogPanel lp = new LogPanel(host, logPath);
 		panel = lp;
 		add(lp);
