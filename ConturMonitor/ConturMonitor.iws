@@ -15,11 +15,7 @@
     <option name="historyRevisionsNumber" value="4" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" readonly="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConturMonitor.ipr" afterPath="$PROJECT_DIR$/ConturMonitor.ipr" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConturMonitor.iws" afterPath="$PROJECT_DIR$/ConturMonitor.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConturMonitor.iml" afterPath="$PROJECT_DIR$/ConturMonitor.iml" />
-    </list>
+    <list default="true" readonly="true" name="Default" comment="" />
     <ignored path="ConturMonitor.iws" />
     <ignored path=".idea/workspace.xml" />
   </component>
