@@ -30,6 +30,7 @@ public class LogFrame  extends JFrame {
 				try {
 					lp.connect();
 				} catch (Exception e) {
+                    System.out.println(e);
 					JOptionPane.showMessageDialog(_this, "Can't open log '"+logPath+" on '"+host.getHost()+"'!");
                     _this.setVisible(false);
                     b.setBorder(new LineBorder(Color.RED));
