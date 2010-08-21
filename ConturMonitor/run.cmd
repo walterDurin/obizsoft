@@ -1,1 +1,1 @@
-start javaw -jar LogMonitor.jar
+start javaw -jar LogMonitor*.jar
