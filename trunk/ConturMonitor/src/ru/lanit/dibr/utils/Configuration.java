@@ -37,7 +37,7 @@ public class Configuration {
 	public Configuration() {
 		try {
 			
-			servers = new HashMap<Host, Map<String, String>>();
+			servers = new TreeMap<Host, Map<String, String>>();
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         	DocumentBuilder db = dbf.newDocumentBuilder();
 			Document doc = db.parse(new File("settings.xml"));
@@ -51,7 +51,7 @@ public class Configuration {
 				Host nextHost = new Host(descr, host, user, password);
 				System.out.println(nextHost);
 				NodeList logList = list.item(i).getChildNodes();
-				servers.put(nextHost, new HashMap<String, String>());
+				servers.put(nextHost, new TreeMap<String, String>());
 				for(int j = 0; j < logList.getLength() ; j++  ) {
 					if(logList.item(j).getNodeName().equals("log"))
 						servers.get(nextHost).put(logList.item(j).getAttributes().getNamedItem("name").getNodeValue(), logList.item(j).getAttributes().getNamedItem("file").getNodeValue());
