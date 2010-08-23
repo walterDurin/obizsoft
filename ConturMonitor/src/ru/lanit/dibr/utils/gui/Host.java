@@ -6,7 +6,7 @@ package ru.lanit.dibr.utils.gui;
  * Date: 16.08.2010
  * Time: 17:21:10
  */
-public class Host {
+public class Host implements Comparable {
 	private String description;
 	private String host;
 	private String user;
@@ -64,5 +64,11 @@ public class Host {
 	@Override
 	public int hashCode() {
 		return toString().hashCode();
+	}
+
+	public int compareTo(Object o) {
+		if(o instanceof Host)
+			return description.compareTo(((Host)o).getDescription());
+		else return 0;
 	}
 }

@@ -1,7 +1,7 @@
 package ru.lanit.dibr.utils.utils;
 
 import com.jcraft.jsch.UserInfo;
-import com.jcraft.jsch.UIKeyboardInteractive;
+//import com.jcraft.jsch.UIKeyboardInteractive;
 
 import javax.swing.*;
 import java.awt.*;
