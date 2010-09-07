@@ -26,7 +26,7 @@ public class LogChoicer extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setAlwaysOnTop(true);
 		pane = new JPanel();
-		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS)); //Принудительно по горизонтали
+		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS)); //Принудительно по вертикали
 		setLocationByPlatform(true);
 		for (Map.Entry<Host, Map<String, String>> entry : cfg.getServers().entrySet()) {
 			JPanel hostPane = new JPanel();
@@ -107,7 +107,10 @@ public class LogChoicer extends JFrame {
 
 		buttons.add(b, gbc);
 
-        gbc.gridx = 1;
+        gbc.gridx++;
 		buttons.add(c, gbc);
+
+        gbc.gridx++;
+        buttons.add(new MenuButton(), gbc);
 	}
 }
