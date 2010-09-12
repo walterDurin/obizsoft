@@ -53,15 +53,15 @@ public class LogChoicer extends JFrame {
 
 	private void addButton(JPanel buttons, final String name, final Host host, final String file) {
         final JButton b = new JButton(name);
-        final JCheckBox c = new JCheckBox();
         b.setBorder(new LineBorder(Color.GRAY));
 		final String logName = host.getDescription()+":"+name;
+        final MenuButton menuButton = new MenuButton(host, file, name, logs, logName);
 		b.addActionListener(new AbstractAction() {
 			LogFrame lf = null;
 			public void actionPerformed(ActionEvent e) {
 				System.out.println(e.paramString());
 				if(lf==null) {
-					lf = new LogFrame(b, c, host, file, name);
+					lf = new LogFrame(b, menuButton, host, file, name);
 					b.setForeground(new Color(48, 129, 97));
                     b.setBorder(new LineBorder(new Color(48, 129, 97)));
                     b.setText(name);
@@ -90,7 +90,17 @@ public class LogChoicer extends JFrame {
 			}
 		});
 
-		c.setSelected(false);
+        GridBagConstraints gbc =  new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.gridx = 0;
+
+		buttons.add(b, gbc);
+
+
+/*
+		final JCheckBox c = new JCheckBox();
+        c.setSelected(false);
 		c.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 				if(logs.get(logName)!=null)
@@ -99,18 +109,11 @@ public class LogChoicer extends JFrame {
 					c.setSelected(!c.isSelected());
 			}
 		});
-
-        GridBagConstraints gbc =  new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridy = GridBagConstraints.RELATIVE;
-        gbc.gridx = 0;
-
-		buttons.add(b, gbc);
-
         gbc.gridx++;
 		buttons.add(c, gbc);
+*/
 
         gbc.gridx++;
-        buttons.add(new MenuButton(), gbc);
+        buttons.add(menuButton, gbc);
 	}
 }
