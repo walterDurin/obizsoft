@@ -15,7 +15,7 @@ public class LogFrame  extends JFrame {
 	private Thread t;
 	private LogPanel panel;
 
-	public LogFrame(final JButton b, final JCheckBox c, final Host host, final String logPath, String name) {
+	public LogFrame(final JButton b, final JComponent c, final Host host, final String logPath, String name) {
 		setTitle(host.getDescription()+ " : " + name);
 		setSize(1500, 500);
 		setVisible(true);
@@ -23,7 +23,6 @@ public class LogFrame  extends JFrame {
 		final LogPanel lp = new LogPanel(host, logPath);
 		panel = lp;
 		add(lp);
-        final JFrame _this = this;
 		t = new Thread() {
 			@Override
 			public void run() {
@@ -31,8 +30,8 @@ public class LogFrame  extends JFrame {
 					lp.connect();
 				} catch (Exception e) {
                     System.out.println(e);
-					JOptionPane.showMessageDialog(_this, "Can't open log '"+logPath+" on '"+host.getHost()+"'!");
-                    _this.setVisible(false);
+					JOptionPane.showMessageDialog(LogFrame.this, "Can't open log '"+logPath+" on '"+host.getHost()+"'!");
+                    LogFrame.this.setVisible(false);
                     b.setBorder(new LineBorder(Color.RED));
                     b.setEnabled(false);
                     c.setEnabled(false);
