@@ -6,24 +6,28 @@ package ru.lanit.dibr.utils.gui;
  * Date: 16.08.2010
  * Time: 17:21:10
  */
-public class Host implements Comparable {
+public class Host {
 	private String description;
 	private String host;
+	private int port;
 	private String user;
 	private String password;
+    private String defaultEncoding;
 
-	public Host(String host, String user, String password) {
-		this(null, host, user, password);
+	public Host(String host, int port, String user, String password) {
+		this(null, host, port, user, password, null);
 	}
 
-	public Host(String description, String host, String user, String password) {
+	public Host(String description, String host, int port, String user, String password, String defaultEncoding) {
 		this.description = description;
 		this.host = host;
+        this.port = port;
 		this.user = user;
 		this.password = password;
+        this.defaultEncoding = defaultEncoding;
 	}
 
-	public String getDescription() {
+    public String getDescription() {
 		return description;
 	}
 
@@ -39,7 +43,15 @@ public class Host implements Comparable {
 		this.host = host;
 	}
 
-	public String getUser() {
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getUser() {
 		return user;
 	}
 
@@ -55,7 +67,15 @@ public class Host implements Comparable {
 		this.password = password;
 	}
 
-	@Override
+    public String getDefaultEncoding() {
+        return defaultEncoding;
+    }
+
+    public void setDefaultEncoding(String defaultEncoding) {
+        this.defaultEncoding = defaultEncoding;
+    }
+
+    @Override
 	public String toString() {
 		return "host = " + host +
 		"; user = " + user + "; password = " + password;
@@ -64,11 +84,5 @@ public class Host implements Comparable {
 	@Override
 	public int hashCode() {
 		return toString().hashCode();
-	}
-
-	public int compareTo(Object o) {
-		if(o instanceof Host)
-			return description.compareTo(((Host)o).getDescription());
-		else return 0;
 	}
 }

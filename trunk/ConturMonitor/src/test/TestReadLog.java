@@ -23,7 +23,7 @@ public class TestReadLog {
 	}
 
 	public static void testconnect() throws JSchException, IOException, InterruptedException {
-		Host hostData = new Host(host, user, passwd);
+		Host hostData = new Host(host, 22, user, passwd);
 
 		JSch jsch=new JSch();
 		Session session=jsch.getSession(hostData.getUser(), hostData.getHost(), 22);
