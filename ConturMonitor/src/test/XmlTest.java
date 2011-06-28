@@ -36,7 +36,7 @@ public class XmlTest {
 				String host = list.item(i).getAttributes().getNamedItem("host").getNodeValue();
 				String user = list.item(i).getAttributes().getNamedItem("user").getNodeValue();
 				String password = list.item(i).getAttributes().getNamedItem("password").getNodeValue();
-				Host nextHost = new Host(host, user, password);
+				Host nextHost = new Host(host, 22, user, password);
 				System.out.println(nextHost);
 
 //				for(int i; ) {

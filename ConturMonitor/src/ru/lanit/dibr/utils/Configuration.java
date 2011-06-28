@@ -1,6 +1,7 @@
 package ru.lanit.dibr.utils;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -37,7 +38,7 @@ public class Configuration {
 	public Configuration() {
 		try {
 			
-			servers = new TreeMap<Host, Map<String, String>>();
+			servers = new HashMap<Host, Map<String, String>>();
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         	DocumentBuilder db = dbf.newDocumentBuilder();
 			Document doc = db.parse(new File("settings.xml"));
@@ -46,15 +47,29 @@ public class Configuration {
 			for (int i = 0; i < list.getLength(); i++) {
 				String descr = list.item(i).getAttributes().getNamedItem("name").getNodeValue();
 				String host = list.item(i).getAttributes().getNamedItem("host").getNodeValue();
+                String port = "22";
+                if(list.item(i).getAttributes().getNamedItem("port")!=null) {
+				    port = list.item(i).getAttributes().getNamedItem("port").getNodeValue();
+                }
 				String user = list.item(i).getAttributes().getNamedItem("user").getNodeValue();
 				String password = list.item(i).getAttributes().getNamedItem("password").getNodeValue();
-				Host nextHost = new Host(descr, host, user, password);
+                String encoding = null;
+                if(list.item(i).getAttributes().getNamedItem("encoding")!=null) {
+                    encoding = list.item(i).getAttributes().getNamedItem("encoding").getNodeValue();
+                }
+                if(encoding==null || encoding.trim().length()==0) {
+                    encoding = System.getProperty("file.encoding");
+                }
+
+				Host nextHost = new Host(descr, host, Integer.parseInt(port), user, password, encoding);
 				System.out.println(nextHost);
 				NodeList logList = list.item(i).getChildNodes();
-				servers.put(nextHost, new TreeMap<String, String>());
+				servers.put(nextHost, new HashMap<String, String>());
 				for(int j = 0; j < logList.getLength() ; j++  ) {
-					if(logList.item(j).getNodeName().equals("log"))
-						servers.get(nextHost).put(logList.item(j).getAttributes().getNamedItem("name").getNodeValue(), logList.item(j).getAttributes().getNamedItem("file").getNodeValue());
+					if(logList.item(j).getNodeName().equals("log")) {
+                        NamedNodeMap logElement = logList.item(j).getAttributes();
+                        servers.get(nextHost).put(logElement.getNamedItem("name").getNodeValue(), logElement.getNamedItem("file").getNodeValue());
+                    }
 				}
 			}
 		} catch (IOException e) {

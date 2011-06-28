@@ -1,24 +1,10 @@
 <settings>
-    <server name="test DEV" host="first.host" user="user" password="password">
-        <log name="WLS Admin" file="/bea/domains/integroDomain/servers/AdminServer/logs/AdminServer.log"/>
-        <log name="WLS c1" file="/bea/domains/integroDomain/logs/wli_applications_debug.wls1.log"/>
-        <log name="WLS c2" file="/bea/domains/integroDomain/logs/wli_applications_debug.wls2.log"/>
-        <log name="ALSB Admin" file="/bea/domains/alsbDomain/servers/AdminServer/logs/AdminServer.log"/>
-        <log name="ALSB c1" file="/bea/domains/alsbDomain/logs/alsb_applications_debug.alsb1.log"/>
-        <log name="ALSB c2" file="/bea/domains/alsbDomain/logs/alsb_applications_debug.alsb2.log"/>
-        <log name="Portal Admin" file="/bea/domains/portalDomain/servers/AdminServer/logs/AdminServer.log"/>
-        <log name="Portal c1" file="/bea/domains/portalDomain/logs/portal_applications_debug.p1.log"/>
-        <log name="Portal c2" file="/bea/domains/portalDomain/logs/portal_applications_debug.p2.log"/>
-    </server>
-    <server name="test QA" host="second.host" user="user" password="password">
-        <log name="WLS Admin" file="/bea/domains/integroDomain/servers/AdminServer/logs/AdminServer.log"/>
-        <log name="WLS c1" file="/bea/domains/integroDomain/logs/wli_applications_debug.wls1.log"/>
-        <log name="WLS c2" file="/bea/domains/integroDomain/logs/wli_applications_debug.wls2.log"/>
-        <log name="ALSB Admin" file="/bea/domains/alsbDomain/servers/AdminServer/logs/AdminServer.log"/>
-        <log name="ALSB c1" file="/bea/domains/alsbDomain/logs/alsb_applications_debug.alsb1.log"/>
-        <log name="ALSB c2" file="/bea/domains/alsbDomain/logs/alsb_applications_debug.alsb2.log"/>
-        <log name="Portal Admin" file="/bea/domains/portalDomain/servers/AdminServer/logs/AdminServer.log"/>
-        <log name="Portal c1" file="/bea/domains/portalDomain/logs/portal_applications_debug.p1.log"/>
-        <log name="Portal c2" file="/bea/domains/portalDomain/logs/portal_applications_debug.p2.log"/>
+    <server name="SIBUR QA" host="172.16.25.78" user="oracle" password="oracle" encoding="utf-8">
+        <log name="OSB AdminServer.log" file="/opt/dev/sbrmc/domains/osb/servers/AdminServer/logs/AdminServer.log"/>
+        <log name="OSB Managed osbServer1.out" file="/opt/dev/sbrmc/domains/osb/servers/osbServer1/logs/osbServer1.out"/>
+        <log name="OSB osb-osbServer1-svr.log" file="/opt/dev/sbrmc/domains/logs/osb-osbServer1-svr.log"/>        
+        <log name="WLS AdminServer.log" file="/opt/dev/sbrmc/domains/wls/servers/AdminServer/logs/AdminServer.log"/>
+        <log name="WLS Admin wls.log" file="/opt/dev/sbrmc/domains/wls/wls/servers/AdminServer/logs/wls.log"/>
+        <log name="WLS Managed wlsServer1.out" file="/opt/dev/sbrmc/domains/wls/wls/servers/wlsServer1/logs/wlsServer1.out"/>        
     </server>
 </settings>
