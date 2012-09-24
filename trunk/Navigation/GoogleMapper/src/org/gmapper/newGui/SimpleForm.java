@@ -1,8 +1,8 @@
 package org.gmapper.newGui;
 
+import org.gmapper.TileFactory;
 import org.gmapper.types.DoublePoint;
 import org.gmapper.yandex.YandexTile;
-import org.gmapper.TileFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,12 +22,12 @@ public class SimpleForm extends JFrame {
     public SimpleForm() throws HeadlessException {
 //        setContentPane(mapPanel);
 //        add(toolBarPanel);
+        createUIComponents();
         add(mapPanel);
 //        add(statusBarPanel);
         setSize(600, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 
 
         //======dev======== {
