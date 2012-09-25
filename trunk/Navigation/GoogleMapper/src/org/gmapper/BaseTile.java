@@ -36,6 +36,23 @@ public abstract class BaseTile {
      * Google.Ландшафт
      */
     public static final int GOOGLE_LANDSCAPE = 5;
+    /**
+     * Я.Народная
+     */
+    public static final int YA_MAP_TYPE_PMAP = 6;
+    /**
+     * Goole.Транспорт
+     */
+    public static final int GOOGLE_TRANSPORT = 8;
+    /**
+     * Goole.Пробки
+     */
+    public static final int GOOGLE_TRAFFIC = 9;
+    /**
+     * Goole.Фотки
+     */
+    public static final int GOOGLE_PHOTOS = 10;
+
 
     /**
      * Start with 1 end with 20 or 17

@@ -40,23 +40,38 @@ public class MapPanel extends JPanel {
         mapState.setOverlayMapType(YandexTile.MAP_TYPE_HYB);
         yaMapStates.add(mapState);
 
-        mapState = new MapState();
-        mapState.setMapType(YandexTile.MAP_TYPE_SAT);
-        mapState.setOverlayMapType(YandexTile.YA_MAP_TYPE_TAFFIC);
-        yaMapStates.add(mapState);
+//        mapState = new MapState();
+//        mapState.setMapType(YandexTile.MAP_TYPE_SAT);
+//        mapState.setOverlayMapType(YandexTile.YA_MAP_TYPE_TAFFIC);
+//        yaMapStates.add(mapState);
 
         mapState = new MapState();
         mapState.setMapType(YandexTile.MAP_TYPE_MAP);
         mapState.setOverlayMapType(0);
         yaMapStates.add(mapState);
 
-        mapState = new MapState();
-        mapState.setMapType(YandexTile.MAP_TYPE_MAP);
-        mapState.setOverlayMapType(YandexTile.MAP_TYPE_HYB);
-        yaMapStates.add(mapState);
+//        mapState = new MapState();
+//        mapState.setMapType(YandexTile.MAP_TYPE_MAP);
+//        mapState.setOverlayMapType(YandexTile.MAP_TYPE_HYB);
+//        yaMapStates.add(mapState);
 
         mapState = new MapState();
         mapState.setMapType(YandexTile.MAP_TYPE_MAP);
+        mapState.setOverlayMapType(YandexTile.YA_MAP_TYPE_TAFFIC);
+        yaMapStates.add(mapState);
+
+        mapState = new MapState();
+        mapState.setMapType(YandexTile.YA_MAP_TYPE_PMAP);
+        mapState.setOverlayMapType(0);
+        yaMapStates.add(mapState);
+
+//        mapState = new MapState();
+//        mapState.setMapType(YandexTile.YA_MAP_TYPE_PMAP);
+//        mapState.setOverlayMapType(YandexTile.MAP_TYPE_HYB);
+//        yaMapStates.add(mapState);
+
+        mapState = new MapState();
+        mapState.setMapType(YandexTile.YA_MAP_TYPE_PMAP);
         mapState.setOverlayMapType(YandexTile.YA_MAP_TYPE_TAFFIC);
         yaMapStates.add(mapState);
 
@@ -82,8 +97,23 @@ public class MapPanel extends JPanel {
         googleMapStates.add(mapState);
 
         mapState = new MapState();
+        mapState.setMapType(GoogleTile.MAP_TYPE_MAP);
+        mapState.setOverlayMapType(GoogleTile.GOOGLE_TRANSPORT);
+        googleMapStates.add(mapState);
+
+        mapState = new MapState();
+        mapState.setMapType(GoogleTile.MAP_TYPE_MAP);
+        mapState.setOverlayMapType(GoogleTile.GOOGLE_TRAFFIC);
+        googleMapStates.add(mapState);
+
+        mapState = new MapState();
         mapState.setMapType(GoogleTile.GOOGLE_LANDSCAPE);
         mapState.setOverlayMapType(0);
+        googleMapStates.add(mapState);
+
+        mapState = new MapState();
+        mapState.setMapType(GoogleTile.GOOGLE_LANDSCAPE);
+        mapState.setOverlayMapType(GoogleTile.GOOGLE_PHOTOS);
         googleMapStates.add(mapState);
     }
 
