@@ -25,13 +25,16 @@ public class GoogleTile extends BaseTile {
     private static Log log = LogFactory.getLog(GoogleTile.class);
 
     protected static List<String> satUrls;
-    protected static int nextSatUrl = 0;
     protected static List<String> mapUrls;
-    protected static int nextMapUrl = 0;
     protected static List<String> overMapUrls;
-    protected static int nextOverMapUrl = 0;
     protected static List<String> lanMapUrls;
-    protected static int nextLanMapUrl = 0;
+    protected static List<String> traffUrls;
+    protected static List<String> photosUrls;
+    //    protected static int nextSatUrl = 0;
+//    protected static int nextMapUrl = 0;
+//    protected static int nextOverMapUrl = 0;
+//    protected static int nextLanMapUrl = 0;
+//    protected static int nextTraffUrl = 0;
     protected static String cacheDir = null;
 
     private static final String suffix = "s=Galileo";
@@ -42,54 +45,79 @@ public class GoogleTile extends BaseTile {
     private static int nextUrlcnt = 0;
 
     protected static String nextSatUrl() {
-
-        if (nextSatUrl != 0 && nextSatUrl == satUrls.size()) {
-            nextSatUrl = 0;
+        if (nextUrlcnt != 0 && nextUrlcnt == satUrls.size()) {
+            nextUrlcnt = 0;
         }
 
-        if (nextUrlcnt++ < 2)
-            return satUrls.get(nextSatUrl);
+        if (nextUrlcnt++ < 3)
+            return satUrls.get(nextUrlcnt);
         nextUrlcnt = 0;
 
-        return satUrls.get(nextSatUrl++);
+        return satUrls.get(nextUrlcnt++);
     }
 
     protected static String nextMapUrl() {
-        if (nextMapUrl != 0 && nextMapUrl == mapUrls.size()) {
-            nextMapUrl = 0;
+        if (nextUrlcnt != 0 && nextUrlcnt == mapUrls.size()) {
+            nextUrlcnt = 0;
         }
 
-        if (nextUrlcnt++ < 2)
-            return mapUrls.get(nextMapUrl);
+        if (nextUrlcnt++ < 3)
+            return mapUrls.get(nextUrlcnt);
         nextUrlcnt = 0;
 
-        return mapUrls.get(nextMapUrl++);
+        return mapUrls.get(nextUrlcnt++);
     }
 
     protected static String nextOverMapUrl() {
 
-        if (nextOverMapUrl != 0 && nextOverMapUrl == overMapUrls.size()) {
-            nextOverMapUrl = 0;
+        if (nextUrlcnt != 0 && nextUrlcnt == overMapUrls.size()) {
+            nextUrlcnt = 0;
         }
 
-        if (nextUrlcnt++ < 2)
-            return overMapUrls.get(nextOverMapUrl);
+        if (nextUrlcnt++ < 3)
+            return overMapUrls.get(nextUrlcnt);
         nextUrlcnt = 0;
 
-        return overMapUrls.get(nextOverMapUrl++);
+        return overMapUrls.get(nextUrlcnt++);
     }
 
     protected static String nextLanMapUrl() {
 
-        if (nextLanMapUrl != 0 && nextLanMapUrl == lanMapUrls.size()) {
-            nextLanMapUrl = 0;
+        if (nextUrlcnt != 0 && nextUrlcnt == lanMapUrls.size()) {
+            nextUrlcnt = 0;
         }
 
-        if (nextUrlcnt++ < 2)
-            return lanMapUrls.get(nextLanMapUrl);
+        if (nextUrlcnt++ < 3)
+            return lanMapUrls.get(nextUrlcnt);
         nextUrlcnt = 0;
 
-        return lanMapUrls.get(nextLanMapUrl++);
+        return lanMapUrls.get(nextUrlcnt++);
+    }
+
+    protected static String nextTrafficMapUrl() {
+
+        if (nextUrlcnt != 0 && nextUrlcnt == traffUrls.size()) {
+            nextUrlcnt = 0;
+        }
+
+        if (nextUrlcnt++ < 3)
+            return traffUrls.get(nextUrlcnt);
+        nextUrlcnt = 0;
+
+        return traffUrls.get(nextUrlcnt++);
+    }
+
+    protected static String nextPhotoMapUrl() {
+
+        if (nextUrlcnt != 0 && nextUrlcnt == traffUrls.size()) {
+            nextUrlcnt = 0;
+        }
+
+        if (nextUrlcnt++ < 3)
+            return photosUrls.get(nextUrlcnt);
+        nextUrlcnt = 0;
+
+        return photosUrls.get(nextUrlcnt++);
     }
 
     private static String getNextSuffix() {
@@ -103,6 +131,8 @@ public class GoogleTile extends BaseTile {
         mapUrls = new ArrayList<String>();
         overMapUrls = new ArrayList<String>();
         lanMapUrls = new ArrayList<String>();
+        traffUrls = new ArrayList<String>();
+        photosUrls = new ArrayList<String>();
 
         Properties prop = new Properties();
         try {
@@ -135,6 +165,18 @@ public class GoogleTile extends BaseTile {
                 lanMapUrls.add(url);
         }
 
+        for (int i = 1; i <= 4; i++) {
+            String url = prop.getProperty("google.traffic.url" + i);
+            if (url != null)
+                traffUrls.add(url);
+        }
+
+        for (int i = 1; i <= 4; i++) {
+            String url = prop.getProperty("google.photos.url" + i);
+            if (url != null)
+                photosUrls.add(url);
+        }
+
         cacheDir = prop.getProperty("google.cahceDir");
         File cacheDirFile = new File(cacheDir);
         if (cacheDirFile == null || !cacheDirFile.isDirectory() || !cacheDirFile.canWrite()) {
@@ -164,7 +206,8 @@ public class GoogleTile extends BaseTile {
             throw new OutOfRange(xNum);
         if (yNum < 0 || yNum > max)
             throw new OutOfRange(yNum);
-        if (type != MAP_TYPE_MAP && type != MAP_TYPE_SAT && type != MAP_TYPE_HYB && type != GOOGLE_LANDSCAPE)
+        if (type != MAP_TYPE_MAP && type != MAP_TYPE_SAT && type != MAP_TYPE_HYB && type != GOOGLE_LANDSCAPE
+                && type != GOOGLE_TRANSPORT && type != GOOGLE_PHOTOS && type != GOOGLE_TRAFFIC)
             throw new OutOfRange(yNum);
         if ((type == MAP_TYPE_MAP || type == GOOGLE_LANDSCAPE) && level > 18)
             throw new OutOfRange("For MAP type map max level is '18'. Found '" + level + "'");
@@ -193,6 +236,13 @@ public class GoogleTile extends BaseTile {
                 return nextOverMapUrl() + "&x=" + xNum + "&y=" + yNum + "&z=" + (level) + "&" + getNextSuffix();
             case GOOGLE_LANDSCAPE:
                 return nextLanMapUrl() + "&x=" + xNum + "&y=" + yNum + "&z=" + (level) + "&" + getNextSuffix();
+            case GOOGLE_TRANSPORT:
+                return nextMapUrl() + ",transit:comp%7Cvm:1&x=" + xNum + "&y=" + yNum + "&z=" + (level) + "&" + getNextSuffix() + "&style=15";
+            case GOOGLE_PHOTOS:
+                return nextPhotoMapUrl() + "&x=" + xNum + "&y=" + yNum + "&z=" + (level) + "&" + getNextSuffix();
+            case GOOGLE_TRAFFIC:
+                return nextTrafficMapUrl() + "&x=" + xNum + "&y=" + yNum + "&z=" + (level);
+
         }
         log.info("" + type);
         return null;
@@ -215,6 +265,8 @@ public class GoogleTile extends BaseTile {
                 return "hyb";
             case GOOGLE_LANDSCAPE:
                 return "lan";
+            case GOOGLE_TRANSPORT:
+                return "map_tran";
         }
         return "unknow";
     }
@@ -228,7 +280,7 @@ public class GoogleTile extends BaseTile {
         String tileName = getStringType() + xNum + "x" + yNum + "l" + level;
         log.info("Load tile \"" + tileName + "\"");
         File cachedTile = null;
-        if (cacheDir != null) {
+        if (type != GoogleTile.GOOGLE_TRAFFIC && type != GoogleTile.GOOGLE_PHOTOS && cacheDir != null) {
             cachedTile = new File(cacheDir + File.separator + tileName + ".jpg");
         }
         return cachedTile;

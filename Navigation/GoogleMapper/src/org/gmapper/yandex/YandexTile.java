@@ -26,11 +26,13 @@ public class YandexTile extends BaseTile {
     private static Log log = LogFactory.getLog(YandexTile.class);
 
     protected static List<String> satUrls;
+    protected static List<String> mapUrls;
+    protected static List<String> pmapUrls;
     protected static int nextSatUrl = 0;
+    protected static int nextMapUrl = 0;
+    protected static int nextPmapUrl = 0;
     protected static String traffUrl;
     protected static String statJsUrl;
-    protected static List<String> mapUrls;
-    protected static int nextMapUrl = 0;
     protected static String cacheDir = null;
     protected static HostConfiguration proxySettings = new HostConfiguration();
 
@@ -48,9 +50,18 @@ public class YandexTile extends BaseTile {
         return mapUrls.get(nextMapUrl++);
     }
 
+    protected static String nextPmapUrl() {
+        if (nextPmapUrl != 0 && nextPmapUrl == pmapUrls.size()) {
+            nextPmapUrl = 0;
+        }
+        return pmapUrls.get(nextPmapUrl++);
+    }
+
     static {
         satUrls = new ArrayList<String>();
         mapUrls = new ArrayList<String>();
+        pmapUrls = new ArrayList<String>();
+
         Properties prop = new Properties();
         try {
             prop.load(FileUtils.openInputStream(new File("settings.properties")));
@@ -72,6 +83,12 @@ public class YandexTile extends BaseTile {
             String url = prop.getProperty("yandex.map.url" + i);
             if (url != null)
                 mapUrls.add(url);
+        }
+
+        for (int i = 1; i <= 4; i++) {
+            String url = prop.getProperty("yandex.pmap.url" + i);
+            if (url != null)
+                pmapUrls.add(url);
         }
 
         cacheDir = prop.getProperty("yandex.cahceDir");
@@ -102,7 +119,7 @@ public class YandexTile extends BaseTile {
             throw new OutOfRange(xNum);
         if (yNum < 0 || yNum > max)
             throw new OutOfRange(yNum);
-        if (type != MAP_TYPE_MAP && type != MAP_TYPE_SAT && type != MAP_TYPE_HYB && type != YA_MAP_TYPE_TAFFIC)
+        if (type != MAP_TYPE_MAP && type != MAP_TYPE_SAT && type != MAP_TYPE_HYB && type != YA_MAP_TYPE_TAFFIC && type != YA_MAP_TYPE_PMAP)
             throw new OutOfRange(type);
 
         //ToDo проверка номеров блоков в зависимости от уровня
@@ -142,6 +159,8 @@ public class YandexTile extends BaseTile {
                 return nextMapUrl() + "map" + "&x=" + xNum + "&y=" + yNum + "&z=" + (level);
             case MAP_TYPE_HYB:
                 return nextMapUrl() + "skl" + "&x=" + xNum + "&y=" + yNum + "&z=" + (level);
+            case YA_MAP_TYPE_PMAP:
+                return nextPmapUrl() + "&x=" + xNum + "&y=" + yNum + "&z=" + (level);
         }
         return null;
     }
