@@ -20,12 +20,17 @@ public class ScpUtils {
         try {
 
             JSch jsch = new JSch();
-            Session session = jsch.getSession(host.getUser(), host.getHost(), 22);
+            Session session = jsch.getSession(host.getUser(), host.getHost(), host.getPort());
+            session.setConfig("StrictHostKeyChecking", "no");
 
-            // username and password will be given via UserInfo interface.
-            UserInfo ui = new MyUserInfo(host.getPassword());
-            session.setUserInfo(ui);
-            session.connect();
+            if(host.getPem()!=null) {
+                jsch.addIdentity(host.getPem());
+            } else {
+                UserInfo ui=new MyUserInfo(host.getPassword());
+                session.setUserInfo(ui);
+            }
+
+            session.connect(30000);
 
             // exec 'scp -f rfile' remotely
             String command = "scp -f " + file;
