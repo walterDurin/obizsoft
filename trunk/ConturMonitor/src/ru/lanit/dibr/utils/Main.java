@@ -1,15 +1,10 @@
 package ru.lanit.dibr.utils;
 
 import com.jcraft.jsch.*;
-import ru.lanit.dibr.utils.gui.Host;
 import ru.lanit.dibr.utils.gui.LogChoicer;
 
 import javax.swing.text.BadLocationException;
 import java.io.*;
-import java.util.List;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.beans.XMLEncoder;
 
 /**
  * Created by IntelliJ IDEA.

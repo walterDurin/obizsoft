@@ -1,6 +1,8 @@
 package ru.lanit.dibr.utils.gui;
 
 import ru.lanit.dibr.utils.Configuration;
+import ru.lanit.dibr.utils.gui.configuration.Host;
+import ru.lanit.dibr.utils.gui.configuration.LogFile;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -32,7 +34,7 @@ public class LogChoicer extends JFrame {
 		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS)); //Принудительно по вертикали
 		//setLocationByPlatform(true);
         setLocation(0, 250);
-		for (Map.Entry<Host, Map<String, String>> entry : cfg.getServers().entrySet()) {
+		for (Map.Entry<Host, Map<String, LogFile>> entry : cfg.getServers().entrySet()) {
 			JPanel hostPane = new JPanel();
 			hostPane.setLayout(new BoxLayout(hostPane, BoxLayout.Y_AXIS));
 			Label hostLabel = new Label(entry.getKey().getDescription(), Label.CENTER);
@@ -42,8 +44,8 @@ public class LogChoicer extends JFrame {
 			GridBagLayout mgr = new GridBagLayout();
 			buttons.setLayout(mgr);
 			hostPane.add(buttons);
-			for (Map.Entry<String, String> logEntry : entry.getValue().entrySet()) {
-				addButton(buttons,  logEntry.getKey(), entry.getKey(), logEntry.getValue());
+			for (Map.Entry<String, LogFile> logEntry : entry.getValue().entrySet()) {
+				addButton(buttons,  logEntry.getValue(), entry.getKey());
                 logsCnt++;
 			}
 			pane.add(hostPane);
@@ -57,20 +59,20 @@ public class LogChoicer extends JFrame {
 //		setSize(300, getHeight());
 	}
 
-	private void addButton(JPanel buttons, final String name, final Host host, final String file) {
-        final JButton b = new JButton(name);
+	private void addButton(JPanel buttons, final LogFile logFile, final Host host) {
+        final JButton b = new JButton(logFile.getName());
         b.setBorder(new LineBorder(Color.GRAY));
-		final String logName = host.getDescription()+":"+name;
-        final MenuButton menuButton = new MenuButton(host, file, name, logs, logName);
+		final String logName = host.getDescription()+":"+logFile;
+        final MenuButton menuButton = new MenuButton(host, logFile.getPath(), logFile.getName(), logs, logName);
 		b.addActionListener(new AbstractAction() {
 			LogFrame lf = null;
 			public void actionPerformed(ActionEvent e) {
 				System.out.println(e.paramString());
 				if(lf==null) {
-					lf = new LogFrame(b, menuButton, host, file, name);
+					lf = new LogFrame(b, menuButton, host, logFile);
 					b.setForeground(new Color(48, 129, 97));
                     b.setBorder(new LineBorder(new Color(48, 129, 97)));
-                    b.setText(name);
+                    b.setText(logFile.getName());
 					logs.put(logName, lf);
                     lf.addWindowListener(new WindowAdapter() {
                         @Override
@@ -78,7 +80,7 @@ public class LogChoicer extends JFrame {
                             lf.setVisible(false);
                                 b.setBorder(new LineBorder(Color.GRAY));
                                 b.setForeground(Color.GRAY);
-                            b.setText(name);
+                            b.setText(logFile.getName());
                         }
                     });
 				}
@@ -91,7 +93,7 @@ public class LogChoicer extends JFrame {
                         b.setBorder(new LineBorder(Color.GRAY));
                         b.setForeground(Color.GRAY);
                     }
-                    b.setText(name);
+                    b.setText(logFile.getName());
 				}
 			}
 		});

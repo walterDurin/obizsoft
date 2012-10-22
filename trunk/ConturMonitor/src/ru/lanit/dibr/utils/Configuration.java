@@ -9,13 +9,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.*;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.File;
-import java.beans.XMLEncoder;
-import java.beans.XMLDecoder;
 
-import ru.lanit.dibr.utils.gui.Host;
+import ru.lanit.dibr.utils.gui.configuration.Host;
+import ru.lanit.dibr.utils.gui.configuration.LogFile;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,20 +23,20 @@ import ru.lanit.dibr.utils.gui.Host;
  */
 public class Configuration {
 
-	private Map<Host, Map<String, String>> servers;
+	private Map<Host, Map<String, LogFile>> servers;
 
-	public Map<Host, Map<String, String>> getServers() {
+	public Map<Host, Map<String, LogFile>> getServers() {
 		return servers;
 	}
 
-	public void setServers(Map<Host, Map<String, String>> servers) {
+	public void setServers(Map<Host, Map<String, LogFile>> servers) {
 		this.servers = servers;
 	}
 
 	public Configuration() {
 		try {
 			
-			servers = new HashMap<Host, Map<String, String>>();
+			servers = new HashMap<Host, Map<String, LogFile>>();
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         	DocumentBuilder db = dbf.newDocumentBuilder();
 			Document doc = db.parse(new File("settings.xml"));
@@ -71,11 +69,20 @@ public class Configuration {
 				Host nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding);
 				System.out.println(nextHost);
 				NodeList logList = list.item(i).getChildNodes();
-				servers.put(nextHost, new HashMap<String, String>());
+				servers.put(nextHost, new HashMap<String, LogFile>());
 				for(int j = 0; j < logList.getLength() ; j++  ) {
 					if(logList.item(j).getNodeName().equals("log")) {
                         NamedNodeMap logElement = logList.item(j).getAttributes();
-                        servers.get(nextHost).put(logElement.getNamedItem("name").getNodeValue(), logElement.getNamedItem("file").getNodeValue());
+                        String name = logElement.getNamedItem("name").getNodeValue();
+                        String file = logElement.getNamedItem("file").getNodeValue();
+                        String blockPattern = null;
+                        if(logElement.getNamedItem("blockPattern")!=null) {
+                            blockPattern = logElement.getNamedItem("blockPattern").getNodeValue().trim();
+                            if(blockPattern.length()==0) {
+                                blockPattern = null;
+                            }
+                        }
+                        servers.get(nextHost).put(name, new LogFile(name, file, blockPattern));
                     }
 				}
 			}

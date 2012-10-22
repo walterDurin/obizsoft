@@ -4,7 +4,7 @@ import com.jcraft.jsch.*;
 
 import java.io.*;
 
-import ru.lanit.dibr.utils.gui.Host;
+import ru.lanit.dibr.utils.gui.configuration.Host;
 
 /**
  * Created by IntelliJ IDEA.

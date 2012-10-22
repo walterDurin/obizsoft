@@ -12,7 +12,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.beans.XMLDecoder;
 
-import ru.lanit.dibr.utils.gui.Host;
+import ru.lanit.dibr.utils.gui.configuration.Host;
 
 /**
  * Created by IntelliJ IDEA.
