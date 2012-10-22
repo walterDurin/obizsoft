@@ -11,13 +11,12 @@ import javax.swing.text.BadLocationException;
 
 import ru.lanit.dibr.utils.utils.MyUserInfo;
 
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,7 +24,7 @@ import java.awt.event.KeyListener;
  * Date: 16.08.2010
  * Time: 15:56:23
  */
-public class LogPanel extends JScrollPane implements KeyListener, CaretListener {
+public class LogPanel extends JScrollPane implements KeyListener, CaretListener, MouseListener {
 	private Host host;
 	private String logPath;
 	private boolean stopped = false;
@@ -40,7 +39,13 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener 
 		super(new JTextArea());
 		area = ((JTextArea)getViewport().getView());
 		area.setEditable(false);
-		this.host = host;
+        area.setFont(new Font("Courier New", 0, 12));
+        area.setBackground(new Color(0, 0, 0));
+        area.setForeground(new Color(187, 187, 187));
+        area.setSelectedTextColor(new Color(0, 0, 0));
+        area.setSelectionColor(new Color(187, 187, 187));
+        area.addMouseListener(this);
+        this.host = host;
 		this.logPath = logPath;
 
 	}
@@ -135,4 +140,25 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener 
 	public void caretUpdate(CaretEvent e) {
 		startFrom = e.getDot();
 	}
+
+    public void mouseClicked(MouseEvent e) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void mousePressed(MouseEvent e) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void mouseReleased(MouseEvent e) {
+        StringSelection ss = new StringSelection(area.getSelectedText());
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
+    }
+
+    public void mouseEntered(MouseEvent e) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void mouseExited(MouseEvent e) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
