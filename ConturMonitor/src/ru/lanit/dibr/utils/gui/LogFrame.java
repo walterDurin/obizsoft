@@ -1,6 +1,9 @@
 package ru.lanit.dibr.utils.gui;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
@@ -19,6 +22,10 @@ public class LogFrame  extends JFrame {
 		setTitle(host.getDescription()+ " : " + name);
 		setSize(1500, 500);
 		setVisible(true);
+
+//        Border border = BorderFactory.createLineBorder(Color.RED);
+//        ((JComponent)getRootPane()).setBorder(border);
+
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		final LogPanel lp = new LogPanel(host, logPath);
 		panel = lp;
