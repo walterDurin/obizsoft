@@ -31,8 +31,10 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 	private JTextArea area;
 	private boolean autoScroll = true;
 	private String find = null;
+    private String grep = null;
 	private int startFrom = 0;
 	private int offset = 0;
+    private StringBuilder buffer = new StringBuilder();
 
 
 	public LogPanel(Host host, String logPath) {
@@ -63,7 +65,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
 		session.connect(30000);   // making a connection with timeout.
 		ChannelExec channel= (ChannelExec) session.openChannel("exec");
-		channel.setCommand("tail -f " + logPath);
+		channel.setCommand("tail -100f " + logPath);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(channel.getInputStream(), host.getDefaultEncoding()));
 		String nextLine;
 
@@ -73,20 +75,14 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 		area.addCaretListener(this);
 
 		while((nextLine = reader.readLine())!=null && !stopped) {
-			area.append("\n"+nextLine);
-			if (autoScroll)
-				area.setCaretPosition(area.getDocument().getLength()-nextLine.length());
-//			try {
-//				Robot robot = new Robot(area.getGraphicsConfiguration().getDevice());
-//				robot.keyPress(java.awt.event.KeyEvent.VK_CONTROL);
-//				robot.keyPress(java.awt.event.KeyEvent.VK_END);
-//				robot.keyRelease(java.awt.event.KeyEvent.VK_END);
-//				robot.keyRelease(java.awt.event.KeyEvent.VK_CONTROL);
-//			} catch (AWTException e) {
-//				e.printStackTrace();
-//			}
-			getParent().repaint();
-			repaint();
+			buffer.append(nextLine).append("\n");
+            if(grep==null || nextLine.contains(grep)) {
+                area.append("\n"+nextLine);
+                if (autoScroll)
+                    area.setCaretPosition(area.getDocument().getLength()-nextLine.length());
+                getParent().repaint();
+                repaint();
+            }
 		}
 
 	}
@@ -110,7 +106,39 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 			} else {
       			findWord();
 			}
-    	}
+    	} else if ((ke.getKeyCode() == 71 )&& (ke.getModifiers()==KeyEvent.CTRL_MASK)) {
+            grep = (String)JOptionPane.showInputDialog(this,"GREP:\n","Grep",JOptionPane.INFORMATION_MESSAGE,null,null,null);
+            System.out.println("Grep entered: '" + grep + "'");
+            if(grep!=null && grep.trim().length() > 0) {
+                grep = grep.trim();
+                int idx1 = 0;
+                int idx2 = 0;
+                StringBuilder filteredString = new StringBuilder();
+                String nextLine = "";
+                while ((idx2 = buffer.indexOf("\n", idx2+1) ) >= 0) {
+                    nextLine = buffer.substring(idx1, idx2);
+                    if(nextLine.contains(grep)) {
+                        filteredString.append(nextLine);
+                    }
+                    idx1 = idx2;
+                }
+                area.setText(filteredString.toString());
+                if (autoScroll)
+                    area.setCaretPosition(filteredString.lastIndexOf("\n")+1);
+                getParent().repaint();
+                repaint();
+            } else {
+                grep = null;
+                area.setText(buffer.toString());
+                if (autoScroll)
+                    area.setCaretPosition(buffer.lastIndexOf("\n")+1);
+                getParent().repaint();
+                repaint();
+            }
+
+        } else {
+            System.out.println(ke.getKeyCode());
+        }
 	}
 
 	private void findWord() {
