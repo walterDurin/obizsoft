@@ -18,6 +18,9 @@ import java.util.HashMap;
  * Time: 18:34:16
  */
 public class LogChoicer extends JFrame {
+    public static int size;
+    public static int countShownLogWindow = 0;
+    public static int logsCnt = 0;
 	private JPanel pane;
 	private final Map<String, LogFrame> logs = new HashMap<String, LogFrame>();
 
@@ -27,7 +30,8 @@ public class LogChoicer extends JFrame {
 		setAlwaysOnTop(true);
 		pane = new JPanel();
 		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS)); //Принудительно по вертикали
-		setLocationByPlatform(true);
+		//setLocationByPlatform(true);
+        setLocation(0, 250);
 		for (Map.Entry<Host, Map<String, String>> entry : cfg.getServers().entrySet()) {
 			JPanel hostPane = new JPanel();
 			hostPane.setLayout(new BoxLayout(hostPane, BoxLayout.Y_AXIS));
@@ -40,12 +44,14 @@ public class LogChoicer extends JFrame {
 			hostPane.add(buttons);
 			for (Map.Entry<String, String> logEntry : entry.getValue().entrySet()) {
 				addButton(buttons,  logEntry.getKey(), entry.getKey(), logEntry.getValue());
+                logsCnt++;
 			}
 			pane.add(hostPane);
 		}
 		setContentPane(pane);
 		pack();
         setResizable(false);
+        size = getWidth();
         
 
 //		setSize(300, getHeight());
