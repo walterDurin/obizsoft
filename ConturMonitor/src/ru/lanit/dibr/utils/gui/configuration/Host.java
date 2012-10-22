@@ -1,4 +1,4 @@
-package ru.lanit.dibr.utils.gui;
+package ru.lanit.dibr.utils.gui.configuration;
 
 /**
  * Created by IntelliJ IDEA.

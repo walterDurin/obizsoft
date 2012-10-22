@@ -1,6 +1,7 @@
 package ru.lanit.dibr.utils.gui;
 
-import sun.rmi.runtime.Log;
+import ru.lanit.dibr.utils.gui.configuration.Host;
+import ru.lanit.dibr.utils.gui.configuration.LogFile;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -17,8 +18,8 @@ public class LogFrame  extends JFrame {
 	private Thread t;
 	private LogPanel panel;
 
-	public LogFrame(final JButton b, final JComponent c, final Host host, final String logPath, String name) {
-		setTitle(host.getDescription()+ " : " + name);
+	public LogFrame(final JButton b, final JComponent c, final Host host, final LogFile logFile) {
+		setTitle(host.getDescription()+ " : " + logFile.getName());
 
         int h = (int) (GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight()/LogChoicer.logsCnt);
 
@@ -30,7 +31,7 @@ public class LogFrame  extends JFrame {
 //        ((JComponent)getRootPane()).setBorder(border);
 
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		final LogPanel lp = new LogPanel(host, logPath);
+		final LogPanel lp = new LogPanel(host, logFile);
 		panel = lp;
 		add(lp);
 		t = new Thread() {
@@ -40,7 +41,7 @@ public class LogFrame  extends JFrame {
 					lp.connect();
 				} catch (Exception e) {
                     System.out.println(e);
-					JOptionPane.showMessageDialog(LogFrame.this, "Can't open log '"+logPath+" on '"+host.getHost()+"'!");
+					JOptionPane.showMessageDialog(LogFrame.this, "Can't open log '"+logFile.getPath()+" on '"+host.getHost()+"'!");
                     LogFrame.this.setVisible(false);
                     b.setBorder(new LineBorder(Color.RED));
                     b.setEnabled(false);

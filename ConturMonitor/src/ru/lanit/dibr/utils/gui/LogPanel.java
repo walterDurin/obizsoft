@@ -5,10 +5,10 @@ import com.jcraft.jsch.*;
 import javax.swing.*;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
-import javax.swing.text.Document;
-import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.BadLocationException;
 
+import ru.lanit.dibr.utils.gui.configuration.Host;
+import ru.lanit.dibr.utils.gui.configuration.LogFile;
 import ru.lanit.dibr.utils.utils.MyUserInfo;
 
 import java.awt.datatransfer.StringSelection;
@@ -25,22 +25,26 @@ import java.awt.*;
  * Time: 15:56:23
  */
 public class LogPanel extends JScrollPane implements KeyListener, CaretListener, MouseListener {
-	private Host host;
-	private String logPath;
-	private boolean stopped = false;
-	private JTextArea area;
-	private boolean autoScroll = true;
-	private String find = null;
+    private Host host;
+    private String logPath;
+    private String blockPattern;
+    private boolean stopped = false;
+    private JTextArea area;
+    private boolean autoScroll = true;
+    private String find = null;
     private String grep = null;
-	private int startFrom = 0;
-	private int offset = 0;
+    private String blockFilter = null;
+    private boolean inverseBlockFilter = false; //if set true then block contained @blockFilter will be hidden
+    private int startFrom = 0;
+    private int offset = 0;
     private StringBuilder buffer = new StringBuilder();
+    private StringBuffer currentBlock = new StringBuffer();
 
 
-	public LogPanel(Host host, String logPath) {
-		super(new JTextArea());
-		area = ((JTextArea)getViewport().getView());
-		area.setEditable(false);
+    public LogPanel(Host host, LogFile logFile) {
+        super(new JTextArea());
+        area = ((JTextArea) getViewport().getView());
+        area.setEditable(false);
         area.setFont(new Font("Courier New", 0, 12));
         area.setBackground(new Color(0, 0, 0));
         area.setForeground(new Color(187, 187, 187));
@@ -48,126 +52,191 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         area.setSelectionColor(new Color(187, 187, 187));
         area.addMouseListener(this);
         this.host = host;
-		this.logPath = logPath;
+        this.logPath = logFile.getPath();
+        this.blockPattern = logFile.getBlockPattern();
 
-	}
+    }
 
-	public void connect() throws JSchException, IOException, BadLocationException {
-		JSch jsch=new JSch();
-        Session session=jsch.getSession(host.getUser(), host.getHost(), host.getPort());
+    public void connect() throws JSchException, IOException, BadLocationException {
+        JSch jsch = new JSch();
+        Session session = jsch.getSession(host.getUser(), host.getHost(), host.getPort());
         session.setConfig("StrictHostKeyChecking", "no");
-        if(host.getPem()!=null) {
+        if (host.getPem() != null) {
             jsch.addIdentity(host.getPem());
         } else {
-            UserInfo ui=new MyUserInfo(host.getPassword());
+            UserInfo ui = new MyUserInfo(host.getPassword());
             session.setUserInfo(ui);
         }
 
-		session.connect(30000);   // making a connection with timeout.
-		ChannelExec channel= (ChannelExec) session.openChannel("exec");
-		channel.setCommand("tail -100f " + logPath);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(channel.getInputStream(), host.getDefaultEncoding()));
-		String nextLine;
+        session.connect(30000);   // making a connection with timeout.
+        ChannelExec channel = (ChannelExec) session.openChannel("exec");
+        channel.setCommand("tail -500f " + logPath);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(channel.getInputStream(), host.getDefaultEncoding()));
+        String nextLine;
 
-		channel.connect(3*1000);
+        channel.connect(3 * 1000);
 
-		area.addKeyListener(this);
-		area.addCaretListener(this);
+        area.addKeyListener(this);
+        area.addCaretListener(this);
 
-		while((nextLine = reader.readLine())!=null && !stopped) {
-			buffer.append(nextLine).append("\n");
-            if(grep==null || nextLine.contains(grep)) {
-                area.append("\n"+nextLine);
-                if (autoScroll)
-                    area.setCaretPosition(area.getDocument().getLength()-nextLine.length());
-                getParent().repaint();
-                repaint();
+        while ((nextLine = reader.readLine()) != null && !stopped) {
+            buffer.append(nextLine).append("\n");
+            if (blockFilter != null) {
+                if (nextLine.matches("\n?" + blockPattern + ".*") && currentBlock != null) {
+                    if ((currentBlock.indexOf(blockFilter) >= 0) ^ inverseBlockFilter) {
+                        appendLine(currentBlock.toString());
+                    }
+                    currentBlock = new StringBuffer();
+                }
+            } else if (grep == null || nextLine.contains(grep)) {
+                appendLine(nextLine);
             }
-		}
+        }
 
-	}
+    }
 
-	public void stop() {
-		stopped = true;
-	}
+    private void appendLine(String nextLine) {
+        area.append("\n" + nextLine);
+        if (autoScroll)
+            area.setCaretPosition(area.getDocument().getLength() - nextLine.length());
+        getParent().repaint();
+        repaint();
+    }
 
-	public void setAutoScroll(boolean autoScroll) {
-		this.autoScroll = autoScroll;
-	}
+    public void stop() {
+        stopped = true;
+    }
 
-	public void keyPressed(KeyEvent ke) {
-		if((ke.getKeyCode() == 70 )&& (ke.getModifiers()==KeyEvent.CTRL_MASK) ) {
-			find = (String)JOptionPane.showInputDialog(this,"FIND:\n","Find",JOptionPane.INFORMATION_MESSAGE,null,null,null);
-			System.out.println("find");
-			findWord();
-		} else if(ke.getKeyCode() == KeyEvent.VK_F3) {
-			if(ke.getModifiers()==KeyEvent.SHIFT_MASK) {
-				findWordBackward();
-			} else {
-      			findWord();
-			}
-    	} else if ((ke.getKeyCode() == 71 )&& (ke.getModifiers()==KeyEvent.CTRL_MASK)) {
-            grep = (String)JOptionPane.showInputDialog(this,"GREP:\n","Grep",JOptionPane.INFORMATION_MESSAGE,null,null,null);
+    public void setAutoScroll(boolean autoScroll) {
+        this.autoScroll = autoScroll;
+    }
+
+    public void keyPressed(KeyEvent ke) {
+        if ((ke.getKeyCode() == 70) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) {
+            find = (String) JOptionPane.showInputDialog(this, "FIND:\n", "Find", JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            System.out.println("find");
+            findWord();
+        } else if (ke.getKeyCode() == KeyEvent.VK_F3) {
+            if (ke.getModifiers() == KeyEvent.SHIFT_MASK) {
+                findWordBackward();
+            } else {
+                findWord();
+            }
+        } else if ((ke.getKeyCode() == 71) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) {
+            grep = (String) JOptionPane.showInputDialog(this, "GREP:\n", "Grep", JOptionPane.INFORMATION_MESSAGE, null, null, null);
             System.out.println("Grep entered: '" + grep + "'");
-            if(grep!=null && grep.trim().length() > 0) {
-                grep = grep.trim();
+            if (grep != null && grep.trim().length() > 0) {
+                blockFilter = null;
+                grepOn();
+            } else {
+                grepOff();
+            }
+
+        } else if ((ke.getKeyCode() == 66) && blockPattern != null && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK|KeyEvent.SHIFT_MASK))) {
+            inverseBlockFilter = ke.getModifiers() == (KeyEvent.CTRL_MASK|KeyEvent.SHIFT_MASK);
+            blockFilter = (String) JOptionPane.showInputDialog(this, "Block filter:\n", "Block filter", JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            System.out.println("blockFilter entered: '" + blockFilter + "'");
+            if (blockFilter != null && blockFilter.trim().length() > 0) {
+                grep = null;
+                blockFilter = blockFilter.trim();
                 int idx1 = 0;
                 int idx2 = 0;
                 StringBuilder filteredString = new StringBuilder();
+                StringBuffer block = null;
                 String nextLine = "";
-                while ((idx2 = buffer.indexOf("\n", idx2+1) ) >= 0) {
+                while ((idx2 = buffer.indexOf("\n", idx2 + 1)) >= 0) {
                     nextLine = buffer.substring(idx1, idx2);
-                    if(nextLine.contains(grep)) {
-                        filteredString.append(nextLine);
-                    }
                     idx1 = idx2;
+                    if (nextLine.matches("\n?" + blockPattern + ".*") && block != null) {
+                        if ((block.indexOf(blockFilter) >= 0) ^ inverseBlockFilter ) {
+                            filteredString.append(block);
+                        }
+                        block = new StringBuffer();
+                    }
+                    if (block == null) {
+                        block = new StringBuffer();
+                    }
+                    block.append(nextLine);
                 }
                 area.setText(filteredString.toString());
                 if (autoScroll)
-                    area.setCaretPosition(filteredString.lastIndexOf("\n")+1);
+                    area.setCaretPosition(filteredString.lastIndexOf("\n") + 1);
                 getParent().repaint();
                 repaint();
             } else {
-                grep = null;
-                area.setText(buffer.toString());
-                if (autoScroll)
-                    area.setCaretPosition(buffer.lastIndexOf("\n")+1);
-                getParent().repaint();
-                repaint();
+                blockFilterOff();
             }
 
         } else {
             System.out.println(ke.getKeyCode());
         }
-	}
+    }
 
-	private void findWord() {
-		offset = area.getText().indexOf(find,startFrom);
-		if(offset > -1)
-		{
-		  area.setFocusable(true);
-		  area.select(offset,find.length()+offset );
-		  startFrom = find.length()+offset+1;
-		}
-		else JOptionPane.showMessageDialog(this,"No (more) matches");
-	}
+    private void blockFilterOff() {
+        blockFilter = null;
+        area.setText(buffer.toString());
+        if (autoScroll)
+            area.setCaretPosition(buffer.lastIndexOf("\n") + 1);
+        getParent().repaint();
+        repaint();
+    }
 
-	private void findWordBackward() {
-		offset = area.getText().lastIndexOf(find, startFrom - find.length() - 2);
-		if(offset > -1) {
-		  area.setFocusable(true);
-		  area.select(offset,find.length()+offset );
-		  startFrom = find.length()+offset+1;
-		}
-		else JOptionPane.showMessageDialog(this,"No (more) matches");
-	}
+    private void grepOff() {
+        grep = null;
+        area.setText(buffer.toString());
+        if (autoScroll)
+            area.setCaretPosition(buffer.lastIndexOf("\n") + 1);
+        getParent().repaint();
+        repaint();
+    }
 
-	public void keyTyped(KeyEvent e) {}
-	public void keyReleased(KeyEvent e) {}
+    private void grepOn() {
+        grep = grep.trim();
+        int idx1 = 0;
+        int idx2 = 0;
+        StringBuilder filteredString = new StringBuilder();
+        String nextLine = "";
+        while ((idx2 = buffer.indexOf("\n", idx2 + 1)) >= 0) {
+            nextLine = buffer.substring(idx1, idx2);
+            if (nextLine.contains(grep)) {
+                filteredString.append(nextLine);
+            }
+            idx1 = idx2;
+        }
+        area.setText(filteredString.toString());
+        if (autoScroll)
+            area.setCaretPosition(filteredString.lastIndexOf("\n") + 1);
+        getParent().repaint();
+        repaint();
+    }
 
-	public void caretUpdate(CaretEvent e) {
-		startFrom = e.getDot();
-	}
+    private void findWord() {
+        offset = area.getText().indexOf(find, startFrom);
+        if (offset > -1) {
+            area.setFocusable(true);
+            area.select(offset, find.length() + offset);
+            startFrom = find.length() + offset + 1;
+        } else JOptionPane.showMessageDialog(this, "No (more) matches");
+    }
+
+    private void findWordBackward() {
+        offset = area.getText().lastIndexOf(find, startFrom - find.length() - 2);
+        if (offset > -1) {
+            area.setFocusable(true);
+            area.select(offset, find.length() + offset);
+            startFrom = find.length() + offset + 1;
+        } else JOptionPane.showMessageDialog(this, "No (more) matches");
+    }
+
+    public void keyTyped(KeyEvent e) {
+    }
+
+    public void keyReleased(KeyEvent e) {
+    }
+
+    public void caretUpdate(CaretEvent e) {
+        startFrom = e.getDot();
+    }
 
     public void mouseClicked(MouseEvent e) {
         //To change body of implemented methods use File | Settings | File Templates.

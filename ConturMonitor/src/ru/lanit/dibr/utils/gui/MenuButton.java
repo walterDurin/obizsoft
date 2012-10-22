@@ -1,5 +1,6 @@
 package ru.lanit.dibr.utils.gui;
 
+import ru.lanit.dibr.utils.gui.configuration.Host;
 import ru.lanit.dibr.utils.utils.ScpUtils;
 import ru.lanit.dibr.utils.utils.SshUtil;
 
