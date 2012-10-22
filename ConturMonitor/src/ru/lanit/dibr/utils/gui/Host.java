@@ -12,18 +12,20 @@ public class Host {
 	private int port;
 	private String user;
 	private String password;
+	private String pem;
     private String defaultEncoding;
 
 	public Host(String host, int port, String user, String password) {
-		this(null, host, port, user, password, null);
+		this(null, host, port, user, password, null, null);
 	}
 
-	public Host(String description, String host, int port, String user, String password, String defaultEncoding) {
+	public Host(String description, String host, int port, String user, String password, String pem, String defaultEncoding) {
 		this.description = description;
 		this.host = host;
         this.port = port;
 		this.user = user;
 		this.password = password;
+		this.pem = pem;
         this.defaultEncoding = defaultEncoding;
 	}
 
@@ -66,6 +68,14 @@ public class Host {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+    public String getPem() {
+        return pem;
+    }
+
+    public void setPem(String pem) {
+        this.pem = pem;
+    }
 
     public String getDefaultEncoding() {
         return defaultEncoding;
