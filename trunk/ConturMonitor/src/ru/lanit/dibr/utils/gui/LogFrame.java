@@ -1,9 +1,8 @@
 package ru.lanit.dibr.utils.gui;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
+import sun.rmi.runtime.Log;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
@@ -20,7 +19,11 @@ public class LogFrame  extends JFrame {
 
 	public LogFrame(final JButton b, final JComponent c, final Host host, final String logPath, String name) {
 		setTitle(host.getDescription()+ " : " + name);
-		setSize(1500, 500);
+
+        int h = (int) (GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight()/LogChoicer.logsCnt);
+
+		setLocation(LogChoicer.size, (int) (LogChoicer.countShownLogWindow++) * h);
+        setSize((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() - LogChoicer.size), h);
 		setVisible(true);
 
 //        Border border = BorderFactory.createLineBorder(Color.RED);
