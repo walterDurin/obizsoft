@@ -47,10 +47,16 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener 
 
 	public void connect() throws JSchException, IOException, BadLocationException {
 		JSch jsch=new JSch();
-		Session session=jsch.getSession(host.getUser(), host.getHost(), host.getPort());
-		UserInfo ui=new MyUserInfo(host.getPassword());
-		session.setUserInfo(ui);
-		session.connect(3000);   // making a connection with timeout.
+        Session session=jsch.getSession(host.getUser(), host.getHost(), host.getPort());
+        session.setConfig("StrictHostKeyChecking", "no");
+        if(host.getPem()!=null) {
+            jsch.addIdentity(host.getPem());
+        } else {
+            UserInfo ui=new MyUserInfo(host.getPassword());
+            session.setUserInfo(ui);
+        }
+
+		session.connect(30000);   // making a connection with timeout.
 		ChannelExec channel= (ChannelExec) session.openChannel("exec");
 		channel.setCommand("tail -f " + logPath);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(channel.getInputStream(), host.getDefaultEncoding()));

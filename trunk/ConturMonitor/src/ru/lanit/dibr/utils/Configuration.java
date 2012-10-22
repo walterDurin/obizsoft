@@ -52,7 +52,14 @@ public class Configuration {
 				    port = list.item(i).getAttributes().getNamedItem("port").getNodeValue();
                 }
 				String user = list.item(i).getAttributes().getNamedItem("user").getNodeValue();
-				String password = list.item(i).getAttributes().getNamedItem("password").getNodeValue();
+                String password = null;
+                if(list.item(i).getAttributes().getNamedItem("password")!=null) {
+                    password = list.item(i).getAttributes().getNamedItem("password").getNodeValue();
+                }
+                String pem = null;
+                if(list.item(i).getAttributes().getNamedItem("pem")!=null) {
+                    pem = list.item(i).getAttributes().getNamedItem("pem").getNodeValue();
+                }
                 String encoding = null;
                 if(list.item(i).getAttributes().getNamedItem("encoding")!=null) {
                     encoding = list.item(i).getAttributes().getNamedItem("encoding").getNodeValue();
@@ -61,7 +68,7 @@ public class Configuration {
                     encoding = System.getProperty("file.encoding");
                 }
 
-				Host nextHost = new Host(descr, host, Integer.parseInt(port), user, password, encoding);
+				Host nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding);
 				System.out.println(nextHost);
 				NodeList logList = list.item(i).getChildNodes();
 				servers.put(nextHost, new HashMap<String, String>());
