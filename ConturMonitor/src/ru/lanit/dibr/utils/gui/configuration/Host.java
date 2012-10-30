@@ -33,62 +33,34 @@ public class Host {
 		return description;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	public String getHost() {
 		return host;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
 	}
 
     public int getPort() {
         return port;
     }
 
-    public void setPort(int port) {
-        this.port = port;
-    }
-
     public String getUser() {
 		return user;
-	}
-
-	public void setUser(String user) {
-		this.user = user;
 	}
 
 	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
     public String getPem() {
         return pem;
-    }
-
-    public void setPem(String pem) {
-        this.pem = pem;
     }
 
     public String getDefaultEncoding() {
         return defaultEncoding;
     }
 
-    public void setDefaultEncoding(String defaultEncoding) {
-        this.defaultEncoding = defaultEncoding;
-    }
-
     @Override
 	public String toString() {
 		return "host = " + host +
-		"; user = " + user + "; password = " + password;
+		"; user = " + user + "; password = " + password.replaceAll("\\w", "*") + "; pem = " + pem;
 	}
 
 	@Override
