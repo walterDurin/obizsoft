@@ -60,7 +60,7 @@ public class Host {
     @Override
 	public String toString() {
 		return "host = " + host +
-		"; user = " + user + "; password = " + password.replaceAll("\\w", "*") + "; pem = " + pem;
+		"; user = " + user + "; password = " + (password!=null?password.replaceAll("\\w", "*"):"") + "; pem = " + pem;
 	}
 
 	@Override
