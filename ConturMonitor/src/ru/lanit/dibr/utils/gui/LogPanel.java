@@ -68,11 +68,14 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             UserInfo ui = new MyUserInfo(host.getPassword());
             session.setUserInfo(ui);
         }
+        ChannelExec channel = null;
+        BufferedReader reader = null;
 
+        try {
         session.connect(30000);   // making a connection with timeout.
-        ChannelExec channel = (ChannelExec) session.openChannel("exec");
+        channel = (ChannelExec) session.openChannel("exec");
         channel.setCommand("tail -500f " + logPath);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(channel.getInputStream(), host.getDefaultEncoding()));
+        reader = new BufferedReader(new InputStreamReader(channel.getInputStream(), host.getDefaultEncoding()));
         String nextLine;
 
         channel.connect(3 * 1000);
@@ -93,7 +96,20 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 appendLine(nextLine);
             }
         }
-
+        } finally {
+            if(reader!=null)
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            if(channel!=null && channel.isConnected()) {
+                channel.disconnect();
+            }
+            if(session!=null && session.isConnected()) {
+                session.disconnect();
+            }
+        }
     }
 
     private void appendLine(String nextLine) {
