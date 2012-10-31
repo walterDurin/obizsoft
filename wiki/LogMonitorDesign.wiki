@@ -1,0 +1,8 @@
+#labels Phase-Design
+#Дизайн монитора логов
+
+= Архитектура =
+
+Add your content here.
+
+= Реализация компонентов =
