@@ -3,6 +3,8 @@ package test.newWindow1;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 /**
  * User: Vova
@@ -41,7 +43,7 @@ public class MainWindow1 {
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("MainWindow1");
-        MainWindow1 mainWindow1 = new MainWindow1();
+        final MainWindow1 mainWindow1 = new MainWindow1();
         mainWindow1.tabbedPane1.setTitleAt(0, "first");
         mainWindow1.tabbedPane1.setTitleAt(1, "second");
         mainWindow1.tabbedPane2.setTitleAt(0, "third");
@@ -51,6 +53,13 @@ public class MainWindow1 {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+
+        mainWindow1.rootPanel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                mainWindow1.splitPane.setDividerLocation(mainWindow1.rootPanel.getWidth()/2);
+            }
+        });
     }
 
     private void createUIComponents() {
