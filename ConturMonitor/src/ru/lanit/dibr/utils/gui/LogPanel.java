@@ -61,6 +61,10 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     public void connect() throws JSchException, IOException, BadLocationException {
         JSch jsch = new JSch();
         Session session = jsch.getSession(host.getUser(), host.getHost(), host.getPort());
+        if(host.getHttpProxyHost()!=null) {
+            Proxy proxy = new ProxyHTTP(host.getHost(), host.getPort());
+            session.setProxy(proxy);
+        }
         session.setConfig("StrictHostKeyChecking", "no");
         if (host.getPem() != null) {
             jsch.addIdentity(host.getPem());
