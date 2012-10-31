@@ -14,6 +14,8 @@ public class Host {
 	private String password;
 	private String pem;
     private String defaultEncoding;
+    private String httpProxyHost;
+    private int httpProxyPrort;
 
 	public Host(String host, int port, String user, String password) {
 		this(null, host, port, user, password, null, null);
@@ -28,6 +30,18 @@ public class Host {
 		this.pem = pem;
         this.defaultEncoding = defaultEncoding;
 	}
+
+    public Host(String description, String host, int port, String user, String password, String pem, String defaultEncoding, String httpProxyAddress, int httpProxyPrort) {
+        this.description = description;
+        this.host = host;
+        this.port = port;
+        this.user = user;
+        this.password = password;
+        this.pem = pem;
+        this.defaultEncoding = defaultEncoding;
+        this.httpProxyHost = httpProxyAddress;
+        this.httpProxyPrort = httpProxyPrort;
+    }
 
     public String getDescription() {
 		return description;
@@ -57,10 +71,18 @@ public class Host {
         return defaultEncoding;
     }
 
+    public String getHttpProxyHost() {
+        return httpProxyHost;
+    }
+
+    public int getHttpProxyPrort() {
+        return httpProxyPrort;
+    }
+
     @Override
 	public String toString() {
 		return "host = " + host +
-		"; user = " + user + "; password = " + (password!=null?password.replaceAll("\\w", "*"):"") + "; pem = " + pem;
+		"; user = " + user + "; password = " + (password!=null?password.replaceAll("\\w", "*"):"") + "; pem = " + pem + "; httpProxyHost=" + httpProxyHost + "; httpProxyPort=" + httpProxyPrort;
 	}
 
 	@Override

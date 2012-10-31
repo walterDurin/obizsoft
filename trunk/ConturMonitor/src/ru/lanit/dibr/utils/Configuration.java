@@ -66,7 +66,23 @@ public class Configuration {
                     encoding = System.getProperty("file.encoding");
                 }
 
-				Host nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding);
+                String httpProxyHost = null;
+                if(list.item(i).getAttributes().getNamedItem("httpProxyHost")!=null) {
+                    httpProxyHost = list.item(i).getAttributes().getNamedItem("httpProxyHost").getNodeValue();
+                }
+                String httpProxyPort = null;
+                if(list.item(i).getAttributes().getNamedItem("httpProxyPort")!=null) {
+                    httpProxyPort = list.item(i).getAttributes().getNamedItem("httpProxyPort").getNodeValue();
+                }
+
+                Host nextHost;
+                if(httpProxyHost!=null && httpProxyPort!=null) {
+                    nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding, httpProxyHost, Integer.parseInt(httpProxyPort));
+                } else {
+                    nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding);
+                }
+
+
 				System.out.println(nextHost);
 				NodeList logList = list.item(i).getChildNodes();
 				servers.put(nextHost, new HashMap<String, LogFile>());
