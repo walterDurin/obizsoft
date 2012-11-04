@@ -25,7 +25,7 @@ public class SplitPaneNotSplittedState extends SplitPaneAbstractState {
      */
     @Override
     public void splitHorizontal() {
-        super.splitHorizontal();
+        this.statedSplitPane.setState(new SplitPaneHorizontalState(this.statedSplitPane));
         this.statedSplitPane.setDividerSize(this.splitterSize);
     }
 
@@ -34,7 +34,7 @@ public class SplitPaneNotSplittedState extends SplitPaneAbstractState {
      */
     @Override
     public void splitVertical() {
-        super.splitVertical();
+        this.statedSplitPane.setState(new SplitPaneVerticalState(this.statedSplitPane));
         this.statedSplitPane.setDividerSize(this.splitterSize);
     }
 

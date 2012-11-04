@@ -72,17 +72,37 @@ public class MainWindow {
             }
         };
 
-        ActionListener firstMoveListstener = new ActionListener() {
+//        ActionListener firstMoveListstener = new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                ((Tab)((TabHeaderActionItem)e.getSource()).getComponent()).move(secondTab);
+//            }
+//        };
+//
+//        ActionListener closeListener = new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                Tab tab = ((Tab)((TabHeaderActionItem)e.getSource()).getComponent());
+//                tab.close();
+//                tabs.remove(tab);
+//                if (tabs.size() < 2) {
+//                    splitPane.setState(new SplitPaneNotSplittedState(splitPane));
+//                }
+//            }
+//        };
+
+        MouseAdapter firstMoveAdapter = new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                ((Tab)((TabHeaderButton)e.getSource()).getComponent()).move(secondTab);
+            public void mouseClicked(MouseEvent e) {
+                Tab tab = (Tab)((TabHeaderActionItem)e.getSource()).getComponent();
+                moveTab(tab, secondTab);
             }
         };
 
-        ActionListener closeListener = new ActionListener() {
+        MouseAdapter closeAdapter = new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                Tab tab = ((Tab)((TabHeaderButton)e.getSource()).getComponent());
+            public void mouseClicked(MouseEvent e) {
+                Tab tab = ((Tab)((TabHeaderActionItem)e.getSource()).getComponent());
                 tab.close();
                 tabs.remove(tab);
                 if (tabs.size() < 2) {
@@ -91,24 +111,49 @@ public class MainWindow {
             }
         };
 
-        TabHeaderFactory firstFactory = new SimpleTabHeaderFactory(">", firstMoveListstener, closeListener) ;
+        TabHeaderFactory firstFactory = new LabelTabHeaderFactory(firstMoveAdapter, closeAdapter) ;
         firstTab = new ActiveHeaderTabbedPane(SwingConstants.BOTTOM, firstFactory);
         firstTab.addFocusListener(focusAdapter);
 
-        ActionListener secondMoveListener = new ActionListener() {
+//        ActionListener secondMoveListener = new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                ((Tab)((TabHeaderActionItem)e.getSource()).getComponent()).move(firstTab);
+//            }
+//        };
+
+        MouseAdapter secondMoveAdapter = new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                ((Tab)((TabHeaderButton)e.getSource()).getComponent()).move(firstTab);
+            public void mouseClicked(MouseEvent e) {
+                Tab tab = (Tab)((TabHeaderActionItem)e.getSource()).getComponent();
+                moveTab(tab, firstTab);
             }
         };
 
-        TabHeaderFactory secondFactory = new SimpleTabHeaderFactory("<", secondMoveListener, closeListener);
+        TabHeaderFactory secondFactory = new LabelTabHeaderFactory(secondMoveAdapter, closeAdapter);
         secondTab = new ActiveHeaderTabbedPane(SwingConstants.BOTTOM, secondFactory);
         secondTab.addFocusListener(focusAdapter);
 
         splitPane = new StatedSplitPane(firstTab, secondTab);
         splitPane.setState(new SplitPaneNotSplittedState(splitPane));
         splitPane.setAlignmentX(Component.CENTER_ALIGNMENT);
+    }
+
+    private void moveTab(Tab tab, JTabbedPane destination) {
+        JTabbedPane pane = tab.getTabbedPane();
+        tab.move(destination);
+        if (pane.getTabCount() < 1) {
+            moveAllTabs(firstTab);
+        } else if (splitPane.getState() instanceof SplitPaneNotSplittedState) {
+            splitPane.setState(new SplitPaneHorizontalState(splitPane));
+        }
+    }
+
+    private void moveAllTabs(JTabbedPane tabbedPane) {
+        for (Tab t : tabs) {
+            t.move(tabbedPane);
+        }
+        splitPane.setState(new SplitPaneNotSplittedState(splitPane));
     }
 
     private void createToolBar() {
@@ -149,12 +194,7 @@ public class MainWindow {
         joinButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (Tab t : tabs) {
-                    if (t.getTabbedPane().equals(secondTab)) {
-                        t.move(firstTab);
-                    }
-                }
-                splitPane.joinTabs();
+                moveAllTabs(firstTab);
             }
         });
         toolBar.add(joinButton);
@@ -165,7 +205,7 @@ public class MainWindow {
             public void actionPerformed(ActionEvent e) {
                 Component c = firstTab.getSelectedComponent();
                 if (c != null) {
-                    ((Tab) c).move(secondTab);
+                    moveTab((Tab)c, secondTab);
                 }
             }
         });
@@ -177,7 +217,7 @@ public class MainWindow {
             public void actionPerformed(ActionEvent e) {
                 Component c = secondTab.getSelectedComponent();
                 if (c != null) {
-                    ((Tab) c).move(firstTab);
+                    moveTab((Tab)c, firstTab);
                 }
             }
         });

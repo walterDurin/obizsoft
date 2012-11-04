@@ -10,7 +10,7 @@ import java.awt.*;
  * Time: 7:30 PM
  * To change this template use File | Settings | File Templates.
  */
-public class TabHeaderButton extends JButton {
+public class TabHeaderButton extends JButton implements TabHeaderActionItem {
     private Component component = null;
 
     /**
@@ -28,6 +28,7 @@ public class TabHeaderButton extends JButton {
      * Gets the <code>Component</code> this button is associated with
      * @return tab content <code>Component</code>
      */
+    @Override
     public Component getComponent() {
         return component;
     }

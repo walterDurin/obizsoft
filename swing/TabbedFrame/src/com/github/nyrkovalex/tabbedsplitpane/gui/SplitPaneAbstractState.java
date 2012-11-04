@@ -17,33 +17,6 @@ public abstract class SplitPaneAbstractState implements SplitPaneState {
     }
 
     /**
-     * Sets the current state of a splitPane controlled to the {@link SplitPaneHorizontalState}
-     */
-    @Override
-    public void splitHorizontal() {
-        // TODO: Not sure if it is a good idea to do so because this way the class know about the child.
-        this.statedSplitPane.setState(new SplitPaneHorizontalState(this.statedSplitPane));
-    }
-
-    /**
-     * Sets the current state of a splitPane controlled to the {@link SplitPaneVerticalState}
-     */
-    @Override
-    public void splitVertical() {
-        // TODO: Not sure if it is a good idea to do so because this way the class know about the child.
-        this.statedSplitPane.setState(new SplitPaneVerticalState(this.statedSplitPane));
-    }
-
-    /**
-     * Sets the current state of a splitPane controlled to the {@link SplitPaneNotSplittedState}
-     */
-    @Override
-    public void joinTabs() {
-        // TODO: Not sure if it is a good idea to do so because this way the class know about the child.
-        this.statedSplitPane.setState(new SplitPaneNotSplittedState(this.statedSplitPane));
-    }
-
-    /**
      * Sets the orientation of a splitter by the current state's rules
      */
     protected abstract void setOrientation();
