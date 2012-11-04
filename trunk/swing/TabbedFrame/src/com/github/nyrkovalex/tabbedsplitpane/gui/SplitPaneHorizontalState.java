@@ -33,6 +33,22 @@ public class SplitPaneHorizontalState extends SplitPaneAbstractState {
     }
 
     /**
+     * Sets the current state of a splitPane controlled to the {@link SplitPaneVerticalState}
+     */
+    @Override
+    public void splitVertical() {
+        this.statedSplitPane.setState(new SplitPaneVerticalState(this.statedSplitPane));
+    }
+
+    /**
+     * Sets the current state of a splitPane controlled to the {@link SplitPaneNotSplittedState}
+     */
+    @Override
+    public void joinTabs() {
+        this.statedSplitPane.setState(new SplitPaneNotSplittedState(this.statedSplitPane));
+    }
+
+    /**
      * Sets the splitter location maintaining the left / right pane ratio
      */
     @Override
