@@ -1,5 +1,7 @@
 package com.github.nyrkovalex.tabbedsplitpane.gui;
 
+import javax.swing.*;
+
 /**
  * Created with IntelliJ IDEA.
  * User: alex
@@ -7,17 +9,15 @@ package com.github.nyrkovalex.tabbedsplitpane.gui;
  * Time: 1:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SplitPaneNotSplittedState extends SplitPaneAbstractState {
-    private int splitterSize = 0;
+public class SplitPaneNotSplittedState implements SplitPaneState {
+    private StatedSplitPane statedSplitPane = null;
 
     /**
      * Creates a new instance of a {@link SplitPaneState} implementation for the horizontal state
      * @param statedSplitPane split pane to merge
      */
     public SplitPaneNotSplittedState(StatedSplitPane statedSplitPane) {
-        super(statedSplitPane);
-        this.splitterSize = this.statedSplitPane.getDividerSize();
-        this.statedSplitPane.setDividerSize(0);
+        this.statedSplitPane = statedSplitPane;
     }
 
     /**
@@ -25,8 +25,9 @@ public class SplitPaneNotSplittedState extends SplitPaneAbstractState {
      */
     @Override
     public void splitHorizontal() {
-        this.statedSplitPane.setState(new SplitPaneHorizontalState(this.statedSplitPane));
-        this.statedSplitPane.setDividerSize(this.splitterSize);
+        this.statedSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+        this.statedSplitPane.setState(this.statedSplitPane.getHorizontal());
+        this.statedSplitPane.setSplitterLocation();
     }
 
     /**
@@ -34,8 +35,9 @@ public class SplitPaneNotSplittedState extends SplitPaneAbstractState {
      */
     @Override
     public void splitVertical() {
-        this.statedSplitPane.setState(new SplitPaneVerticalState(this.statedSplitPane));
-        this.statedSplitPane.setDividerSize(this.splitterSize);
+        this.statedSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+        this.statedSplitPane.setState(this.statedSplitPane.getVertical());
+        this.statedSplitPane.setSplitterLocation();
     }
 
     /**
@@ -52,14 +54,6 @@ public class SplitPaneNotSplittedState extends SplitPaneAbstractState {
      */
     @Override
     public void joinTabs() {
-        return;
-    }
-
-    /**
-     * Do not really need this as we will hide the splitter anyway
-     */
-    @Override
-    protected void setOrientation() {
         return;
     }
 }

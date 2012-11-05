@@ -11,7 +11,10 @@ import java.awt.*;
  * To change this template use File | Settings | File Templates.
  */
 public class StatedSplitPane extends JSplitPane {
-    private SplitPaneState state = null;
+    private SplitPaneState notSplitted = null;
+    private SplitPaneState horizontal = null;
+    private SplitPaneState vertical = null;
+    private SplitPaneState currentState = null;
 
     /**
      * Split pane having three states as {@link SplitPaneState}:
@@ -25,49 +28,61 @@ public class StatedSplitPane extends JSplitPane {
      */
     public StatedSplitPane(Component first, Component second) {
         super(JSplitPane.HORIZONTAL_SPLIT, first, second);
-    }
-
-    /**
-     * Gets the currenly active state of a pane
-     * @return Current state
-     */
-    public SplitPaneState getState() {
-        return this.state;
+        this.notSplitted = new SplitPaneNotSplittedState(this);
+        this.horizontal = new SplitPaneHorizontalState(this);
+        this.vertical = new SplitPaneVerticalState(this);
+        this.currentState = this.getNotSplitted();
     }
 
     /**
      * Maximizes the first (left) pane, hiding the second one
      */
     public void joinTabs() {
-        this.state.joinTabs();
+        this.getCurrentState().joinTabs();
     }
 
     /**
      * Sets the splitter location by the rules of current state
      */
     public void setSplitterLocation() {
-        this.state.setSplitterLocation();
+        this.getCurrentState().setSplitterLocation();
     }
 
     /**
      * Splits the pane horizontally preserving the current tab layout
      */
     public void splitHorizontal() {
-        this.state.splitHorizontal();
+        this.getCurrentState().splitHorizontal();
     }
 
     /**
      * Splits the pane vertically preserving the current tab layout
      */
     public void splitVertical() {
-        this.state.splitVertical();
+        this.getCurrentState().splitVertical();
     }
 
     /**
      * Sets the new state for the pane
      * @param state New pane state
      */
-    public void setState(SplitPaneState state) {
-        this.state = state;
+    void setState(SplitPaneState state) {
+        this.currentState = state;
+    }
+
+    public SplitPaneState getHorizontal() {
+        return horizontal;
+    }
+
+    public SplitPaneState getVertical() {
+        return vertical;
+    }
+
+    public SplitPaneState getNotSplitted() {
+        return notSplitted;
+    }
+
+    public SplitPaneState getCurrentState() {
+        return currentState;
     }
 }

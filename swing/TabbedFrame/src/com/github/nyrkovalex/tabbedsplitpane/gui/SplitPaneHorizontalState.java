@@ -9,19 +9,16 @@ import javax.swing.*;
  * Time: 1:19 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SplitPaneHorizontalState extends SplitPaneAbstractState {
+public class SplitPaneHorizontalState implements SplitPaneState {
+
+    private StatedSplitPane statedSplitPane = null;
 
     /**
      * Creates a new instance of a {@link SplitPaneState} implementation for the horizontal state
      * @param statedSplitPane split pane to align horizontally
      */
     public SplitPaneHorizontalState(StatedSplitPane statedSplitPane) {
-        super(statedSplitPane);
-    }
-
-    @Override
-    protected void setOrientation() {
-        this.statedSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+        this.statedSplitPane = statedSplitPane;
     }
 
     /**
@@ -37,7 +34,9 @@ public class SplitPaneHorizontalState extends SplitPaneAbstractState {
      */
     @Override
     public void splitVertical() {
-        this.statedSplitPane.setState(new SplitPaneVerticalState(this.statedSplitPane));
+        this.statedSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+        this.statedSplitPane.setState(this.statedSplitPane.getVertical());
+        this.statedSplitPane.setSplitterLocation();
     }
 
     /**
@@ -45,7 +44,8 @@ public class SplitPaneHorizontalState extends SplitPaneAbstractState {
      */
     @Override
     public void joinTabs() {
-        this.statedSplitPane.setState(new SplitPaneNotSplittedState(this.statedSplitPane));
+        this.statedSplitPane.setState(this.statedSplitPane.getNotSplitted());
+        this.statedSplitPane.setSplitterLocation();
     }
 
     /**
