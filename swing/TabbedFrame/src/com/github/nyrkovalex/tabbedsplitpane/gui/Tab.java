@@ -56,5 +56,6 @@ public class Tab extends JPanel {
      */
     public void close() {
         this.tabbedPane.remove(this);
+        this.tabbedPane = null;
     }
 }

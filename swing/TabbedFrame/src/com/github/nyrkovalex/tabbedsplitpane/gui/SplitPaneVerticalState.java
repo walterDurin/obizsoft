@@ -53,6 +53,7 @@ public class SplitPaneVerticalState implements SplitPaneState {
     @Override
     public void setSplitterLocation() {
         // TODO: Maintain ratio
+        this.statedSplitPane.setDividerSize(5);
         this.statedSplitPane.setDividerLocation(0.5);
     }
 }

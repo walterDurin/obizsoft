@@ -103,9 +103,11 @@ public class MainWindow {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Tab tab = ((Tab) ((TabHeaderActionItem) e.getSource()).getComponent());
+                JTabbedPane pane = tab.getTabbedPane();
                 tab.close();
                 tabs.remove(tab);
-                if (tabs.size() < 2) {
+                // TODO: Move all this sort of things to the TabbedPane's container (?) listener
+                if (tabs.size() < 2 || pane.getTabCount() < 1) {
                     splitPane.joinTabs();
                 }
             }

@@ -11,6 +11,7 @@ import javax.swing.*;
  */
 public class SplitPaneNotSplittedState implements SplitPaneState {
     private StatedSplitPane statedSplitPane = null;
+    private int oldSplitterSize = 0;
 
     /**
      * Creates a new instance of a {@link SplitPaneState} implementation for the horizontal state
@@ -25,6 +26,7 @@ public class SplitPaneNotSplittedState implements SplitPaneState {
      */
     @Override
     public void splitHorizontal() {
+        this.statedSplitPane.setDividerSize(this.oldSplitterSize);
         this.statedSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
         this.statedSplitPane.setState(this.statedSplitPane.getHorizontal());
         this.statedSplitPane.setSplitterLocation();
@@ -35,6 +37,7 @@ public class SplitPaneNotSplittedState implements SplitPaneState {
      */
     @Override
     public void splitVertical() {
+        this.statedSplitPane.setDividerSize(this.oldSplitterSize);
         this.statedSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
         this.statedSplitPane.setState(this.statedSplitPane.getVertical());
         this.statedSplitPane.setSplitterLocation();
@@ -45,7 +48,9 @@ public class SplitPaneNotSplittedState implements SplitPaneState {
      */
     @Override
     public void setSplitterLocation() {
+        this.oldSplitterSize = this.statedSplitPane.getDividerSize();
         int position = this.statedSplitPane.getWidth();
+        this.statedSplitPane.setDividerSize(0);
         this.statedSplitPane.setDividerLocation(position);
     }
 
