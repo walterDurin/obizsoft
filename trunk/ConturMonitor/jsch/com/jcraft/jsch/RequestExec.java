@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -51,6 +51,7 @@ class RequestExec extends Request{
     buf.putInt(channel.getRecipient());
     buf.putString(Util.str2byte("exec"));
     buf.putByte((byte)(waitForReply() ? 1 : 0));
+    buf.checkFreeSize(4+command.length);
     buf.putString(command);
     write(packet);
   }

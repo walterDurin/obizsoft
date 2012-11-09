@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -32,6 +32,7 @@ package com.jcraft.jsch;
 public interface SftpProgressMonitor{
   public static final int PUT=0;
   public static final int GET=1;
+  public static final long UNKNOWN_SIZE = -1L;
   void init(int op, String src, String dest, long max);
   boolean count(long count);
   void end();

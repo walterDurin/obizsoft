@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -35,7 +35,7 @@ public class ChannelDirectTCPIP extends Channel{
 
   static private final int LOCAL_WINDOW_SIZE_MAX=0x20000;
   static private final int LOCAL_MAXIMUM_PACKET_SIZE=0x4000;
-
+  static private final byte[] _type = Util.str2byte("direct-tcpip");
   String host;
   int port;
 
@@ -44,18 +44,14 @@ public class ChannelDirectTCPIP extends Channel{
 
   ChannelDirectTCPIP(){
     super();
+    type = _type;
     setLocalWindowSizeMax(LOCAL_WINDOW_SIZE_MAX);
     setLocalWindowSize(LOCAL_WINDOW_SIZE_MAX);
     setLocalPacketSize(LOCAL_MAXIMUM_PACKET_SIZE);
   }
 
   void init (){
-    try{ 
-      io=new IO();
-    }
-    catch(Exception e){
-      System.err.println(e);
-    }
+    io=new IO();
   }
 
   public void connect() throws JSchException{
@@ -64,54 +60,6 @@ public class ChannelDirectTCPIP extends Channel{
       if(!_session.isConnected()){
         throw new JSchException("session is down");
       }
-      Buffer buf=new Buffer(150);
-      Packet packet=new Packet(buf);
-      // send
-      // byte   SSH_MSG_CHANNEL_OPEN(90)
-      // string channel type         //
-      // uint32 sender channel       // 0
-      // uint32 initial window size  // 0x100000(65536)
-      // uint32 maxmum packet size   // 0x4000(16384)
-
-      packet.reset();
-      buf.putByte((byte)90);
-      buf.putString(Util.str2byte("direct-tcpip"));
-      buf.putInt(id);
-      buf.putInt(lwsize);
-      buf.putInt(lmpsize);
-      buf.putString(Util.str2byte(host));
-      buf.putInt(port);
-      buf.putString(Util.str2byte(originator_IP_address));
-      buf.putInt(originator_port);
-      _session.write(packet);
-
-      int retry=1000;
-      try{
-        while(this.getRecipient()==-1 && 
-              _session.isConnected() &&
-              retry>0 &&
-              !eof_remote){
-          //Thread.sleep(500);
-          Thread.sleep(50);
-          retry--;
-        }
-      }
-      catch(Exception ee){
-      }
-      if(!_session.isConnected()){
-	throw new JSchException("session is down");
-      }
-      if(retry==0 || this.eof_remote){
-        throw new JSchException("channel is not opened.");
-      }
-      /*
-      if(this.eof_remote){      // failed to open
-        disconnect();
-        return;
-      }
-      */
-
-      connected=true;
 
       if(io.in!=null){
         thread=new Thread(this);
@@ -120,6 +68,9 @@ public class ChannelDirectTCPIP extends Channel{
           thread.setDaemon(_session.daemon_thread);
         }
         thread.start();
+      }
+      else {
+        sendChannelOpen();
       }
     }
     catch(Exception e){
@@ -134,12 +85,14 @@ public class ChannelDirectTCPIP extends Channel{
 
   public void run(){
 
-    Buffer buf=new Buffer(rmpsize);
-    Packet packet=new Packet(buf);
-    int i=0;
-
     try{
+      sendChannelOpen();
+
+      Buffer buf=new Buffer(rmpsize);
+      Packet packet=new Packet(buf);
       Session _session=getSession();
+      int i=0;
+
       while(isConnected() &&
             thread!=null && 
             io!=null && 
@@ -147,26 +100,27 @@ public class ChannelDirectTCPIP extends Channel{
         i=io.in.read(buf.buffer, 
                      14, 
                      buf.buffer.length-14
-                     -32 -20 // padding and mac
+                     -Session.buffer_margin
                      );
-
         if(i<=0){
           eof();
           break;
         }
-        if(close)break;
         packet.reset();
         buf.putByte((byte)Session.SSH_MSG_CHANNEL_DATA);
         buf.putInt(recipient);
         buf.putInt(i);
         buf.skip(i);
-        _session.write(packet, this, i);
+        synchronized(this){
+          if(close)
+            break;
+          _session.write(packet, this, i);
+        }
       }
     }
     catch(Exception e){
     }
     disconnect();
-    //System.err.println("connect end");
   }
 
   public void setInputStream(InputStream in){
@@ -180,4 +134,25 @@ public class ChannelDirectTCPIP extends Channel{
   public void setPort(int port){this.port=port;}
   public void setOrgIPAddress(String foo){this.originator_IP_address=foo;}
   public void setOrgPort(int foo){this.originator_port=foo;}
+
+  protected Packet genChannelOpenPacket(){
+    Buffer buf = new Buffer(150);
+    Packet packet = new Packet(buf);
+    // byte   SSH_MSG_CHANNEL_OPEN(90)
+    // string channel type         //
+    // uint32 sender channel       // 0
+    // uint32 initial window size  // 0x100000(65536)
+    // uint32 maxmum packet size   // 0x4000(16384)
+    packet.reset();
+    buf.putByte((byte)90);
+    buf.putString(this.type);
+    buf.putInt(id);
+    buf.putInt(lwsize);
+    buf.putInt(lmpsize);
+    buf.putString(Util.str2byte(host));
+    buf.putInt(port);
+    buf.putString(Util.str2byte(originator_IP_address));
+    buf.putInt(originator_port);
+    return packet;
+  }
 }

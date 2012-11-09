@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -33,6 +33,6 @@ public interface Compression{
   static public final int INFLATER=0;
   static public final int DEFLATER=1;
   void init(int type, int level);
-  int compress(byte[] buf, int start, int len);
+  byte[] compress(byte[] buf, int start, int[] len);
   byte[] uncompress(byte[] buf, int start, int[] len);
 }
