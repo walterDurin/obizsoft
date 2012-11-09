@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 import javax.swing.text.BadLocationException;
+import javax.xml.transform.Source;
 
 import ru.lanit.dibr.utils.gui.configuration.Host;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
@@ -55,17 +56,32 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         this.host = host;
         this.logPath = logFile.getPath();
         this.blockPattern = logFile.getBlockPattern();
-
     }
 
-    public void connect() throws JSchException, IOException, BadLocationException {
+    public void connect() throws Exception {
         JSch jsch = new JSch();
         Session session = jsch.getSession(host.getUser(), host.getHost(), host.getPort());
-        if(host.getHttpProxyHost()!=null) {
-            Proxy proxy = new ProxyHTTP(host.getHost(), host.getPort());
+        if(host.getProxyHost()!=null) {
+            Proxy proxy = null;
+            if(host.getProxyType().equals(Host.HTTP)) {
+                proxy = new ProxyHTTP(host.getProxyHost(), host.getProxyPrort());
+            } else if(host.getProxyType().equals(Host.SOCKS4)){
+                proxy = new ProxySOCKS4(host.getProxyHost(), host.getProxyPrort());
+            } else if(host.getProxyType().equals(Host.SOCKS5)){
+                proxy = new ProxySOCKS4(host.getProxyHost(), host.getProxyPrort());
+            } else {
+                throw new Exception("Unknown proxy type! Please use one of following: '" + Host.HTTP + "'; '" + Host.SOCKS4 + "'; " + Host.SOCKS5 + "'; ");
+            }
+            //proxy.
+//            Proxy proxy = new ProxySOCKS4(host.getHost(), host.getPort());
             session.setProxy(proxy);
         }
-        session.setConfig("StrictHostKeyChecking", "no");
+        session.setConfig("StrictHostKeyChecking", "no"); //принимать неизвестные ключи от серверов
+        //сжатие потока
+        session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
+        session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
+        session.setConfig("compression_level", "9");
+
         if (host.getPem() != null) {
             jsch.addIdentity(host.getPem());
         } else {
@@ -86,6 +102,27 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
         area.addKeyListener(this);
         area.addCaretListener(this);
+//        this.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+//            public void adjustmentValueChanged(AdjustmentEvent e) {
+//                System.out.println("e.getValue(): " + e.getValue());
+//                System.out.println("getVerticalScrollBar().getHeight()" + getVerticalScrollBar().getHeight());
+//                System.out.println("getVerticalScrollBar().isVisible()" + getVerticalScrollBar().isVisible());
+//                System.out.println("getVerticalScrollBar().getMaximum()" + getVerticalScrollBar().getMaximum());
+//                System.out.println((e.getValue() + getVerticalScrollBar().getHeight()) - getVerticalScrollBar().getMaximum());
+//                setAutoScroll(!getVerticalScrollBar().isVisible() || (e.getValue() + getVerticalScrollBar().getHeight()) == getVerticalScrollBar().getMaximum());
+//            }
+//        });
+
+
+        this.addMouseWheelListener(new MouseAdapter() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                //System.out.println(e);
+                setAutoScroll(!getVerticalScrollBar().isVisible() || (getVerticalScrollBar().getValue() + getVerticalScrollBar().getHeight()) == getVerticalScrollBar().getMaximum());
+            }
+        });
+
+        this.setAutoScroll(true);
 
         while ((nextLine = reader.readLine()) != null && !stopped) {
             buffer.append(nextLine).append("\n");
@@ -129,15 +166,23 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     public void setAutoScroll(boolean autoScroll) {
+        //System.out.println("autoscroll changed to: '" + autoScroll +"'");
         this.autoScroll = autoScroll;
     }
 
     public void keyPressed(KeyEvent ke) {
-        if ((ke.getKeyCode() == 70) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) {
+
+        if ((ke.getKeyCode() == 33)) { //Нажали PgUp
+            setAutoScroll(false);
+        } else
+        if ((ke.getKeyCode() == 35) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) { //Нажали Cntrl + PgDown
+            setAutoScroll(true);
+        } else
+        if ((ke.getKeyCode() == 70) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) {  //  Нажали Ctrl + F
             find = (String) JOptionPane.showInputDialog(this, "FIND:\n", "Find", JOptionPane.INFORMATION_MESSAGE, null, null, null);
             System.out.println("find");
             findWord();
-        } else if (ke.getKeyCode() == KeyEvent.VK_F3) {
+        } else if (ke.getKeyCode() == KeyEvent.VK_F3) { // F3 (+Shift)
             if (ke.getModifiers() == KeyEvent.SHIFT_MASK) {
                 findWordBackward();
             } else {
@@ -185,7 +230,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 while ((idx2 = buffer.indexOf("\n", idx2 + 1)) >= 0) {
                     nextLine = buffer.substring(idx1, idx2);
                     idx1 = idx2;
-                    if (nextLine.matches("\n?" + blockPattern + ".*") && block != null) {
+                    if (nextLine.matches("\\n?" + blockPattern + ".*") && block != null) {
                         if ((block.indexOf(blockFilter) >= 0) ^ inverseBlockFilter) {
                             filteredString.append(block);
                         }
@@ -265,8 +310,11 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     public void mouseReleased(MouseEvent e) {
-        StringSelection ss = new StringSelection(area.getSelectedText());
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
+        if(area.getSelectedText()!=null) {
+            setAutoScroll(false);
+            StringSelection ss = new StringSelection(area.getSelectedText());
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
+        }
     }
 
     public void mouseEntered(MouseEvent e) {

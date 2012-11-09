@@ -57,6 +57,7 @@ public class MainWindow1 {
         mainWindow1.rootPanel.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
+                if(mainWindow1.splitedCheckBox.isSelected())
                 mainWindow1.splitPane.setDividerLocation(mainWindow1.rootPanel.getWidth()/2);
             }
         });

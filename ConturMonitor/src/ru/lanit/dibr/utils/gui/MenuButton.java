@@ -47,19 +47,18 @@ public class MenuButton extends JButton {
         });
         opts.add(menuItem);
 
-
         // Меню ======== СТОП СКРОЛЛ ============
-        final JCheckBoxMenuItem scroolChBoxItm = new JCheckBoxMenuItem("Остановить скролл", false);
-        scroolChBoxItm.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-                System.out.println(e);
-                if(logs.get(logName)!=null)
-                    logs.get(logName).setAutoScroll(!scroolChBoxItm.isSelected());
-                else
-                    scroolChBoxItm.setSelected(!scroolChBoxItm.isSelected());
-			}
-		});
-        opts.add(scroolChBoxItm);
+//        final JCheckBoxMenuItem scroolChBoxItm = new JCheckBoxMenuItem("Остановить скролл", false);
+//        scroolChBoxItm.addActionListener(new AbstractAction() {
+//			public void actionPerformed(ActionEvent e) {
+//                System.out.println(e);
+//                if(logs.get(logName)!=null)
+//                    logs.get(logName).setAutoScroll(!scroolChBoxItm.isSelected());
+//                else
+//                    scroolChBoxItm.setSelected(!scroolChBoxItm.isSelected());
+//			}
+//		});
+//        opts.add(scroolChBoxItm);
 
         //  Показ меню
         addActionListener(new AbstractAction() {

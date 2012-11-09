@@ -66,18 +66,26 @@ public class Configuration {
                     encoding = System.getProperty("file.encoding");
                 }
 
-                String httpProxyHost = null;
-                if(list.item(i).getAttributes().getNamedItem("httpProxyHost")!=null) {
-                    httpProxyHost = list.item(i).getAttributes().getNamedItem("httpProxyHost").getNodeValue();
-                }
-                String httpProxyPort = null;
-                if(list.item(i).getAttributes().getNamedItem("httpProxyPort")!=null) {
-                    httpProxyPort = list.item(i).getAttributes().getNamedItem("httpProxyPort").getNodeValue();
+                String proxyHost = null;
+                String proxyType = null;
+                String proxyPort = null;
+                if(list.item(i).getAttributes().getNamedItem("proxyHost")!=null) {
+                    proxyHost = list.item(i).getAttributes().getNamedItem("proxyHost").getNodeValue();
+                    if(list.item(i).getAttributes().getNamedItem("proxyType")!=null) {
+                        proxyType = list.item(i).getAttributes().getNamedItem("proxyType").getNodeValue();
+                    }
+                    if(list.item(i).getAttributes().getNamedItem("proxyPort")!=null) {
+                        proxyPort = list.item(i).getAttributes().getNamedItem("proxyPort").getNodeValue();
+                    }
                 }
 
+
                 Host nextHost;
-                if(httpProxyHost!=null && httpProxyPort!=null) {
-                    nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding, httpProxyHost, Integer.parseInt(httpProxyPort));
+                if(proxyHost!=null) {
+                    if(proxyPort==null || proxyPort.trim().length()==0) {
+                        proxyPort="0";
+                    }
+                    nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding, proxyHost, Integer.parseInt(proxyPort), proxyType);
                 } else {
                     nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding);
                 }
