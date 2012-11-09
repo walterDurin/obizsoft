@@ -46,8 +46,18 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     public LogPanel(Host host, LogFile logFile) {
         super(new JTextArea());
         area = ((JTextArea) getViewport().getView());
+
+        //area.putClientProperty(sun.swing.SwingUtilities2.AA_TEXT_PROPERTY_KEY, new Boolean(false));
+
+//        ((Graphics2D)getGraphics()).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+//                RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+
         area.setEditable(false);
-        area.setFont(new Font("Courier New", 0, 12));
+//        if(System.getProperty("os.name").contains("OS X")) {
+//            area.setFont(new Font("Courier", 0, 13));
+//        } else {
+            area.setFont(new Font("Courier New", 0, 12));
+//        }
         area.setBackground(new Color(0, 0, 0));
         area.setForeground(new Color(187, 187, 187));
         area.setSelectedTextColor(new Color(0, 0, 0));
@@ -122,7 +132,6 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             }
         });
 
-        this.setAutoScroll(true);
 
         while ((nextLine = reader.readLine()) != null && !stopped) {
             buffer.append(nextLine).append("\n");
