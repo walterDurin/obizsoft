@@ -31,7 +31,7 @@ public class LogChoicer extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setAlwaysOnTop(true);
 		pane = new JPanel();
-		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS)); //Принудительно по вертикали
+		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS)); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		//setLocationByPlatform(true);
         setLocation(0, 250);
 		for (Map.Entry<Host, Map<String, LogFile>> entry : cfg.getServers().entrySet()) {
@@ -70,6 +70,7 @@ public class LogChoicer extends JFrame {
 				System.out.println(e.paramString());
 				if(lf==null) {
 					lf = new LogFrame(b, menuButton, host, logFile);
+                    lf.setVisible(true);//need for correct drawing on MacOS X
 					b.setForeground(new Color(48, 129, 97));
                     b.setBorder(new LineBorder(new Color(48, 129, 97)));
                     b.setText(logFile.getName());
