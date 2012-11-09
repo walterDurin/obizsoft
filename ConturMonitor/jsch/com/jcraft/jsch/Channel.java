@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -95,30 +95,29 @@ public abstract class Channel implements Runnable{
   }
 
   int id;
-  int recipient=-1;
-  byte[] type=Util.str2byte("foo");
-  int lwsize_max=0x100000;
-//int lwsize_max=0x20000;  // 32*1024*4
-  int lwsize=lwsize_max;  // local initial window size
-  int lmpsize=0x4000;     // local maximum packet size
-//int lmpsize=0x8000;     // local maximum packet size
+  volatile int recipient=-1;
+  protected byte[] type=Util.str2byte("foo");
+  volatile int lwsize_max=0x100000;
+  volatile int lwsize=lwsize_max;     // local initial window size
+  volatile int lmpsize=0x4000;     // local maximum packet size
 
-  long rwsize=0;         // remote initial window size
-  int rmpsize=0;        // remote maximum packet size
+  volatile long rwsize=0;         // remote initial window size
+  volatile int rmpsize=0;        // remote maximum packet size
 
   IO io=null;    
   Thread thread=null;
 
-  boolean eof_local=false;
-  boolean eof_remote=false;
+  volatile boolean eof_local=false;
+  volatile boolean eof_remote=false;
 
-  boolean close=false;
-  boolean connected=false;
+  volatile boolean close=false;
+  volatile boolean connected=false;
+  volatile boolean open_confirmation=false;
 
-  int exitstatus=-1;
+  volatile int exitstatus=-1;
 
-  int reply=0; 
-  int connectTimeout=0;
+  volatile int reply=0; 
+  volatile int connectTimeout=0;
 
   private Session session;
 
@@ -130,8 +129,10 @@ public abstract class Channel implements Runnable{
       pool.addElement(this);
     }
   }
-  void setRecipient(int foo){
+  synchronized void setRecipient(int foo){
     this.recipient=foo;
+    if(notifyme>0)
+      notifyAll();
   }
   int getRecipient(){
     return recipient;
@@ -145,58 +146,9 @@ public abstract class Channel implements Runnable{
   }
 
   public void connect(int connectTimeout) throws JSchException{
-    Session _session=getSession();
-    if(!_session.isConnected()){
-      throw new JSchException("session is down");
-    }
     this.connectTimeout=connectTimeout;
     try{
-      Buffer buf=new Buffer(100);
-      Packet packet=new Packet(buf);
-      // send
-      // byte   SSH_MSG_CHANNEL_OPEN(90)
-      // string channel type         //
-      // uint32 sender channel       // 0
-      // uint32 initial window size  // 0x100000(65536)
-      // uint32 maxmum packet size   // 0x4000(16384)
-      packet.reset();
-      buf.putByte((byte)90);
-      buf.putString(this.type);
-      buf.putInt(this.id);
-      buf.putInt(this.lwsize);
-      buf.putInt(this.lmpsize);
-      _session.write(packet);
-      int retry=1000;
-      long start=System.currentTimeMillis();
-      long timeout=connectTimeout;
-      while(this.getRecipient()==-1 &&
-	    _session.isConnected() &&
-	    retry>0){
-        if(timeout>0L){
-          if((System.currentTimeMillis()-start)>timeout){
-            retry=0;
-            continue;
-          }
-        }
-	try{Thread.sleep(50);}catch(Exception ee){}
-	retry--;
-      }
-      if(!_session.isConnected()){
-	throw new JSchException("session is down");
-      }
-      if(retry==0){
-        throw new JSchException("channel is not opened.");
-      }
-
-      /*
-       * At the failure in opening the channel on the sshd, 
-       * 'SSH_MSG_CHANNEL_OPEN_FAILURE' will be sent from sshd and it will
-       * be processed in Session#run().
-       */
-      if(this.isClosed()){
-        throw new JSchException("channel is not opened.");
-      }
-      connected=true;
+      sendChannelOpen();
       start();
     }
     catch(Exception e){
@@ -275,7 +227,7 @@ public abstract class Channel implements Runnable{
           packet=new Packet(buffer);
 
           byte[] _buf=buffer.buffer;
-          if(_buf.length-(14+0)-32-20<=0){
+          if(_buf.length-(14+0)-Session.buffer_margin<=0){
             buffer=null;
             packet=null;
             throw new IOException("failed to initialize the channel.");
@@ -300,8 +252,8 @@ public abstract class Channel implements Runnable{
           int _bufl=_buf.length;
           while(l>0){
             int _l=l;
-            if(l>_bufl-(14+dataLen)-32-20){
-              _l=_bufl-(14+dataLen)-32-20;
+            if(l>_bufl-(14+dataLen)-Session.buffer_margin){
+              _l=_bufl-(14+dataLen)-Session.buffer_margin;
             }
 
             if(_l<=0){
@@ -330,7 +282,10 @@ public abstract class Channel implements Runnable{
           try{
             int foo=dataLen;
             dataLen=0;
-            getSession().write(packet, channel, foo);
+            synchronized(channel){
+              if(!channel.close)
+                getSession().write(packet, channel, foo);
+            }
           }
           catch(Exception e){
             close();
@@ -371,6 +326,22 @@ public abstract class Channel implements Runnable{
     MyPipedInputStream(PipedOutputStream out, int size) throws IOException{
       super(out);
       buffer=new byte[size];
+    }
+
+    /*
+     * TODO: We should have our own Piped[I/O]Stream implementation.
+     * Before accepting data, JDK's PipedInputStream will check the existence of
+     * reader thread, and if it is not alive, the stream will be closed.
+     * That behavior may cause the problem if multiple threads make access to it.
+     */
+    public synchronized void updateReadSide() throws IOException {
+      if(available() != 0){ // not empty
+        return;
+      }
+      in = 0;
+      out = 0;
+      buffer[in++] = 0;
+      read();
     }
   }
   void setLocalWindowSizeMax(int foo){ this.lwsize_max=foo; }
@@ -637,5 +608,70 @@ public abstract class Channel implements Runnable{
     }
     catch(Exception e){
     }
+  }
+
+  protected Packet genChannelOpenPacket(){
+    Buffer buf=new Buffer(100);
+    Packet packet=new Packet(buf);
+    // byte   SSH_MSG_CHANNEL_OPEN(90)
+    // string channel type         //
+    // uint32 sender channel       // 0
+    // uint32 initial window size  // 0x100000(65536)
+    // uint32 maxmum packet size   // 0x4000(16384)
+    packet.reset();
+    buf.putByte((byte)90);
+    buf.putString(this.type);
+    buf.putInt(this.id);
+    buf.putInt(this.lwsize);
+    buf.putInt(this.lmpsize);
+    return packet;
+  }
+
+  protected void sendChannelOpen() throws Exception {
+    Session _session=getSession();
+    if(!_session.isConnected()){
+      throw new JSchException("session is down");
+    }
+
+    Packet packet = genChannelOpenPacket();
+    _session.write(packet);
+
+    int retry=10;
+    long start=System.currentTimeMillis();
+    long timeout=connectTimeout;
+    if(timeout!=0L) retry = 1;
+    synchronized(this){
+      while(this.getRecipient()==-1 &&
+            _session.isConnected() &&
+             retry>0){
+        if(timeout>0L){
+          if((System.currentTimeMillis()-start)>timeout){
+            retry=0;
+            continue;
+          }
+        }
+        try{
+          long t = timeout==0L ? 5000L : timeout;
+          this.notifyme=1;
+          wait(t);
+        }
+        catch(java.lang.InterruptedException e){
+        }
+        finally{
+          this.notifyme=0;
+        }
+        retry--;
+      }
+    }
+    if(!_session.isConnected()){
+      throw new JSchException("session is down");
+    }
+    if(this.getRecipient()==-1){  // timeout
+      throw new JSchException("channel is not opened.");
+    }
+    if(this.open_confirmation==false){  // SSH_MSG_CHANNEL_OPEN_FAILURE
+      throw new JSchException("channel is not opened.");
+    }
+    connected=true;
   }
 }

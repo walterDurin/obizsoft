@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2005-2010 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2005-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -34,7 +34,7 @@ public class ChannelSubsystem extends ChannelSession{
   boolean pty=false;
   boolean want_reply=true;
   String subsystem="";
-  public void setXForwarding(boolean foo){ xforwading=true; }
+  public void setXForwarding(boolean foo){ xforwading=foo; }
   public void setPty(boolean foo){ pty=foo; }
   public void setWantReply(boolean foo){ want_reply=foo; }
   public void setSubsystem(String foo){ subsystem=foo; }

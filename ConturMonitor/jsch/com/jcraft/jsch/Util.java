@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -29,6 +29,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 import java.net.Socket;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 class Util{
 
@@ -470,5 +473,26 @@ class Util{
     if((byte)(b&0xe0)==(byte)0xc0) return 2;
     if((byte)(b&0xf0)==(byte)0xe0) return 3;
     return 1;
+  }
+
+  static byte[] fromFile(String _file) throws IOException {
+    File file = new File(_file);
+    FileInputStream fis = new FileInputStream(_file);
+    try {
+      byte[] result = new byte[(int)(file.length())];
+      int len=0;
+      while(true){
+        int i=fis.read(result, len, result.length-len);
+        if(i<=0)
+          break;
+        len+=i;
+      }
+      fis.close();
+      return result;
+    }
+    finally {
+      if(fis!=null)
+        fis.close();
+    }
   }
 }

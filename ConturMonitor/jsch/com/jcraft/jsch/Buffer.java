@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -154,7 +154,12 @@ public class Buffer{
     return foo;
   }
   public byte[] getMPInt() {
-    int i=getInt();
+    int i=getInt();  // uint32
+    if(i<0 ||  // bigger than 0x7fffffff
+       i>8*1024){
+      // TODO: an exception should be thrown.
+      i = 8*1024; // the session will be broken, but working around OOME.
+    }
     byte[] foo=new byte[i];
     getByte(foo, 0, i);
     return foo;
@@ -174,13 +179,11 @@ public class Buffer{
   }
   public byte[] getString() {
     int i = getInt();  // uint32
-    /*
     if(i<0 ||  // bigger than 0x7fffffff
-       s+i>index){
-      //throw new java.io.IOException("invalid string length: "+(((long)i)&0xffffffffL));
-      i = index-s; // the session will be broken, but working around OOME.
+       i>256*1024){
+      // TODO: an exception should be thrown.
+      i = 256*1024; // the session will be broken, but working around OOME.
     }
-    */
     byte[] foo=new byte[i];
     getByte(foo, 0, i);
     return foo;
@@ -208,6 +211,54 @@ public class Buffer{
   byte getCommand(){
     return buffer[5];
   }
+
+  void checkFreeSize(int n){
+    if(buffer.length<index+n){
+      byte[] tmp = new byte[buffer.length*2];
+      System.arraycopy(buffer, 0, tmp, 0, index);
+      buffer = tmp;
+    }
+  }
+
+  byte[][] getBytes(int n, String msg) throws JSchException {
+    byte[][] tmp = new byte[n][];
+    for(int i = 0; i < n; i++){
+      int j = getInt();
+      if(getLength() < j){
+        throw new JSchException(msg);
+      }
+      tmp[i] = new byte[j];
+      getByte(tmp[i]);
+    }
+    return tmp;
+  }
+
+  /*
+  static Buffer fromBytes(byte[]... args){
+    int length = args.length*4;
+    for(int i = 0; i < args.length; i++){
+      length += args[i].length;
+    }
+    Buffer buf = new Buffer(length);
+    for(int i = 0; i < args.length; i++){
+      buf.putString(args[i]);
+    }
+    return buf;
+  }
+  */
+
+  static Buffer fromBytes(byte[][] args){
+    int length = args.length*4;
+    for(int i = 0; i < args.length; i++){
+      length += args[i].length;
+    }
+    Buffer buf = new Buffer(length);
+    for(int i = 0; i < args.length; i++){
+      buf.putString(args[i]);
+    }
+    return buf;
+  }
+
 
 /*
   static String[] chars={

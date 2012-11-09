@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -97,25 +97,29 @@ public class ChannelForwardedTCPIP extends Channel{
     Packet packet=new Packet(buf);
     int i=0;
     try{
+      Session _session = getSession();
       while(thread!=null && 
             io!=null && 
             io.in!=null){
         i=io.in.read(buf.buffer, 
                      14, 
                      buf.buffer.length-14
-                     -32 -20 // padding and mac
+                     -Session.buffer_margin
                      );
         if(i<=0){
           eof();
           break;
         }
         packet.reset();
-        if(close)break;
         buf.putByte((byte)Session.SSH_MSG_CHANNEL_DATA);
         buf.putInt(recipient);
         buf.putInt(i);
         buf.skip(i);
-        getSession().write(packet, this, i);
+        synchronized(this){
+          if(close)
+            break;
+          _session.write(packet, this, i);
+        }
       }
     }
     catch(Exception e){
