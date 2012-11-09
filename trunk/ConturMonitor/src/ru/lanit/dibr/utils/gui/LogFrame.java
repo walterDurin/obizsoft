@@ -40,8 +40,9 @@ public class LogFrame  extends JFrame {
 				try {
 					lp.connect();
 				} catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println(e);
-					JOptionPane.showMessageDialog(LogFrame.this, "Can't open log '"+logFile.getPath()+" on '"+host.getHost()+"'!");
+					JOptionPane.showMessageDialog(LogFrame.this, "Can't open log '" + logFile.getPath() + " on '"+host.getHost() + "'!\n" + e.getMessage());
                     LogFrame.this.setVisible(false);
                     b.setBorder(new LineBorder(Color.RED));
                     b.setEnabled(false);
