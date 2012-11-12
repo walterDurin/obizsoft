@@ -1,22 +1,14 @@
 package ru.lanit.dibr.utils.gui;
 
-import com.jcraft.jsch.*;
-
 import javax.swing.*;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
-import javax.swing.text.BadLocationException;
-import javax.xml.transform.Source;
 
-import ru.lanit.dibr.utils.gui.configuration.Host;
-import ru.lanit.dibr.utils.gui.configuration.LogFile;
-import ru.lanit.dibr.utils.utils.MyUserInfo;
+import ru.lanit.dibr.utils.core.FilteredSource;
+import ru.lanit.dibr.utils.core.LogSource;
 
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
 import java.awt.*;
 
 /**
@@ -26,8 +18,8 @@ import java.awt.*;
  * Time: 15:56:23
  */
 public class LogPanel extends JScrollPane implements KeyListener, CaretListener, MouseListener {
-    private Host host;
-    private String logPath;
+    private LogSource logSource;
+    private FilteredSource filtersChain;
     private String blockPattern;
     private boolean stopped = false;
     private JTextArea area;
@@ -43,7 +35,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     private StringBuffer currentBlock = new StringBuffer();
 
 
-    public LogPanel(Host host, LogFile logFile) {
+    public LogPanel(LogSource logSource, String blockPattern) {
         super(new JTextArea());
         area = ((JTextArea) getViewport().getView());
 
@@ -56,62 +48,25 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 //        if(System.getProperty("os.name").contains("OS X")) {
 //            area.setFont(new Font("Courier", 0, 13));
 //        } else {
-            area.setFont(new Font("Courier New", 0, 12));
+        area.setFont(new Font("Courier New", 0, 12));
 //        }
         area.setBackground(new Color(0, 0, 0));
         area.setForeground(new Color(187, 187, 187));
         area.setSelectedTextColor(new Color(0, 0, 0));
         area.setSelectionColor(new Color(187, 187, 187));
         area.addMouseListener(this);
-        this.host = host;
-        this.logPath = logFile.getPath();
-        this.blockPattern = logFile.getBlockPattern();
+        this.logSource = logSource;
+        this.blockPattern = blockPattern;
     }
 
     public void connect() throws Exception {
-        JSch jsch = new JSch();
-        Session session = jsch.getSession(host.getUser(), host.getHost(), host.getPort());
-        if(host.getProxyHost()!=null) {
-            Proxy proxy = null;
-            if(host.getProxyType().equals(Host.HTTP)) {
-                proxy = new ProxyHTTP(host.getProxyHost(), host.getProxyPrort());
-            } else if(host.getProxyType().equals(Host.SOCKS4)){
-                proxy = new ProxySOCKS4(host.getProxyHost(), host.getProxyPrort());
-            } else if(host.getProxyType().equals(Host.SOCKS5)){
-                proxy = new ProxySOCKS4(host.getProxyHost(), host.getProxyPrort());
-            } else {
-                throw new Exception("Unknown proxy type! Please use one of following: '" + Host.HTTP + "'; '" + Host.SOCKS4 + "'; " + Host.SOCKS5 + "'; ");
-            }
-            //proxy.
-//            Proxy proxy = new ProxySOCKS4(host.getHost(), host.getPort());
-            session.setProxy(proxy);
-        }
-        session.setConfig("StrictHostKeyChecking", "no"); //принимать неизвестные ключи от серверов
-        //сжатие потока
-        session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
-        session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
-        session.setConfig("compression_level", "9");
-
-        if (host.getPem() != null) {
-            jsch.addIdentity(host.getPem());
-        } else {
-            UserInfo ui = new MyUserInfo(host.getPassword());
-            session.setUserInfo(ui);
-        }
-        ChannelExec channel = null;
-        BufferedReader reader = null;
-
         try {
-        session.connect(30000);   // making a connection with timeout.
-        channel = (ChannelExec) session.openChannel("exec");
-        channel.setCommand("tail -500f " + logPath);
-        reader = new BufferedReader(new InputStreamReader(channel.getInputStream(), host.getDefaultEncoding()));
-        String nextLine;
+            logSource.startRead();
+            filtersChain = new FilteredSource(logSource);
+            String nextLine;
+            area.addKeyListener(this);
+            area.addCaretListener(this);
 
-        channel.connect(3 * 1000);
-
-        area.addKeyListener(this);
-        area.addCaretListener(this);
 //        this.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
 //            public void adjustmentValueChanged(AdjustmentEvent e) {
 //                System.out.println("e.getValue(): " + e.getValue());
@@ -124,41 +79,30 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 //        });
 
 
-        this.addMouseWheelListener(new MouseAdapter() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                //System.out.println(e);
-                setAutoScroll(!getVerticalScrollBar().isVisible() || (getVerticalScrollBar().getValue() + getVerticalScrollBar().getHeight()) == getVerticalScrollBar().getMaximum());
-            }
-        });
+            this.addMouseWheelListener(new MouseAdapter() {
+                @Override
+                public void mouseWheelMoved(MouseWheelEvent e) {
+                    //System.out.println(e);
+                    setAutoScroll(!getVerticalScrollBar().isVisible() || (getVerticalScrollBar().getValue() + getVerticalScrollBar().getHeight()) == getVerticalScrollBar().getMaximum());
+                }
+            });
 
 
-        while ((nextLine = reader.readLine()) != null && !stopped) {
-            buffer.append(nextLine).append("\n");
-            if (blockFilter != null) {
-                if (nextLine.matches("\n?" + blockPattern + ".*") && currentBlock != null) {
-                    if ((currentBlock.indexOf(blockFilter) >= 0) ^ inverseBlockFilter) {
-                        appendLine(currentBlock.toString());
+            while ((nextLine = logSource.readLine()) != null && !stopped) {
+                buffer.append(nextLine).append("\n");
+                if (blockFilter != null) {
+                    if (nextLine.matches("\n?" + blockPattern + ".*") && currentBlock != null) {
+                        if ((currentBlock.indexOf(blockFilter) >= 0) ^ inverseBlockFilter) {
+                            appendLine(currentBlock.toString());
+                        }
+                        currentBlock = new StringBuffer();
                     }
-                    currentBlock = new StringBuffer();
+                } else if (grep == null || (nextLine.contains(grep) ^ inverseGrep)) {
+                    appendLine(nextLine);
                 }
-            } else if (grep == null || (nextLine.contains(grep) ^ inverseGrep)) {
-                appendLine(nextLine);
             }
-        }
         } finally {
-            if(reader!=null)
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            if(channel!=null && channel.isConnected()) {
-                channel.disconnect();
-            }
-            if(session!=null && session.isConnected()) {
-                session.disconnect();
-            }
+            logSource.close();
         }
     }
 
@@ -183,11 +127,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
         if ((ke.getKeyCode() == 33)) { //Нажали PgUp
             setAutoScroll(false);
-        } else
-        if ((ke.getKeyCode() == 35) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) { //Нажали Cntrl + PgDown
+        } else if ((ke.getKeyCode() == 35) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) { //Нажали Cntrl + PgDown
             setAutoScroll(true);
-        } else
-        if ((ke.getKeyCode() == 70) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) {  //  Нажали Ctrl + F
+        } else if ((ke.getKeyCode() == 70) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) {  //  Нажали Ctrl + F
             find = (String) JOptionPane.showInputDialog(this, "FIND:\n", "Find", JOptionPane.INFORMATION_MESSAGE, null, null, null);
             System.out.println("find");
             findWord();
@@ -319,7 +261,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     public void mouseReleased(MouseEvent e) {
-        if(area.getSelectedText()!=null) {
+        if (area.getSelectedText() != null) {
             setAutoScroll(false);
             StringSelection ss = new StringSelection(area.getSelectedText());
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);

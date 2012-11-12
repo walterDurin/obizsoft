@@ -1,5 +1,6 @@
 package ru.lanit.dibr.utils.gui;
 
+import ru.lanit.dibr.utils.core.SshSource;
 import ru.lanit.dibr.utils.gui.configuration.Host;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
 
@@ -22,7 +23,7 @@ public class LogFrame  extends JFrame {
 		setTitle(host.getDescription()+ " : " + logFile.getName());
 
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		final LogPanel lp = new LogPanel(host, logFile);
+        final LogPanel lp = new LogPanel(new SshSource(host, logFile), logFile.getBlockPattern());
 		panel = lp;
 		add(lp);
 		t = new Thread() {

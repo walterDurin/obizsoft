@@ -1,0 +1,16 @@
+package ru.lanit.dibr.utils.core;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * User: Vova
+ * Date: 13.11.12
+ * Time: 2:08
+ */
+public interface Source {
+    public String readLine() throws IOException;
+    public void reset() throws IOException;
+    public void close() throws Exception;
+}
