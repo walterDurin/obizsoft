@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -70,7 +71,7 @@ public class LogChoicer extends JFrame {
 				System.out.println(e.paramString());
 				if(lf==null) {
 					lf = new LogFrame(b, menuButton, host, logFile);
-                    lf.setVisible(true);//need for correct drawing on MacOS X
+                    lf.setVisible(true);
 					b.setForeground(new Color(48, 129, 97));
                     b.setBorder(new LineBorder(new Color(48, 129, 97)));
                     b.setText(logFile.getName());
@@ -96,6 +97,21 @@ public class LogChoicer extends JFrame {
                     }
                     b.setText(logFile.getName());
 				}
+
+                //auto arrange visible windows
+                ArrayList<LogFrame>  visibleWindows = new ArrayList<LogFrame>();
+                for (LogFrame logWindow : logs.values()) {
+                    if(logWindow.isVisible()) {
+                        visibleWindows.add(logWindow);
+                    }
+                }
+                int height = (int) (GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight()/visibleWindows.size());
+                int i = 0;
+                for (LogFrame visibleWindow : visibleWindows) {
+                    visibleWindow.setLocation(LogChoicer.size,(int)((i++)*height));
+                    visibleWindow.setSize((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth() - LogChoicer.size), height);
+                }
+
 			}
 		});
 

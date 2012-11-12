@@ -21,15 +21,6 @@ public class LogFrame  extends JFrame {
 	public LogFrame(final JButton b, final JComponent c, final Host host, final LogFile logFile) {
 		setTitle(host.getDescription()+ " : " + logFile.getName());
 
-        int h = (int) (GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight()/LogChoicer.logsCnt);
-
-		setLocation(LogChoicer.size, (int) (LogChoicer.countShownLogWindow++) * h);
-        setSize((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() - LogChoicer.size), h);
-		setVisible(true);
-
-//        Border border = BorderFactory.createLineBorder(Color.RED);
-//        ((JComponent)getRootPane()).setBorder(border);
-
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		final LogPanel lp = new LogPanel(host, logFile);
 		panel = lp;
