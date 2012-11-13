@@ -8,6 +8,8 @@ import ru.lanit.dibr.utils.utils.MyUserInfo;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: Vova
@@ -15,6 +17,13 @@ import java.io.InputStreamReader;
  * Time: 2:12
  */
 public class SshSource implements LogSource {
+
+    private boolean isClosed = false;
+    private boolean paused = false;
+    List<String> buffer = new ArrayList<String>();
+
+    int readedLines = 0;
+    //    StringBuffer buffer = new StringBuffer();
     private Host host;
     private LogFile logFile;
     BufferedReader reader = null;
@@ -27,6 +36,7 @@ public class SshSource implements LogSource {
     }
 
     public void startRead() throws Exception {
+        checkClosed();
         JSch jsch = new JSch();
         session = jsch.getSession(host.getUser(), host.getHost(), host.getPort());
         if (host.getProxyHost() != null) {
@@ -64,14 +74,56 @@ public class SshSource implements LogSource {
         channel.connect(3 * 1000);
 
 
+        Thread readThread = new Thread(new Runnable() {
+            public void run() {
+                String nextLine;
+                try {
+                    while ((nextLine = reader.readLine()) != null && !isClosed) {
+
+                        buffer.add(String.format("%6d: %s", (buffer.size()+1), nextLine));
+                    }
+                } catch (IOException e) {
+                    try {
+                        close();
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        readThread.start();
+
+    }
+
+    private void checkClosed() {
+        if (isClosed) {
+            throw new RuntimeException("Reader is closed");
+        }
     }
 
     public String readLine() throws IOException {
-        return reader.readLine();
+        try {
+            while (paused) {
+                System.out.println("I'm sleep..");
+                Thread.sleep(200);
+            }
+            if (buffer.size() > readedLines) {
+                return buffer.get(readedLines++);
+            } else {
+                Thread.sleep(200);
+            }
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return SKIP_LINE;
     }
 
-    public void reset() throws IOException {
-        reader.reset();
+    public void reset() {
+        readedLines = 0;
+        //reader.reset();
     }
 
     public void reloadFull() throws Exception {
@@ -82,6 +134,7 @@ public class SshSource implements LogSource {
     }
 
     public void close() throws Exception {
+        isClosed = true;
         if (reader != null)
             try {
                 reader.close();
@@ -94,6 +147,10 @@ public class SshSource implements LogSource {
         if (session != null && session.isConnected()) {
             session.disconnect();
         }
+    }
 
+    public void setPaused(boolean paused) {
+        System.out.println("set paused: " + paused);
+        this.paused = paused;
     }
 }

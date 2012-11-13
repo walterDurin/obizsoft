@@ -8,7 +8,7 @@ import java.io.IOException;
  * Time: 2:11
  */
 public class FilteredSource implements Source {
-    private Source source;
+    private final Source source;
     private Source filteredSource;
 
     public FilteredSource(Source source) {
@@ -17,18 +17,28 @@ public class FilteredSource implements Source {
     }
 
     public void addFilter(Filter filter) {
+        source.reset();
         filteredSource = filter.apply(source);
+    }
+
+    public void clearFilters() {
+        source.reset();
+        filteredSource = source;
     }
 
     public String readLine() throws IOException {
         return filteredSource.readLine();
     }
 
-    public void reset() throws IOException {
+    public void reset() {
         filteredSource.reset();
     }
 
     public void close() {
         //TODO
+    }
+
+    public void setPaused(boolean paused) {
+        filteredSource.setPaused(paused);
     }
 }

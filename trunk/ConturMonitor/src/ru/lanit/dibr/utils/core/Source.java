@@ -11,6 +11,7 @@ import java.io.InputStream;
  */
 public interface Source {
     public String readLine() throws IOException;
-    public void reset() throws IOException;
+    public void reset();
     public void close() throws Exception;
+    public void setPaused(boolean paused);
 }
