@@ -1,6 +1,7 @@
 package ru.lanit.dibr.utils.gui;
 
 import ru.lanit.dibr.utils.Configuration;
+import ru.lanit.dibr.utils.core.SshSource;
 import ru.lanit.dibr.utils.gui.configuration.Host;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
 
@@ -70,7 +71,7 @@ public class LogChoicer extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println(e.paramString());
 				if(lf==null) {
-					lf = new LogFrame(b, menuButton, host, logFile);
+					lf = new LogFrame(b, menuButton, host.getDescription()+ " : " + logFile.getName(), new SshSource(host, logFile), logFile.getBlockPattern());
                     lf.setVisible(true);
 					b.setForeground(new Color(48, 129, 97));
                     b.setBorder(new LineBorder(new Color(48, 129, 97)));

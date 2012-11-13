@@ -106,7 +106,7 @@ public class SshSource implements LogSource {
     public String readLine() throws IOException {
         try {
             while (paused) {
-                System.out.println("I'm sleep..");
+                System.out.println("I'm asleep..");
                 Thread.sleep(200);
             }
             if (buffer.size() > readedLines) {
