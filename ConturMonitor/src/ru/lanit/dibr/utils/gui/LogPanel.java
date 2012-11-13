@@ -4,12 +4,12 @@ import javax.swing.*;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 
-import ru.lanit.dibr.utils.core.FilteredSource;
-import ru.lanit.dibr.utils.core.LogSource;
+import ru.lanit.dibr.utils.core.*;
 
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,14 +25,14 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     private JTextArea area;
     private boolean autoScroll = true;
     private String find = null;
-    private String grep = null;
-    private String blockFilter = null;
-    private boolean inverseBlockFilter = false; //if set true then block contained @blockFilter will be hidden
-    private boolean inverseGrep = false; //if set true then lines contained @grep will be hidden
+
+//    private String blockFilter = null;
+//    private boolean inverseBlockFilter = false; //if set true then block contained @blockFilter will be hidden
+//    private StringBuilder buffer = new StringBuilder();
+//    private StringBuffer currentBlock = new StringBuffer();
+
     private int startFrom = 0;
     private int offset = 0;
-    private StringBuilder buffer = new StringBuilder();
-    private StringBuffer currentBlock = new StringBuffer();
 
 
     public LogPanel(LogSource logSource, String blockPattern) {
@@ -88,18 +88,11 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             });
 
 
-            while ((nextLine = logSource.readLine()) != null && !stopped) {
-                buffer.append(nextLine).append("\n");
-                if (blockFilter != null) {
-                    if (nextLine.matches("\n?" + blockPattern + ".*") && currentBlock != null) {
-                        if ((currentBlock.indexOf(blockFilter) >= 0) ^ inverseBlockFilter) {
-                            appendLine(currentBlock.toString());
-                        }
-                        currentBlock = new StringBuffer();
-                    }
-                } else if (grep == null || (nextLine.contains(grep) ^ inverseGrep)) {
-                    appendLine(nextLine);
+            while ((nextLine = filtersChain.readLine()) != null && !stopped) {
+                if (nextLine == LogSource.SKIP_LINE) { //сравнение именно по ссылке, а не по значению!
+                    continue;
                 }
+                appendLine(nextLine);
             }
         } finally {
             logSource.close();
@@ -125,7 +118,11 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
     public void keyPressed(KeyEvent ke) {
 
-        if ((ke.getKeyCode() == 33)) { //Нажали PgUp
+        if ((ke.getKeyCode() == KeyEvent.VK_F5)) { //Нажали F5
+            //filtersChain.setPaused(true);
+            area.setText("");
+            filtersChain.reset();
+        } else if ((ke.getKeyCode() == 33)) { //Нажали PgUp
             setAutoScroll(false);
         } else if ((ke.getKeyCode() == 35) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) { //Нажали Cntrl + PgDown
             setAutoScroll(true);
@@ -140,65 +137,30 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 findWord();
             }
         } else if ((ke.getKeyCode() == 71) && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {
-            inverseGrep = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
-            grep = (String) JOptionPane.showInputDialog(this, "GREP:\n", "Grep", JOptionPane.INFORMATION_MESSAGE, null, null, null);
-            System.out.println("Grep entered: '" + grep + "'");
-            if (grep != null && grep.trim().length() > 0) {
-                blockFilter = null;
-                grep = grep.trim();
-                int idx1 = 0;
-                int idx2 = 0;
-                StringBuilder filteredString = new StringBuilder();
-                String nextLine = "";
-                while ((idx2 = buffer.indexOf("\n", idx2 + 1)) >= 0) {
-                    nextLine = buffer.substring(idx1, idx2);
-                    if (nextLine.contains(grep) ^ inverseGrep) {
-                        filteredString.append(nextLine);
-                    }
-                    idx1 = idx2;
-                }
-                area.setText(filteredString.toString());
-                if (autoScroll)
-                    area.setCaretPosition(filteredString.lastIndexOf("\n") + 1);
-                getParent().repaint();
-                repaint();
-            } else {
-                grepOff();
-            }
+            boolean inverseGrep = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
+            String grepPattern = (String) JOptionPane.showInputDialog(this, "GREP:\n", "Grep", JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            System.out.println("Grep entered: '" + grepPattern + "'");
+            if (grepPattern != null && grepPattern.trim().length() > 0) {
+                filtersChain.clearFilters();
+                grepPattern = grepPattern.trim();
 
+                setFilter(new GrepFilter(grepPattern, inverseGrep));
+
+            } else {
+                clearFiltersAndRefresh();
+            }
         } else if ((ke.getKeyCode() == 66) && blockPattern != null && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {
-            inverseBlockFilter = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
-            blockFilter = (String) JOptionPane.showInputDialog(this, "Block filter:\n", "Block filter", JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            boolean inverseBlockFilter = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
+            String blockFilter = (String) JOptionPane.showInputDialog(this, "Block filter:\n", "Block filter", JOptionPane.INFORMATION_MESSAGE, null, null, null);
             System.out.println("blockFilter entered: '" + blockFilter + "'");
             if (blockFilter != null && blockFilter.trim().length() > 0) {
-                grep = null;
+                filtersChain.clearFilters();
                 blockFilter = blockFilter.trim();
-                int idx1 = 0;
-                int idx2 = 0;
-                StringBuilder filteredString = new StringBuilder();
-                StringBuffer block = null;
-                String nextLine = "";
-                while ((idx2 = buffer.indexOf("\n", idx2 + 1)) >= 0) {
-                    nextLine = buffer.substring(idx1, idx2);
-                    idx1 = idx2;
-                    if (nextLine.matches("\\n?" + blockPattern + ".*") && block != null) {
-                        if ((block.indexOf(blockFilter) >= 0) ^ inverseBlockFilter) {
-                            filteredString.append(block);
-                        }
-                        block = new StringBuffer();
-                    }
-                    if (block == null) {
-                        block = new StringBuffer();
-                    }
-                    block.append(nextLine);
-                }
-                area.setText(filteredString.toString());
-                if (autoScroll)
-                    area.setCaretPosition(filteredString.lastIndexOf("\n") + 1);
-                getParent().repaint();
-                repaint();
+
+                setFilter(new BlockFilter(blockPattern, blockFilter, inverseBlockFilter));
+
             } else {
-                blockFilterOff();
+                clearFiltersAndRefresh();
             }
 
         } else {
@@ -206,20 +168,16 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         }
     }
 
-    private void blockFilterOff() {
-        blockFilter = null;
-        area.setText(buffer.toString());
-        if (autoScroll)
-            area.setCaretPosition(buffer.lastIndexOf("\n") + 1);
-        getParent().repaint();
-        repaint();
+    private void setFilter(Filter filter) {
+        filtersChain.setPaused(true);
+        filtersChain.addFilter(filter);
+        area.setText("");
+        filtersChain.setPaused(false);
     }
 
-    private void grepOff() {
-        grep = null;
-        area.setText(buffer.toString());
-        if (autoScroll)
-            area.setCaretPosition(buffer.lastIndexOf("\n") + 1);
+    private void clearFiltersAndRefresh() {
+        area.setText("");
+        filtersChain.clearFilters();
         getParent().repaint();
         repaint();
     }
@@ -262,8 +220,11 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
     public void mouseReleased(MouseEvent e) {
         if (area.getSelectedText() != null) {
+            String selected  = area.getSelectedText();
+            selected = selected.replaceAll("^[\\s\\d]*:\\s", "");
+            selected = selected.replaceAll("\n[\\s\\d]*:\\s", "\n");
             setAutoScroll(false);
-            StringSelection ss = new StringSelection(area.getSelectedText());
+            StringSelection ss = new StringSelection(selected);
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
         }
     }
