@@ -1,5 +1,6 @@
 package ru.lanit.dibr.utils.gui;
 
+import ru.lanit.dibr.utils.core.LogSource;
 import ru.lanit.dibr.utils.core.SshSource;
 import ru.lanit.dibr.utils.gui.configuration.Host;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
@@ -19,11 +20,11 @@ public class LogFrame  extends JFrame {
 	private Thread t;
 	private LogPanel panel;
 
-	public LogFrame(final JButton b, final JComponent c, final Host host, final LogFile logFile) {
-		setTitle(host.getDescription()+ " : " + logFile.getName());
+	public LogFrame(final JButton b, final JComponent c, final String title, final LogSource logSource, final String blockPattern) {
+		setTitle(title);
 
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        final LogPanel lp = new LogPanel(new SshSource(host, logFile), logFile.getBlockPattern());
+        final LogPanel lp = new LogPanel(logSource, blockPattern);
 		panel = lp;
 		add(lp);
 		t = new Thread() {
@@ -34,11 +35,17 @@ public class LogFrame  extends JFrame {
 				} catch (Exception e) {
                     e.printStackTrace();
                     System.out.println(e);
-					JOptionPane.showMessageDialog(LogFrame.this, "Can't open log '" + logFile.getPath() + " on '"+host.getHost() + "'!\n" + e.getMessage());
+					JOptionPane.showMessageDialog(LogFrame.this, "Can't open log '" + title + "'!\n" + e.getMessage());
                     LogFrame.this.setVisible(false);
-                    b.setBorder(new LineBorder(Color.RED));
-                    b.setEnabled(false);
-                    c.setEnabled(false);
+
+                    //ToDO: убрать отсюда эту порнографию!
+                    if(b!=null) {
+                        b.setBorder(new LineBorder(Color.RED));
+                        b.setEnabled(false);
+                    }
+                    if(c!=null) {
+                        c.setEnabled(false);
+                    }
 				}
 			}
 

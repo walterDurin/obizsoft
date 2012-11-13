@@ -15,7 +15,9 @@ import ru.lanit.dibr.utils.gui.configuration.Host;
  */
 public class SshUtil {
 
-    public static void exec(Host host, String command) {
+    public static String exec(Host host, String command) {
+        StringBuffer out = new StringBuffer();
+        System.out.println("SSH exec command: "+command);
         try {
             JSch jsch = new JSch();
 
@@ -42,12 +44,16 @@ public class SshUtil {
 
             channel.connect();
 
+
+            String nextPortion;
             byte[] tmp = new byte[1024];
             while (true) {
                 while (in.available() > 0) {
                     int i = in.read(tmp, 0, 1024);
                     if (i < 0) break;
-                    System.out.print(new String(tmp, 0, i));
+                    nextPortion = new String(tmp, 0, i);
+                    out.append(nextPortion);
+                    System.out.print(nextPortion);
                 }
                 if (channel.isClosed()) {
                     System.out.println("exit-status: " + channel.getExitStatus());
@@ -64,5 +70,6 @@ public class SshUtil {
             System.out.println(e);
         }
 
+        return out.toString();
     }
 }

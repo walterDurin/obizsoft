@@ -55,6 +55,10 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         area.setSelectedTextColor(new Color(0, 0, 0));
         area.setSelectionColor(new Color(187, 187, 187));
         area.addMouseListener(this);
+
+        area.setWrapStyleWord(true);
+        area.setLineWrap(true);
+
         this.logSource = logSource;
         this.blockPattern = blockPattern;
     }
@@ -69,12 +73,14 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
 //        this.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
 //            public void adjustmentValueChanged(AdjustmentEvent e) {
-//                System.out.println("e.getValue(): " + e.getValue());
-//                System.out.println("getVerticalScrollBar().getHeight()" + getVerticalScrollBar().getHeight());
-//                System.out.println("getVerticalScrollBar().isVisible()" + getVerticalScrollBar().isVisible());
-//                System.out.println("getVerticalScrollBar().getMaximum()" + getVerticalScrollBar().getMaximum());
-//                System.out.println((e.getValue() + getVerticalScrollBar().getHeight()) - getVerticalScrollBar().getMaximum());
-//                setAutoScroll(!getVerticalScrollBar().isVisible() || (e.getValue() + getVerticalScrollBar().getHeight()) == getVerticalScrollBar().getMaximum());
+//                    if(getVerticalScrollBar().isVisible()) {
+//                    System.out.println("getVerticalScrollBar().getValue(): " + getVerticalScrollBar().getValue());
+//                    System.out.println("getVerticalScrollBar().getHeight()" + getVerticalScrollBar().getVisibleAmount());
+//                    System.out.println("getVerticalScrollBar().isVisible()" + getVerticalScrollBar().isVisible());
+//                    System.out.println("getVerticalScrollBar().getMaximum()" + getVerticalScrollBar().getMaximum());
+//                    System.out.println((getVerticalScrollBar().getValue() + getVerticalScrollBar().getHeight()) - getVerticalScrollBar().getMaximum());
+//                    setAutoScroll((getVerticalScrollBar().getValue() + getVerticalScrollBar().getHeight()) - getVerticalScrollBar().getMaximum() > - 50);
+//                }
 //            }
 //        });
 
@@ -101,8 +107,10 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
     private void appendLine(String nextLine) {
         area.append("\n" + nextLine);
-        if (autoScroll)
-            area.setCaretPosition(area.getDocument().getLength() - nextLine.length());
+        if (autoScroll) {
+            //area.setCaretPosition(area.getDocument().getLength() - nextLine.length());
+            getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
+        }
         getParent().repaint();
         repaint();
     }
@@ -112,7 +120,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     public void setAutoScroll(boolean autoScroll) {
-        //System.out.println("autoscroll changed to: '" + autoScroll +"'");
+//        System.out.println("autoscroll changed to: '" + autoScroll +"'");
         this.autoScroll = autoScroll;
     }
 
@@ -124,6 +132,8 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             filtersChain.reset();
         } else if ((ke.getKeyCode() == 33)) { //Нажали PgUp
             setAutoScroll(false);
+        } else if ((ke.getKeyCode() == 87)) { //Нажали PgUp
+            area.setLineWrap(!area.getLineWrap());
         } else if ((ke.getKeyCode() == 35) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) { //Нажали Cntrl + PgDown
             setAutoScroll(true);
         } else if ((ke.getKeyCode() == 70) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) {  //  Нажали Ctrl + F
