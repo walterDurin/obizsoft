@@ -7,7 +7,7 @@ import java.io.IOException;
  * Date: 13.11.12
  * Time: 2:43
  */
-public class BlockFilter extends AbstractFilter {
+public class BlockFilter extends AbstractSearchFilter {
 
     private StringBuffer blockBuffer = new StringBuffer();
     private String blockPattern;
@@ -25,7 +25,7 @@ public class BlockFilter extends AbstractFilter {
         String result = LogSource.SKIP_LINE;
         if (nextLine != null) {
             if (nextLine.matches(".*" + blockPattern + ".*")) {
-                if ((blockBuffer.indexOf(pattern) >= 0) ^ inverted) {
+                if (pattern==null || (blockBuffer.indexOf(pattern) >= 0) ^ inverted) {
                     result = blockBuffer.toString();
                 }
                 blockBuffer.setLength(0);
@@ -37,4 +37,8 @@ public class BlockFilter extends AbstractFilter {
         return result;
     }
 
+    @Override
+    protected void onReset() {
+        blockBuffer.setLength(0);
+    }
 }

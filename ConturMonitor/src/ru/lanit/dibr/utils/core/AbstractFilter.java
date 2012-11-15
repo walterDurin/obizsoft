@@ -7,23 +7,11 @@ import java.io.IOException;
  * Date: 13.11.12
  * Time: 2:43
  */
-public class AbstractFilter implements Filter {
-    protected String pattern;
-    protected boolean inverted = false;
+public abstract class AbstractFilter implements Filter {
 
-    public AbstractFilter(String pattern, boolean inverted) {
-        this.pattern = pattern;
-        this.inverted = inverted;
-    }
+    abstract protected String readFilteredLine(Source source) throws IOException;
 
-    public boolean isInverted() {
-        return inverted;
-    }
-
-    protected String readFilteredLine(Source source) throws IOException {
-        if(true)
-            throw new RuntimeException("Not implemented");
-        return source.readLine();
+    protected void onReset() {
     }
 
     public Source apply(final Source source) {
@@ -40,6 +28,7 @@ public class AbstractFilter implements Filter {
 
             public void reset() {
                 source.reset();
+                onReset();
             }
 
             public void close() {

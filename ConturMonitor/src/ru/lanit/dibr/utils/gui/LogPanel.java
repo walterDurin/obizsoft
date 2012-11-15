@@ -3,13 +3,13 @@ package ru.lanit.dibr.utils.gui;
 import javax.swing.*;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
+import javax.swing.text.BadLocationException;
 
 import ru.lanit.dibr.utils.core.*;
 
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.awt.*;
-import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,6 +25,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     private JTextArea area;
     private boolean autoScroll = true;
     private String find = null;
+    private boolean isFormatted = true;
 
 //    private String blockFilter = null;
 //    private boolean inverseBlockFilter = false; //if set true then block contained @blockFilter will be hidden
@@ -67,6 +68,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         try {
             logSource.startRead();
             filtersChain = new FilteredSource(logSource);
+            filtersChain.addFilter(new XmlFormatFilter(blockPattern));
             String nextLine;
             area.addKeyListener(this);
             area.addCaretListener(this);
@@ -127,12 +129,19 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     public void keyPressed(KeyEvent ke) {
 
         if ((ke.getKeyCode() == KeyEvent.VK_F5)) { //Нажали F5
-            //filtersChain.setPaused(true);
-            area.setText("");
+            filtersChain.setPaused(true);
             filtersChain.reset();
+            area.setText("");
+            filtersChain.setPaused(false);
+        } else if ((ke.getKeyCode() == 88)) { //Нажали X
+            if(isFormatted=!isFormatted) {
+                setFilter(new XmlFormatFilter(blockPattern));
+            } else {
+                removeFilterByType(XmlFormatFilter.class);
+            }
         } else if ((ke.getKeyCode() == 33)) { //Нажали PgUp
             setAutoScroll(false);
-        } else if ((ke.getKeyCode() == 87)) { //Нажали PgUp
+        } else if ((ke.getKeyCode() == 87)) { //Нажали W
             area.setLineWrap(!area.getLineWrap());
         } else if ((ke.getKeyCode() == 35) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) { //Нажали Cntrl + PgDown
             setAutoScroll(true);
@@ -157,7 +166,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 setFilter(new GrepFilter(grepPattern, inverseGrep));
 
             } else {
-                clearFiltersAndRefresh();
+                removeFilterByType(GrepFilter.class);
             }
         } else if ((ke.getKeyCode() == 66) && blockPattern != null && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {
             boolean inverseBlockFilter = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
@@ -170,7 +179,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 setFilter(new BlockFilter(blockPattern, blockFilter, inverseBlockFilter));
 
             } else {
-                clearFiltersAndRefresh();
+                removeFilterByType(BlockFilter.class);
             }
 
         } else {
@@ -185,9 +194,12 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         filtersChain.setPaused(false);
     }
 
-    private void clearFiltersAndRefresh() {
+    private void removeFilterByType(Class c) {
+        filtersChain.setPaused(true);
         area.setText("");
-        filtersChain.clearFilters();
+//        filtersChain.clearFilters();
+        filtersChain.removeFilter(c);
+        filtersChain.setPaused(false);
         getParent().repaint();
         repaint();
     }
@@ -221,7 +233,17 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     public void mouseClicked(MouseEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        if(e.getClickCount()==2) {
+            try {
+                int  ss = area.getSelectionStart();
+                ss = area.getText().lastIndexOf("\n", ss) + 1;
+                int se  = area.getText().indexOf("\n", ss);
+                System.out.println("DblClk! \n" + area.getText(ss, se-ss) );
+            } catch (BadLocationException e1) {
+                e1.printStackTrace();
+            }
+
+        }
     }
 
     public void mousePressed(MouseEvent e) {
