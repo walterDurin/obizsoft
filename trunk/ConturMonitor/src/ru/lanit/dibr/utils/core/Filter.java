@@ -6,6 +6,5 @@ package ru.lanit.dibr.utils.core;
  * Time: 2:10
  */
 public interface Filter {
-    public boolean isInverted();
     public Source apply(Source source);
 }

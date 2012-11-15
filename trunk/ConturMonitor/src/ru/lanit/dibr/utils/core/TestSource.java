@@ -44,7 +44,7 @@ public class TestSource implements LogSource {
                 try {
                     while ((nextLine = reader.readLine()) != null && !isClosed) {
                         if(buffer.size() > 400)
-                            Thread.sleep(200);
+                            Thread.sleep(250);
                         buffer.add(String.format("%6d: %s", (buffer.size()+1), nextLine));
                     }
                 } catch (IOException e) {

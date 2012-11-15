@@ -8,7 +8,7 @@ import java.io.IOException;
  * Date: 13.11.12
  * Time: 2:43
  */
-public class GrepFilter extends AbstractFilter {
+public class GrepFilter extends AbstractSearchFilter {
 
     public GrepFilter(String pattern, boolean inverted) {
         super(pattern, inverted);
@@ -18,6 +18,7 @@ public class GrepFilter extends AbstractFilter {
     protected String readFilteredLine(Source source) throws IOException {
         String nextLine;
         if ((nextLine = source.readLine()) != null) {
+            //ToDo: сплитить строку по \n и потом применять греп. Нужно для корректной работы после блочного фильтра
             if ((nextLine.contains(pattern) ^ inverted)) {
                 return nextLine;
             }
