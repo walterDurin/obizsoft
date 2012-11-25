@@ -63,7 +63,7 @@ public class LogFrame  extends JFrame {
 		setVisible(false);
 	}
 
-	public void setAutoScroll(boolean autoScroll) {
-		panel.setAutoScroll(autoScroll);
-	}
+//	public void setAutoScroll(boolean autoScroll) {
+//		panel.setAutoScroll(autoScroll);
+//	}
 }
