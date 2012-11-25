@@ -136,16 +136,13 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             area.setLineWrap(!area.getLineWrap());
         } else if ((ke.getKeyCode() == 35) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) { //Нажали Cntrl + PgDown
             setAutoScroll(true);
-        } else if ((ke.getKeyCode() == 70) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) {  //  Нажали Ctrl + F
+        } else if ((ke.getKeyCode() == 70) && ((ke.getModifiers() == KeyEvent.CTRL_MASK) || (ke.getModifiers() == (KeyEvent.CTRL_MASK|KeyEvent.SHIFT_MASK)))) {  //  Нажали Ctrl + F
             find = (String) JOptionPane.showInputDialog(this, "FIND:\n", "Find", JOptionPane.INFORMATION_MESSAGE, null, null, null);
             System.out.println("find");
-            findWord();
+            startFrom = area.getCaretPosition();
+            findWord(ke.getModifiers() == (KeyEvent.CTRL_MASK|KeyEvent.SHIFT_MASK));
         } else if (ke.getKeyCode() == KeyEvent.VK_F3) { // F3 (+Shift)
-            if (ke.getModifiers() == KeyEvent.SHIFT_MASK) {
-                findWordBackward();
-            } else {
-                findWord();
-            }
+            findWord(ke.getModifiers() == KeyEvent.SHIFT_MASK);
         } else if ((ke.getKeyCode() == 71) && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {
             boolean inverseGrep = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
             String grepPattern = (String) JOptionPane.showInputDialog(this, "GREP:\n", "Grep", JOptionPane.INFORMATION_MESSAGE, null, null, null);
@@ -192,22 +189,22 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         repaint();
     }
 
-    private void findWord() {
-        offset = area.getText().indexOf(find, startFrom);
-        if (offset > -1) {
-            area.setFocusable(true);
-            area.select(offset, find.length() + offset);
-            startFrom = find.length() + offset + 1;
-        } else JOptionPane.showMessageDialog(this, "No (more) matches");
-    }
-
-    private void findWordBackward() {
-        offset = area.getText().lastIndexOf(find, startFrom - find.length() - 2);
-        if (offset > -1) {
-            area.setFocusable(true);
-            area.select(offset, find.length() + offset);
-            startFrom = find.length() + offset + 1;
-        } else JOptionPane.showMessageDialog(this, "No (more) matches");
+    private void findWord(boolean isBackWard) {
+        for(int i=0;i<2;i++) {
+            if(isBackWard) {
+                offset = area.getText().lastIndexOf(find, startFrom);
+            } else {
+                offset = area.getText().indexOf(find, startFrom);
+            }
+            if (offset > -1) {
+                area.setFocusable(true);
+                area.select(offset, find.length() + offset);
+                startFrom = offset + ( isBackWard? -1 : (find.length() + 1) );
+                return;
+            }
+            startFrom = isBackWard ? (area.getText().length()-1) : 0;
+        }
+        JOptionPane.showMessageDialog(this, "No matches found!");
     }
 
     public void keyTyped(KeyEvent e) {
