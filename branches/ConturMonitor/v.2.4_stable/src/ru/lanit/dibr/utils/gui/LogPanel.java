@@ -130,6 +130,15 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             //filtersChain.setPaused(true);
             area.setText("");
             filtersChain.reset();
+        } else if ((ke.getKeyCode() == 27)) { //Нажали PgUp
+            //TODO fix: tight coupling with parent Frame (LogFrame)
+            Container container = getParent();
+            while(!JFrame.class.isAssignableFrom(container.getClass())) {
+                container = container.getParent();
+            }
+            WindowEvent closingEvent = new WindowEvent((Window)container, WindowEvent.WINDOW_CLOSING);
+            Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);
+
         } else if ((ke.getKeyCode() == 33)) { //Нажали PgUp
             setAutoScroll(false);
         } else if ((ke.getKeyCode() == 87)) { //Нажали PgUp
