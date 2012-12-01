@@ -55,26 +55,26 @@ std::string XmlUtils::XmlFormatter::format(std::string s, int initialIndent) {
                 int nextStartElementPos = s.find_first_of('<', i);
                 if (nextStartElementPos > i + 1)
                 {
-                std::string textBetweenElements = s.substr(i + 1, nextStartElementPos - i + 1);
+                    std::string textBetweenElements = s.substr(i + 1, nextStartElementPos - i - 1);
 
-                // If the space between elements is solely newlines, let them through to preserve additional newlines in source document.
+                    // If the space between elements is solely newlines, let them through to preserve additional newlines in source document.
 
-                if (StringTools::Replace(textBetweenElements, std::string("\n"), std::string("")).length() == 0)
-                {
-                    sb << textBetweenElements << "\n";
-                }
-                // Put tags and text on a single line if the text is short.
-                else if (textBetweenElements.length() <= lineLength * 0.5)
-                {
-                    sb << textBetweenElements;
-                    singleLine = true;
-                }
-                // For larger amounts of text, wrap lines to a maximum line length.
-                else
-                {
-                    sb << "\n" << lineWrap(textBetweenElements, lineLength, indent, NULL) << "\n";
-                }
-                i = nextStartElementPos - 1;
+                    if (StringTools::Replace(textBetweenElements, std::string("\n"), std::string("")).length() == 0)
+                    {
+                        sb << textBetweenElements << "\n";
+                    }
+                    // Put tags and text on a single line if the text is short.
+                    else if (textBetweenElements.length() <= lineLength * 0.5)
+                    {
+                        sb << textBetweenElements;
+                        singleLine = true;
+                    }
+                    // For larger amounts of text, wrap lines to a maximum line length.
+                    else
+                    {
+                        sb << "\n" << lineWrap(textBetweenElements, lineLength, indent, NULL) << "\n";
+                    }
+                    i = nextStartElementPos - 1;
                 }
                 else
                 {
