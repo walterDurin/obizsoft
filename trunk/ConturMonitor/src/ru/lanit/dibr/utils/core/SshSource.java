@@ -153,4 +153,8 @@ public class SshSource implements LogSource {
         System.out.println("set paused: " + paused);
         this.paused = paused;
     }
+
+    public boolean isPaused() {
+        return paused;
+    }
 }

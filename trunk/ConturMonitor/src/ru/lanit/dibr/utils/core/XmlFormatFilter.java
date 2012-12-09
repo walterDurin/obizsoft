@@ -23,6 +23,7 @@ public class XmlFormatFilter extends BlockFilter {
     @Override
     protected String readFilteredLine(Source source) throws IOException {
         String line = super.readFilteredLine(source);
+        line = removeLineNumbers(line);
         if(line!=LogSource.SKIP_LINE) {
             Matcher m = searchXml.matcher(line);
             if(m.find()) {

@@ -1,6 +1,4 @@
-package test;
-
-import sun.awt.VerticalBagLayout;
+package hlam;
 
 import javax.swing.*;
 import java.awt.*;

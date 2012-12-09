@@ -1,4 +1,4 @@
-package test;
+package hlam;
 
 import com.jcraft.jsch.*;
 import ru.lanit.dibr.utils.gui.configuration.Host;
