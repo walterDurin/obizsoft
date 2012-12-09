@@ -16,4 +16,10 @@ public abstract class AbstractSearchFilter extends AbstractFilter {
         this.inverted = inverted;
     }
 
+    protected String removeLineNumbers(String selected) {
+        selected = selected.replaceAll("^[\\s\\d]*:\\s", "");
+        selected = selected.replaceAll("\n[\\s\\d]*:\\s", "\n");
+        return selected;
+    }
+
 }

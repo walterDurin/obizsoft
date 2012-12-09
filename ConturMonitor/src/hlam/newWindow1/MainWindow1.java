@@ -1,4 +1,4 @@
-package test.newWindow1;
+package hlam.newWindow1;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

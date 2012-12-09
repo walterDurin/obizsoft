@@ -19,7 +19,7 @@ public class GrepFilter extends AbstractSearchFilter {
         String nextLine;
         if ((nextLine = source.readLine()) != null) {
             //ToDo: сплитить строку по \n и потом применять греп. Нужно для корректной работы после блочного фильтра
-            if ((nextLine.contains(pattern) ^ inverted)) {
+            if ((removeLineNumbers(nextLine).contains(pattern) ^ inverted)) {
                 return nextLine;
             }
         }

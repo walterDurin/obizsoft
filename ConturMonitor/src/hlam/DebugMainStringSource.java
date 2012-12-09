@@ -1,10 +1,8 @@
-package test;
+package hlam;
 
 import ru.lanit.dibr.utils.core.LogSource;
 import ru.lanit.dibr.utils.core.TestSource;
 import ru.lanit.dibr.utils.gui.LogFrame;
-import ru.lanit.dibr.utils.gui.configuration.Host;
-import ru.lanit.dibr.utils.gui.configuration.LogFile;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,12 +12,27 @@ import java.awt.*;
  * Date: 14.11.12
  * Time: 2:04
  */
-public class DebugMain {
+public class DebugMainStringSource {
     public static void main(String[] args) {
 
-        LogSource logSource = new TestSource("SystemOut.log");
+        LogSource logSource = new TestStringSource("" +
+                "[block] \n" +
+                "11 aaa\n" +
+                "[block] \n" +
+                "11 bbb\n" +
+                "[block] \n" +
+                "11 ccc\n" +
+                "[block] \n" +
+                "22 aaa\n" +
+                "[block] \n" +
+                "22 bbb\n" +
+                "[block] \n" +
+                "22 ccc\n" +
+//                "[block]" +
+                ""
+        );
 
-        LogFrame logFrame = new LogFrame(null, null, "DEBUG", logSource, "\\[\\d\\d?\\/\\d\\d?/\\d\\d? \\d\\d?:\\d\\d?:\\d\\d?:\\d{1,3} MS[DK]\\]");
+        LogFrame logFrame = new LogFrame(null, null, "DEBUG", logSource, "\\[block\\]");
         logFrame.setVisible(true);
         logFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         int height = (int) (GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight());

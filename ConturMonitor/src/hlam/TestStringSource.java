@@ -1,13 +1,10 @@
-package ru.lanit.dibr.utils.core;
+package hlam;
 
-import com.jcraft.jsch.*;
-import ru.lanit.dibr.utils.gui.configuration.Host;
-import ru.lanit.dibr.utils.gui.configuration.LogFile;
-import ru.lanit.dibr.utils.utils.MyUserInfo;
+import ru.lanit.dibr.utils.core.LogSource;
 
-import javax.swing.text.TableView;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -15,45 +12,30 @@ import java.util.List;
  * Date: 13.11.12
  * Time: 2:12
  */
-public class TestSource implements LogSource {
+public class TestStringSource implements LogSource {
 
     private boolean isClosed = false;
     private boolean paused = false;
     List<String> buffer = new ArrayList<String>();
 
-    private File fileToRead;
+    private List<String> strings;
     int readedLines = 0;
-    //    StringBuffer buffer = new StringBuffer();
-    BufferedReader reader = null;
+    private int readedLinesFromStrings = 0;
 
-    public TestSource(String filename) {
-        fileToRead = new File(filename);
-        if(!fileToRead.exists() || !fileToRead.isFile() || !fileToRead.canRead()) {
-            throw new RuntimeException("Не можу відкрити файл!");
-        }
+    public TestStringSource(String data) {
+        strings = Arrays.asList(data.split("\n"));
     }
 
     public void startRead() throws Exception {
         checkClosed();
-
-        reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileToRead)));
-
         Thread readThread = new Thread(new Runnable() {
             public void run() {
                 String nextLine;
                 try {
-                    while ((nextLine = reader.readLine()) != null && !isClosed) {
-                        if(buffer.size() > 400)
-                            Thread.sleep(250);
+                    while ((nextLine = readNextLine()) != null && !isClosed) {
+                        Thread.sleep(100);
                         buffer.add(String.format("%6d: %s", (buffer.size()+1), nextLine));
                     }
-                } catch (IOException e) {
-                    try {
-                        close();
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-                    e.printStackTrace();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -62,6 +44,14 @@ public class TestSource implements LogSource {
 
         readThread.start();
 
+    }
+
+    private String readNextLine() {
+        if(readedLinesFromStrings==strings.size()) {
+            isClosed = true;
+            return LogSource.SKIP_LINE;
+        }
+        return strings.get(readedLinesFromStrings++);
     }
 
     private void checkClosed() {
@@ -99,12 +89,6 @@ public class TestSource implements LogSource {
 
     public void close() throws Exception {
         isClosed = true;
-        if (reader != null)
-            try {
-                reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
     }
 
     public void setPaused(boolean paused) {

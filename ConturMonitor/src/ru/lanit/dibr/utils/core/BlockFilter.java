@@ -9,7 +9,9 @@ import java.io.IOException;
  */
 public class BlockFilter extends AbstractSearchFilter {
 
+    private StringBuffer blockBufferToSearch = new StringBuffer();
     private StringBuffer blockBuffer = new StringBuffer();
+    private boolean patternFound = false;
     private String blockPattern;
 
 
@@ -25,13 +27,15 @@ public class BlockFilter extends AbstractSearchFilter {
         String result = LogSource.SKIP_LINE;
         if (nextLine != null) {
             if (nextLine.matches(".*" + blockPattern + ".*")) {
-                if (pattern==null || (blockBuffer.indexOf(pattern) >= 0) ^ inverted) {
+                if (pattern==null || (blockBufferToSearch.indexOf(pattern) >= 0) ^ inverted) {
                     result = blockBuffer.toString();
                 }
                 blockBuffer.setLength(0);
+                blockBufferToSearch.setLength(0);
             }
             if (nextLine != LogSource.SKIP_LINE) {
                 blockBuffer.append(nextLine).append("\n");
+                blockBufferToSearch.append(removeLineNumbers(nextLine)).append("\n");
             }
         }
         return result;
@@ -40,5 +44,6 @@ public class BlockFilter extends AbstractSearchFilter {
     @Override
     protected void onReset() {
         blockBuffer.setLength(0);
+        blockBufferToSearch.setLength(0);
     }
 }

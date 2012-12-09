@@ -14,4 +14,5 @@ public interface Source {
     public void reset();
     public void close() throws Exception;
     public void setPaused(boolean paused);
+    public boolean isPaused();
 }

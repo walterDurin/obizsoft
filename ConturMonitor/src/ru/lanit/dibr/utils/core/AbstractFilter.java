@@ -38,6 +38,10 @@ public abstract class AbstractFilter implements Filter {
             public void setPaused(boolean paused) {
                 source.setPaused(paused);
             }
+
+            public boolean isPaused() {
+                return source.isPaused();
+            }
         };
     }
 }
