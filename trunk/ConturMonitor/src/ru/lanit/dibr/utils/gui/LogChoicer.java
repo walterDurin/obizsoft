@@ -2,8 +2,10 @@ package ru.lanit.dibr.utils.gui;
 
 import ru.lanit.dibr.utils.Configuration;
 import ru.lanit.dibr.utils.core.SshSource;
+import ru.lanit.dibr.utils.core.TestSource;
 import ru.lanit.dibr.utils.gui.configuration.Host;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
+import ru.lanit.dibr.utils.utils.FileDrop;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -13,7 +15,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,9 +27,11 @@ public class LogChoicer extends JFrame {
     public static int countShownLogWindow = 0;
     public static int logsCnt = 0;
 	private JPanel pane;
-	private final Map<String, LogFrame> logs = new HashMap<String, LogFrame>();
+    private final java.util.List<LogFrame> logs = new ArrayList<LogFrame>();
+    public JPanel localFilesButtons;
 
-	public LogChoicer(Configuration cfg) throws HeadlessException {
+
+    public LogChoicer(Configuration cfg) throws HeadlessException {
 		setTitle("Log monitor");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//setAlwaysOnTop(true);
@@ -52,7 +55,38 @@ public class LogChoicer extends JFrame {
 			}
 			pane.add(hostPane);
 		}
-		setContentPane(pane);
+        new FileDrop(System.out, pane, /*dragBorder,*/ new FileDrop.Listener() {
+            java.util.List<String> filesPaths = new ArrayList<String>();
+            public void filesDropped(java.io.File[] files) {
+                for (int i = 0; i < files.length; i++) {
+                    String path = files[i].getAbsolutePath();
+                    if(this.filesPaths.contains(path)) {
+                        JOptionPane.showMessageDialog(pane, "File '" + path +"' has already added!","Local file addition error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
+                    this.filesPaths.add(path);
+                    if(localFilesButtons == null) {
+                        JPanel localFilesPane;
+                        //TODO: remove that copy-pasted strings to method
+                        localFilesPane = new JPanel();
+                        localFilesPane.setLayout(new BoxLayout(localFilesPane, BoxLayout.Y_AXIS));
+                        Label hostLabel = new Label("Local files(NOT tailed!)");
+                        hostLabel.setFont(new Font("Courier", Font.BOLD, 16));
+                        localFilesPane.add(hostLabel);
+                        localFilesButtons = new JPanel();
+                        GridBagLayout mgr = new GridBagLayout();
+                        localFilesButtons.setLayout(mgr);
+                        localFilesPane.add(localFilesButtons);
+                        pane.add(localFilesPane);
+                    }
+
+                    addButton(localFilesButtons,  new LogFile(files[i].getName(), path, true), null);
+                    logsCnt++;
+                    pack();
+                }
+            }
+        });
+        setContentPane(pane);
 		pack();
         setResizable(false);
         size = getWidth();
@@ -64,19 +98,23 @@ public class LogChoicer extends JFrame {
 	private void addButton(JPanel buttons, final LogFile logFile, final Host host) {
         final JButton b = new JButton(logFile.getName());
         b.setBorder(new LineBorder(Color.GRAY));
-		final String logName = host.getDescription()+":"+logFile;
-        final MenuButton menuButton = new MenuButton(host, logFile.getPath(), logFile.getName(), logs, logName);
+        final MenuButton menuButton = logFile.isLocal()? null : new MenuButton(host, logFile.getPath(), logFile.getName());
 		b.addActionListener(new AbstractAction() {
 			LogFrame lf = null;
 			public void actionPerformed(ActionEvent e) {
 				System.out.println(e.paramString());
 				if(lf==null) {
-					lf = new LogFrame(b, menuButton, host.getDescription()+ " : " + logFile.getName(), new SshSource(host, logFile), logFile.getBlockPattern());
+					if(logFile.isLocal()) {
+                        //TODO: реализовать нормальный Source для локальных файлов, используюя org.apache.commons.io.input.Tailer
+                        lf = new LogFrame(b, menuButton, logFile.getName(), new TestSource(logFile.getPath()), logFile.getBlockPattern());
+                    } else {
+                        lf = new LogFrame(b, menuButton, host.getDescription()+ " : " + logFile.getName(), new SshSource(host, logFile), logFile.getBlockPattern());
+                    }
                     lf.setVisible(true);
 					b.setForeground(new Color(48, 129, 97));
                     b.setBorder(new LineBorder(new Color(48, 129, 97)));
                     b.setText(logFile.getName());
-					logs.put(logName, lf);
+					logs.add(lf);
                     lf.addWindowListener(new WindowAdapter() {
                         @Override
                         public void windowClosing(WindowEvent e) {
@@ -101,7 +139,7 @@ public class LogChoicer extends JFrame {
 
                 //auto arrange visible windows
                 ArrayList<LogFrame>  visibleWindows = new ArrayList<LogFrame>();
-                for (LogFrame logWindow : logs.values()) {
+                for (LogFrame logWindow : logs) {
                     if(logWindow.isVisible()) {
                         visibleWindows.add(logWindow);
                     }
@@ -140,6 +178,8 @@ public class LogChoicer extends JFrame {
 */
 
         gbc.gridx++;
-        buttons.add(menuButton, gbc);
+        if(menuButton!=null) {
+            buttons.add(menuButton, gbc);
+        }
 	}
 }

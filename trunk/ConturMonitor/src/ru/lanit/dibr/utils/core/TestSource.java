@@ -20,6 +20,7 @@ public class TestSource implements LogSource {
     private boolean isClosed = false;
     private boolean paused = false;
     List<String> buffer = new ArrayList<String>();
+    private long SLEEP = 100;
 
     private File fileToRead;
     int readedLines = 0;
@@ -44,7 +45,7 @@ public class TestSource implements LogSource {
                 try {
                     while ((nextLine = reader.readLine()) != null && !isClosed) {
                         if(buffer.size() > 400)
-                            Thread.sleep(250);
+                            Thread.sleep(SLEEP);
                         buffer.add(String.format("%6d: %s", (buffer.size()+1), nextLine));
                     }
                 } catch (IOException e) {
@@ -74,12 +75,12 @@ public class TestSource implements LogSource {
         try {
             while (paused) {
                 System.out.println("I'm asleep..");
-                Thread.sleep(200);
+                Thread.sleep(SLEEP);
             }
             if (buffer.size() > readedLines) {
                 return buffer.get(readedLines++);
             } else {
-                Thread.sleep(200);
+                Thread.sleep(SLEEP);
             }
 
         } catch (InterruptedException e) {
