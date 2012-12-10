@@ -4,6 +4,7 @@ import com.jcraft.jsch.*;
 import ru.lanit.dibr.utils.gui.configuration.Host;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
 import ru.lanit.dibr.utils.utils.MyUserInfo;
+import ru.lanit.dibr.utils.utils.SshUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -69,7 +70,10 @@ public class SshSource implements LogSource {
 
         session.connect(30000);   // making a connection with timeout.
         channel = (ChannelExec) session.openChannel("exec");
-        channel.setCommand("tail -500f " + logFile.getPath());
+        String linesCount = SshUtil.exec(host, "wc -l " + logFile.getPath() + " | awk \"{print $1}\"").getData().trim();
+        System.out.println("Lines count in log file: " + linesCount);
+        channel.setCommand("tail -5000f " + logFile.getPath());
+        //channel.setCommand("tail -c +0 -f " + logFile.getPath()); //Так можно загрузить весь файл
         reader = new BufferedReader(new InputStreamReader(channel.getInputStream(), host.getDefaultEncoding()));
         channel.connect(3 * 1000);
 
