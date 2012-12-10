@@ -36,7 +36,7 @@ public class Configuration {
 	public Configuration() {
 		try {
 			
-			servers = new HashMap<Host, Map<String, LogFile>>();
+			servers = new LinkedHashMap<Host, Map<String, LogFile>>();
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         	DocumentBuilder db = dbf.newDocumentBuilder();
 			Document doc = db.parse(new File("settings.xml"));
@@ -93,7 +93,7 @@ public class Configuration {
 
 				System.out.println(nextHost);
 				NodeList logList = list.item(i).getChildNodes();
-				servers.put(nextHost, new HashMap<String, LogFile>());
+				servers.put(nextHost, new LinkedHashMap<String, LogFile>());
 				for(int j = 0; j < logList.getLength() ; j++  ) {
 					if(logList.item(j).getNodeName().equals("log")) {
                         NamedNodeMap logElement = logList.item(j).getAttributes();

@@ -15,23 +15,26 @@ import ru.lanit.dibr.utils.gui.configuration.Host;
  */
 public class SshUtil {
 
-    public static String exec(Host host, String command) {
-        StringBuffer out = new StringBuffer();
+    public static class ExecResult {
+        String data;
+        int statusCode;
+
+        public String getData() {
+            return data;
+        }
+
+        public int getStatusCode() {
+            return statusCode;
+        }
+    }
+
+    private static Session session = null;
+
+    public static ExecResult exec(Host host, String command) {
+        ExecResult result = new ExecResult();
         System.out.println("SSH exec command: "+command);
         try {
-            JSch jsch = new JSch();
-
-            Session session = jsch.getSession(host.getUser(), host.getHost(), host.getPort());
-            session.setConfig("StrictHostKeyChecking", "no");
-
-            if(host.getPem()!=null) {
-                jsch.addIdentity(host.getPem());
-            } else {
-                UserInfo ui=new MyUserInfo(host.getPassword());
-                session.setUserInfo(ui);
-            }
-
-            session.connect(30000);
+            init(host);
 
             Channel channel = session.openChannel("exec");
             ((ChannelExec) channel).setCommand(command);
@@ -45,6 +48,7 @@ public class SshUtil {
             channel.connect();
 
 
+            StringBuffer out = new StringBuffer();
             String nextPortion;
             byte[] tmp = new byte[1024];
             while (true) {
@@ -56,20 +60,42 @@ public class SshUtil {
                     System.out.print(nextPortion);
                 }
                 if (channel.isClosed()) {
-                    System.out.println("exit-status: " + channel.getExitStatus());
+                    result.statusCode = channel.getExitStatus();
+                    System.out.println("exit-status: " + result.statusCode );
                     break;
                 }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (Exception ee) {
+                    ee.printStackTrace();
                 }
             }
+            result.data = out.toString();
             channel.disconnect();
-            session.disconnect();
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
 
-        return out.toString();
+
+        return result;
+    }
+
+    private static void init(Host host) throws JSchException {
+        if(session==null) {
+
+            JSch jsch = new JSch();
+
+            session = jsch.getSession(host.getUser(), host.getHost(), host.getPort());
+            session.setConfig("StrictHostKeyChecking", "no");
+
+            if(host.getPem()!=null) {
+                jsch.addIdentity(host.getPem());
+            } else {
+                UserInfo ui=new MyUserInfo(host.getPassword());
+                session.setUserInfo(ui);
+            }
+
+            session.connect(30000);
+        }
     }
 }

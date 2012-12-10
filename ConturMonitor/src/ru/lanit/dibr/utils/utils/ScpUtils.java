@@ -87,7 +87,7 @@ public class ScpUtils {
 
                 // read a content of lfile
                 if (localFileNamePrefix != null && localFileNamePrefix.length() != 0)
-                    fileName = localFileNamePrefix + "_" + fileName;
+                    fileName = localFileNamePrefix + "_" + fileName.replaceAll("/", "-");
                 fos = new FileOutputStream(fileName);
                 int foo;
                 while (true) {

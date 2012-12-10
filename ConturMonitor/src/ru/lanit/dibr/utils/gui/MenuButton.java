@@ -35,9 +35,11 @@ public class MenuButton extends JButton {
                 try {
                     String savedFileName;
                     // `basename /smartpaas-app/was/node1/WAShome/profiles/AppSrv01/logs/server1/stopServer.log`.` date +%Y%m%d%H%M%S -r /smartpaas-app/was/node1/WAShome/profiles/AppSrv01/logs/server1/stopServer.log`.zip
-                    String zipFileName = SshUtil.exec(host, "echo ~/`basename "+file+"`.`date +%Y%m%d%H%M%S -r " + file +"`.zip ").trim();
+                    String tmpDir = SshUtil.exec(host, "if [ -z \"$TMPDIR\" ]; then echo \"/tmp\"; else echo $TMPDIR; fi;").getData().trim();
+                    String zipFileName = SshUtil.exec(host, "echo " + tmpDir + "/`basename "+file+"`.`date +%Y%m%d%H%M%S -r " + file +"`.zip ").getData().trim();
                     System.out.println(zipFileName);
-                    if(!SshUtil.exec(host, "zip -j -9 "+zipFileName+" "+file).contains("error")) {
+                    SshUtil.ExecResult execResult = SshUtil.exec(host, "zip -j -9 " + zipFileName + " " + file);
+                    if(!(execResult.getData().contains("error") || execResult.getStatusCode()!=0)) {
                         savedFileName = ScpUtils.getFile(host, zipFileName, host.getDescription()+"_"+fileDescription);
                         SshUtil.exec(host, "rm " + zipFileName);
                         JOptionPane.showMessageDialog(MenuButton.this, "Файл \n'"+file+"'\nс хоста\n'"+host.getHost()+"'\nзаархивирован и сохранён в катлоге программы как\n'"+savedFileName+"'.");
