@@ -53,7 +53,7 @@ public class FilterScreen extends AbstractFilter {
                     previousNotEmptyData = currentData;
                 } else {
                     if(!previousNotEmptyData.equals(currentData)) {
-                        throw new RuntimeException("Filters returns different data!");
+                        throw new RuntimeException("Filters returns different data!\n"+previousNotEmptyData+"\n"+currentData);
                     }
                 }
             }
