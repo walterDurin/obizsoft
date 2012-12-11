@@ -11,7 +11,7 @@ public class BlockFilter extends AbstractSearchFilter {
 
     private StringBuffer blockBufferToSearch = new StringBuffer();
     private StringBuffer blockBuffer = new StringBuffer();
-    private boolean patternFound = false;
+    private boolean isPatternFoundInCurrentBlock = false;
     private String blockPattern;
 
 
@@ -20,9 +20,49 @@ public class BlockFilter extends AbstractSearchFilter {
         this.blockPattern = blockPattern;
     }
 
-
     @Override
     protected String readFilteredLine(Source source) throws IOException {
+        return inverted?hideFilter(source):showFilter(source);
+    }
+
+    protected String showFilter(Source source) throws IOException {
+        String nextLine = source.readLine();
+        String result = LogSource.SKIP_LINE;
+
+        if(nextLine != null && nextLine!=LogSource.SKIP_LINE) {
+            boolean isNewBlockLine = nextLine.matches(".*" + blockPattern + ".*");
+            if(isPatternFoundInCurrentBlock) {
+                if (isNewBlockLine) {
+                    isPatternFoundInCurrentBlock = false;
+                } else {
+                    result = nextLine;
+                }
+            }
+
+            //нужна повторна€ проверка, т.к. флаг может помен€тьс€
+            if(!isPatternFoundInCurrentBlock) {
+                if (isNewBlockLine) {
+                    blockBuffer.setLength(0);
+                    blockBufferToSearch.setLength(0);
+                }
+                if(blockBuffer.length()>0) {
+                    blockBuffer.append("\n");
+                    blockBufferToSearch.append("\n");
+                }
+                blockBuffer.append(nextLine);
+                blockBufferToSearch.append(removeLineNumbers(nextLine));
+                if (pattern==null || (blockBufferToSearch.indexOf(pattern) >= 0) ^ inverted) {
+                    isPatternFoundInCurrentBlock = true;
+                    result = blockBuffer.toString();
+                    blockBuffer.setLength(0);
+                    blockBufferToSearch.setLength(0);
+                }
+            }
+        }
+        return result;
+    }
+
+    protected String hideFilter(Source source) throws IOException {
         String nextLine = source.readLine();
         String result = LogSource.SKIP_LINE;
         if (nextLine != null) {
