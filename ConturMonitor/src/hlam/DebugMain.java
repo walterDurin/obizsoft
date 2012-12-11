@@ -1,6 +1,7 @@
 package hlam;
 
 import ru.lanit.dibr.utils.core.LogSource;
+import ru.lanit.dibr.utils.core.SshSource;
 import ru.lanit.dibr.utils.core.TestSource;
 import ru.lanit.dibr.utils.gui.LogFrame;
 import ru.lanit.dibr.utils.gui.configuration.Host;
@@ -17,7 +18,10 @@ import java.awt.*;
 public class DebugMain {
     public static void main(String[] args) {
 
-        LogSource logSource = new TestSource("SystemOut.log");
+        LogSource logSource ; //= new TestSource("SystemOut.log");
+        logSource = new SshSource(
+                new Host("test", "sberbank-2.pegacloud.com", 22, "taran",null, "G:\\Dropbox\\work\\PegaCloud\\taran\\taran\\taran.pem", "utf-8"),
+                new LogFile("test", "~/test/SystemOut.log", "\\[\\d\\d?\\/\\d\\d?/\\d\\d? \\d\\d?:\\d\\d?:\\d\\d?:\\d{1,3} MS[DK]\\]"));
 
         LogFrame logFrame = new LogFrame(null, null, "DEBUG", logSource, "\\[\\d\\d?\\/\\d\\d?/\\d\\d? \\d\\d?:\\d\\d?:\\d\\d?:\\d{1,3} MS[DK]\\]");
         logFrame.setVisible(true);
