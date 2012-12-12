@@ -133,18 +133,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
     public void keyPressed(KeyEvent ke) {
 
-        if ((ke.getKeyCode() == KeyEvent.VK_F5)) { //Нажали F5
-            filtersChain.setPaused(true);
-            filtersChain.reset();
-            area.setText("");
-            filtersChain.setPaused(false);
-//        } else if ((ke.getKeyCode() == 88)) { //Нажали X
-//            if(isFormatted=!isFormatted) {
-//                setFilter(new XmlFormatFilter(blockPattern));
-//            } else {
-//                removeFilter(new XmlFormatFilter(blockPattern));
-//            }
-        } else if ((ke.getKeyCode() == 27)) { //Нажали PgUp
+        if ((ke.getKeyCode() == 27)) { //Нажали PgUp
             //TODO fix: tight coupling with parent Frame (LogFrame)
             Container container = getParent();
             while (!JFrame.class.isAssignableFrom(container.getClass())) {
@@ -166,7 +155,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             findWord(ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK));
         } else if (ke.getKeyCode() == KeyEvent.VK_F3) { // F3 (+Shift)
             findWord(ke.getModifiers() == KeyEvent.SHIFT_MASK);
-        } else if (ke.getKeyCode() == KeyEvent.VK_F3) { // F5
+        } else if (ke.getKeyCode() == KeyEvent.VK_F1) { // F1
+            new HotKeysInfo();
+        } else if (ke.getKeyCode() == KeyEvent.VK_F5) { // F5
             resetFilters();
         } else if (ke.getKeyCode() == 67) { // Key 'C'
             logSource.setPaused(true);
