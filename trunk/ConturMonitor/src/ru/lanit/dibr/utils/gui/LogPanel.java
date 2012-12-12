@@ -166,6 +166,12 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             findWord(ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK));
         } else if (ke.getKeyCode() == KeyEvent.VK_F3) { // F3 (+Shift)
             findWord(ke.getModifiers() == KeyEvent.SHIFT_MASK);
+        } else if (ke.getKeyCode() == KeyEvent.VK_F3) { // F5
+            resetFilters();
+        } else if (ke.getKeyCode() == 67) { // Key 'C'
+            logSource.setPaused(true);
+            area.setText("");
+            logSource.setPaused(false);
         } else if ((ke.getKeyCode() == 71) && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {  // GREP filter
             boolean inverseGrep = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
             String grepPattern = (String) JOptionPane.showInputDialog(this, "GREP:\n", "Grep", JOptionPane.INFORMATION_MESSAGE, null, null, null);
