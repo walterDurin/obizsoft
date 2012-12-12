@@ -6,7 +6,7 @@ package ru.lanit.dibr.utils.utils;
  * Time: 0:43
  */
 public class XmlUtils {
-    private static XmlFormatter formatter = new XmlFormatter(2, 80);
+    private static XmlFormatter formatter = new XmlFormatter(2);
 
     public static String formatXml(String s) {
         return formatter.format(s, 0);
@@ -18,13 +18,11 @@ public class XmlUtils {
 
     private static class XmlFormatter {
         private int indentNumChars;
-        private int lineLength;
         private boolean singleLine;
         private boolean isFirstTag = true;
 
-        public XmlFormatter(int indentNumChars, int lineLength) {
+        public XmlFormatter(int indentNumChars) {
             this.indentNumChars = indentNumChars;
-            this.lineLength = lineLength;
         }
 
         public synchronized String format(String s, int initialIndent) {
