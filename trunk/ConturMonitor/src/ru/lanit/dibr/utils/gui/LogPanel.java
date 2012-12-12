@@ -21,13 +21,16 @@ import java.util.regex.PatternSyntaxException;
  */
 public class LogPanel extends JScrollPane implements KeyListener, CaretListener, MouseListener {
     private LogSource logSource;
-    private FilteredSource filtersChain;
+    private Source filtersChain;
     private String blockPattern;
     private boolean stopped = false;
     private JTextArea area;
     private boolean autoScroll = true;
     private String find = null;
-    private boolean isFormatted = true;
+//    private boolean isFormatted = true;
+
+    private AbstractFilter invertedFilter = null;
+    private AbstractFilter directFilter = null;
 
 //    private String blockFilter = null;
 //    private boolean inverseBlockFilter = false; //if set true then block contained @blockFilter will be hidden
@@ -69,7 +72,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     public void connect() throws Exception {
         try {
             logSource.startRead();
-            filtersChain = new FilteredSource(logSource);
+            filtersChain = logSource;
             //filtersChain.addFilterToQueue(new XmlFormatFilter(blockPattern));
             String nextLine;
             area.addKeyListener(this);
@@ -163,57 +166,86 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             findWord(ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK));
         } else if (ke.getKeyCode() == KeyEvent.VK_F3) { // F3 (+Shift)
             findWord(ke.getModifiers() == KeyEvent.SHIFT_MASK);
-        } else if ((ke.getKeyCode() == 71) && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {
+        } else if ((ke.getKeyCode() == 71) && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {  // GREP filter
             boolean inverseGrep = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
             String grepPattern = (String) JOptionPane.showInputDialog(this, "GREP:\n", "Grep", JOptionPane.INFORMATION_MESSAGE, null, null, null);
             System.out.println("Grep entered: '" + grepPattern + "'");
-            GrepFilter filter = new GrepFilter(grepPattern, inverseGrep);
-            if (grepPattern != null && grepPattern.trim().length() > 0) {
-                //filtersChain.clearFilters();
-                setFilter(filter, inverseGrep);
 
-            } else {
-                removeFilter(inverseGrep);
+            if(grepPattern.isEmpty()) {
+                if(inverseGrep) {
+                    invertedFilter = null;
+                } else {
+                    directFilter = null;
+                }
             }
-        } else if ((ke.getKeyCode() == 66) && blockPattern != null && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {
+
+            if(inverseGrep) {
+                if(invertedFilter==null || !(invertedFilter instanceof GrepFilter)) {
+                    invertedFilter = new GrepFilter(grepPattern, true);
+                } else {
+                    ((GrepFilter)invertedFilter).addStringToSearch(grepPattern);
+                }
+                if(directFilter!=null && !(directFilter instanceof GrepFilter)) {
+                    directFilter = null;
+                }
+            } else {
+                if(directFilter==null || !(directFilter instanceof GrepFilter)) {
+                    directFilter = new GrepFilter(grepPattern, false);
+                } else {
+                    ((GrepFilter) directFilter).addStringToSearch(grepPattern);
+                }
+
+            }
+
+            resetFilters();
+
+        } else if ((ke.getKeyCode() == 66) && blockPattern != null && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {  //BLOCK filter
             //ToDo: если blockPattern==null - Сообщить об этом и предложить его ввести. Показав что нибудь по дефолту. А потом сделать визард с проверкой по строке из лога.
-            boolean inverseBlockFilter = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
-            String blockFilter = (String) JOptionPane.showInputDialog(this, "Block filter:\n", "Block filter", JOptionPane.INFORMATION_MESSAGE, null, null, null);
-            System.out.println("blockFilter entered: '" + blockFilter + "'");
-            BlockFilter filter = new BlockFilter(blockPattern, blockFilter, inverseBlockFilter);
-            if (blockFilter != null && blockFilter.trim().length() > 0) {
-                //filtersChain.clearFilters();
-                setFilter(filter, inverseBlockFilter);
-            } else {
-                removeFilter(inverseBlockFilter);
+            boolean inverseBlock = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
+            String blockSearchPattern = (String) JOptionPane.showInputDialog(this, "Block filter:\n", "Block filter", JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            System.out.println("blockFilter entered: '" + blockSearchPattern + "'");
+
+            if(blockPattern.isEmpty()) {
+                if(inverseBlock) {
+                    invertedFilter = null;
+                } else {
+                    directFilter = null;
+                }
             }
+
+            if(inverseBlock) {
+                if(invertedFilter==null || !(invertedFilter instanceof BlockFilter)) {
+                    invertedFilter = new BlockFilter(blockPattern, blockSearchPattern, true);
+                } else {
+                    ((BlockFilter) invertedFilter).addStringToSearch(blockSearchPattern);
+                }
+            } else {
+                if(directFilter==null || !(directFilter instanceof BlockFilter)) {
+                    directFilter = new BlockFilter(blockPattern, blockSearchPattern, false);
+                } else {
+                    ((BlockFilter) directFilter).addStringToSearch(blockSearchPattern);
+                }
+            }
+
+            resetFilters();
 
         } else {
             System.out.println(ke.getKeyCode());
         }
     }
 
-    private void removeFilter(boolean isInversed) {
-        filtersChain.setPaused(true);
-        if(!isInversed) {
-            filtersChain.clearScreenFilters();
-        } else {
-            filtersChain.clearQueueFilters();
-        }
+    private void resetFilters() {
+        logSource.setPaused(true);
+        filtersChain = logSource;
         area.setText("");
-        filtersChain.setPaused(false);
-    }
-
-
-    private void setFilter(Filter filter, boolean isInversed) {
-        filtersChain.setPaused(true);
-        area.setText("");
-        if(!isInversed) {
-            filtersChain.addFilterToScreen(filter);
-        } else {
-            filtersChain.addFilterToQueue(filter);
+        if(invertedFilter!=null) {
+            filtersChain = invertedFilter.apply(filtersChain);
         }
-        filtersChain.setPaused(false);
+        if(directFilter!=null) {
+            filtersChain = directFilter.apply(filtersChain);
+        }
+        logSource.reset();
+        logSource.setPaused(false);
     }
 
     private void findWord(boolean isBackWard) {
