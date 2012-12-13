@@ -174,9 +174,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 } else {
                     directFilter = null;
                 }
-            }
-
-            if(inverseGrep) {
+            } else  if(inverseGrep) {
                 if(invertedFilter==null || !(invertedFilter instanceof GrepFilter)) {
                     invertedFilter = new GrepFilter(grepPattern, true);
                 } else {
@@ -202,15 +200,13 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             String blockSearchPattern = (String) JOptionPane.showInputDialog(this, "Block filter:\n", "Block filter", JOptionPane.INFORMATION_MESSAGE, null, null, null);
             System.out.println("blockFilter entered: '" + blockSearchPattern + "'");
 
-            if(blockPattern.isEmpty()) {
+            if(blockSearchPattern.isEmpty()) {
                 if(inverseBlock) {
                     invertedFilter = null;
                 } else {
                     directFilter = null;
                 }
-            }
-
-            if(inverseBlock) {
+            } else if(inverseBlock) {
                 if(invertedFilter==null || !(invertedFilter instanceof BlockFilter)) {
                     invertedFilter = new BlockFilter(blockPattern, blockSearchPattern, true);
                 } else {
