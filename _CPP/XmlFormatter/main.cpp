@@ -9,25 +9,32 @@ using namespace std;
 int main()
 {
 
-    std::stringstream sb;
-    char c ;
+/*
+    wcin >> noskipws;
+    istream_iterator<wchar_t> in(wcin);
+    istream_iterator<wchar_t> end;
+    wstring results(in, end);
+    wcout<<results;
+*/
+
+
+    wcin >> noskipws;
+    wstringstream sb;
+    wchar_t c ;
     while(true) {
-        c = cin.get();
-        if(c<0) {
+        c = wcin.get();
+        //wcin>>c;
+        //wcout << c;
+        if(wcin.eof()) {
             break;
         }
         sb << c;
     }
 
-    string xml = sb.str();
-    cout << XmlUtils::formatXml(xml);
+    wstring xml = sb.str();
+    //wcout << xml.c_str();
+    wcout << XmlUtils::formatXml(xml);
+
     return 0;
-/*
-    string xml = "<a><b>as<c>as</c></b><d/></a>";
-    //string xml = "<a>bbb</a>";
-    cout << "Xml: \n" << xml <<"\n";
-    cout << XmlUtils::formatXml(xml);
-    return 0;
-*/
 }
 

@@ -23,14 +23,15 @@ namespace StringTools
 XmlUtils::XmlFormatter::XmlFormatter(int indentNumChars, int lineLength){
     this->indentNumChars = indentNumChars;
     this->lineLength = lineLength;
+    this->isFirstTag = true;
 }
 
-std::string XmlUtils::XmlFormatter::format(std::string s, int initialIndent) {
+std::wstring XmlUtils::XmlFormatter::format(std::wstring s, int initialIndent) {
     int indent = initialIndent;
-    std::stringstream sb;
+    std::wstringstream sb;
     for (int i = 0; i < s.length(); i++)
     {
-        char currentChar = s.at(i);
+        wchar_t currentChar = s.at(i);
         if (currentChar == '<')
         {
             char nextChar = s.at(i + 1);
@@ -55,11 +56,11 @@ std::string XmlUtils::XmlFormatter::format(std::string s, int initialIndent) {
                 int nextStartElementPos = s.find_first_of('<', i);
                 if (nextStartElementPos > i + 1)
                 {
-                    std::string textBetweenElements = s.substr(i + 1, nextStartElementPos - i - 1);
+                    std::wstring textBetweenElements = s.substr(i + 1, nextStartElementPos - i - 1);
 
                     // If the space between elements is solely newlines, let them through to preserve additional newlines in source document.
 
-                    if (StringTools::Replace(textBetweenElements, std::string("\n"), std::string("")).length() == 0)
+                    if (StringTools::Replace(textBetweenElements, std::wstring(L"\n"), std::wstring(L"")).length() == 0)
                     {
                         sb << textBetweenElements << "\n";
                     }
@@ -86,20 +87,20 @@ std::string XmlUtils::XmlFormatter::format(std::string s, int initialIndent) {
     return sb.str();
 }
 
-std::string XmlUtils::XmlFormatter::buildWhitespace(int numChars){
-    std::stringstream ss;
+std::wstring XmlUtils::XmlFormatter::buildWhitespace(int numChars){
+    std::wstringstream ss;
     for (int i = 0; i < numChars; i++)
         ss<<" ";
     return ss.str();
 }
 
-std::string XmlUtils::XmlFormatter::lineWrap(std::string s, int lineLength, int indent, std::string linePrefix)
+std::wstring XmlUtils::XmlFormatter::lineWrap(std::wstring s, int lineLength, int indent, std::wstring linePrefix)
 {
 
     if (s.empty())
         return s;
 
-    std::stringstream sb;
+    std::wstringstream sb;
     int lineStartPos = 0;
     int lineEndPos;
     bool firstLine = true;
@@ -130,11 +131,11 @@ std::string XmlUtils::XmlFormatter::lineWrap(std::string s, int lineLength, int 
 
 XmlUtils::XmlFormatter XmlUtils::formatter(4, 120);
 
-std::string XmlUtils::formatXml(std::string s) {
+std::wstring XmlUtils::formatXml(std::wstring s) {
     return formatter.format(s, 0);
 }
 
-std::string XmlUtils::formatXml(std::string s, int initialIndent){
+std::wstring XmlUtils::formatXml(std::wstring s, int initialIndent){
     return formatter.format(s, initialIndent);
 }
 
