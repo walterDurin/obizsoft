@@ -22,11 +22,9 @@ public class TestReadLog {
 	}
 
 	public static void testconnect() throws JSchException, IOException, InterruptedException {
-		Host hostData = new Host(host, 22, user, passwd);
-
 		JSch jsch=new JSch();
-		Session session=jsch.getSession(hostData.getUser(), hostData.getHost(), 22);
-		UserInfo ui=new MyUserInfo(hostData.getPassword());
+		Session session=jsch.getSession(user, host, 22);
+		UserInfo ui=new MyUserInfo(passwd);
 		session.setUserInfo(ui);
 		session.connect(3000);   // making a connection with timeout.
 		Channel channel= session.openChannel("shell");

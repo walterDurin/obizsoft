@@ -2,6 +2,7 @@ package ru.lanit.dibr.utils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -14,6 +15,8 @@ import java.io.File;
 
 import ru.lanit.dibr.utils.gui.configuration.Host;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
+import ru.lanit.dibr.utils.gui.configuration.Portmap;
+import ru.lanit.dibr.utils.gui.configuration.Tunnel;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,6 +27,7 @@ import ru.lanit.dibr.utils.gui.configuration.LogFile;
 public class Configuration {
 
 	private Map<Host, Map<String, LogFile>> servers;
+    private Map<String, Tunnel> tunnels = new HashMap<String, Tunnel>();
 
 	public Map<Host, Map<String, LogFile>> getServers() {
 		return servers;
@@ -41,58 +45,36 @@ public class Configuration {
         	DocumentBuilder db = dbf.newDocumentBuilder();
 			Document doc = db.parse(new File("settings.xml"));
 
-			NodeList list = doc.getElementsByTagName("server");
-			for (int i = 0; i < list.getLength(); i++) {
-				String descr = list.item(i).getAttributes().getNamedItem("name").getNodeValue();
-				String host = list.item(i).getAttributes().getNamedItem("host").getNodeValue();
-                String port = "22";
-                if(list.item(i).getAttributes().getNamedItem("port")!=null) {
-				    port = list.item(i).getAttributes().getNamedItem("port").getNodeValue();
-                }
-				String user = list.item(i).getAttributes().getNamedItem("user").getNodeValue();
-                String password = null;
-                if(list.item(i).getAttributes().getNamedItem("password")!=null) {
-                    password = list.item(i).getAttributes().getNamedItem("password").getNodeValue();
-                }
-                String pem = null;
-                if(list.item(i).getAttributes().getNamedItem("pem")!=null) {
-                    pem = list.item(i).getAttributes().getNamedItem("pem").getNodeValue();
-                }
-                String encoding = null;
-                if(list.item(i).getAttributes().getNamedItem("encoding")!=null) {
-                    encoding = list.item(i).getAttributes().getNamedItem("encoding").getNodeValue();
-                }
-                if(encoding==null || encoding.trim().length()==0) {
-                    encoding = System.getProperty("file.encoding");
-                }
+            NodeList tunnelsList = doc.getElementsByTagName("tunnel");
+            for (int i = 0; i < tunnelsList.getLength(); i++) {
+                Node item = tunnelsList.item(i);
+                Host nextHost = readHost(item);
+                String name = item.getAttributes().getNamedItem("name").getNodeValue();
 
-                String proxyHost = null;
-                String proxyType = null;
-                String proxyPort = null;
-                if(list.item(i).getAttributes().getNamedItem("proxyHost")!=null) {
-                    proxyHost = list.item(i).getAttributes().getNamedItem("proxyHost").getNodeValue();
-                    if(list.item(i).getAttributes().getNamedItem("proxyType")!=null) {
-                        proxyType = list.item(i).getAttributes().getNamedItem("proxyType").getNodeValue();
+                List<Portmap> portmapList = new ArrayList<Portmap>();
+                NodeList portmapNodeList = item.getChildNodes();
+                for (int j =0; j < portmapNodeList.getLength(); j++) {
+                    Node portmapNode = portmapNodeList.item(i);
+                    if(!portmapNode.getNodeName().equals("L")) {
+                        continue;
                     }
-                    if(list.item(i).getAttributes().getNamedItem("proxyPort")!=null) {
-                        proxyPort = list.item(i).getAttributes().getNamedItem("proxyPort").getNodeValue();
-                    }
+                    int localPort = Integer.parseInt(portmapNode.getAttributes().getNamedItem("localPort").getNodeValue());
+                    String destHost = portmapNode.getAttributes().getNamedItem("destHost").getNodeValue();
+                    int destPort = Integer.parseInt(portmapNode.getAttributes().getNamedItem("destPort").getNodeValue());
+                    portmapList.add(new Portmap(localPort, destHost, destPort));
                 }
 
+                tunnels.put(name, new Tunnel(nextHost, portmapList));
+            }
 
-                Host nextHost;
-                if(proxyHost!=null) {
-                    if(proxyPort==null || proxyPort.trim().length()==0) {
-                        proxyPort="0";
-                    }
-                    nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding, proxyHost, Integer.parseInt(proxyPort), proxyType);
-                } else {
-                    nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding);
-                }
 
+			NodeList serversList = doc.getElementsByTagName("server");
+			for (int i = 0; i < serversList.getLength(); i++) {
+                Node server = serversList.item(i);
+                Host nextHost = readHost(server);
 
 				System.out.println(nextHost);
-				NodeList logList = list.item(i).getChildNodes();
+				NodeList logList = server.getChildNodes();
 				servers.put(nextHost, new LinkedHashMap<String, LogFile>());
 				for(int j = 0; j < logList.getLength() ; j++  ) {
 					if(logList.item(j).getNodeName().equals("log")) {
@@ -118,4 +100,58 @@ public class Configuration {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
 	}
+
+    private Host readHost(Node server) {
+        String descr = server.getAttributes().getNamedItem("name").getNodeValue();
+        String host = server.getAttributes().getNamedItem("host").getNodeValue();
+        String port = "22";
+        if(server.getAttributes().getNamedItem("port")!=null) {
+            port = server.getAttributes().getNamedItem("port").getNodeValue();
+        }
+        String user = server.getAttributes().getNamedItem("user").getNodeValue();
+        String password = null;
+        if(server.getAttributes().getNamedItem("password")!=null) {
+            password = server.getAttributes().getNamedItem("password").getNodeValue();
+        }
+        String pem = null;
+        if(server.getAttributes().getNamedItem("pem")!=null) {
+            pem = server.getAttributes().getNamedItem("pem").getNodeValue();
+        }
+        String encoding = null;
+        if(server.getAttributes().getNamedItem("encoding")!=null) {
+            encoding = server.getAttributes().getNamedItem("encoding").getNodeValue();
+        }
+        if(encoding==null || encoding.trim().length()==0) {
+            encoding = System.getProperty("file.encoding");
+        }
+
+        String proxyHost = null;
+        String proxyType = null;
+        String proxyPort = null;
+        if(server.getAttributes().getNamedItem("proxyHost")!=null) {
+            proxyHost = server.getAttributes().getNamedItem("proxyHost").getNodeValue();
+            if(server.getAttributes().getNamedItem("proxyType")!=null) {
+                proxyType = server.getAttributes().getNamedItem("proxyType").getNodeValue();
+            }
+            if(server.getAttributes().getNamedItem("proxyPort")!=null) {
+                proxyPort = server.getAttributes().getNamedItem("proxyPort").getNodeValue();
+            }
+        }
+
+        Tunnel tunnel = null;
+        if(server.getAttributes().getNamedItem("tunnel")!=null) {
+            tunnel = tunnels.get(server.getAttributes().getNamedItem("tunnel").getNodeValue());
+        }
+
+        Host nextHost;
+        if(proxyHost!=null) {
+            if(proxyPort==null || proxyPort.trim().length()==0) {
+                proxyPort="0";
+            }
+            nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding, proxyHost, Integer.parseInt(proxyPort), proxyType, tunnel);
+        } else {
+            nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding, tunnel);
+        }
+        return nextHost;
+    }
 }
