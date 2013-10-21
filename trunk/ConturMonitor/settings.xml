@@ -1,10 +1,14 @@
 <settings>
-    <server name="SIBUR QA" host="172.16.25.78" user="oracle" password="oracle" encoding="utf-8">
-        <log name="OSB AdminServer.log" file="/opt/dev/sbrmc/domains/osb/servers/AdminServer/logs/AdminServer.log"/>
-        <log name="OSB Managed osbServer1.out" file="/opt/dev/sbrmc/domains/osb/servers/osbServer1/logs/osbServer1.out"/>
-        <log name="OSB osb-osbServer1-svr.log" file="/opt/dev/sbrmc/domains/logs/osb-osbServer1-svr.log"/>        
-        <log name="WLS AdminServer.log" file="/opt/dev/sbrmc/domains/wls/servers/AdminServer/logs/AdminServer.log"/>
-        <log name="WLS Admin wls.log" file="/opt/dev/sbrmc/domains/wls/wls/servers/AdminServer/logs/wls.log"/>
-        <log name="WLS Managed wlsServer1.out" file="/opt/dev/sbrmc/domains/wls/wls/servers/wlsServer1/logs/wlsServer1.out"/>        
+    <tunnel name="BTC_new" host="127.0.0.1" user="was" password="prpc-2.184" port="2622">
+    	<L localPort="30122" destHost="212.98.171.227" destPort="22" />
+    </tunnel>
+
+    <server name="DEV" host="127.0.0.1" user="was" password="prpc-2.184" port="2622" encoding="utf-8" tunnel="BTC_new">
+        <log name="was" file="/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/server1/SystemOut.log" blockPattern="\[\d\d?\/\d\d?\/\d\d? \d\d?:\d\d?:\d\d?[,:]\d{1,3} MSK\]"/>
     </server>
+
+
 </settings>
+
+
+

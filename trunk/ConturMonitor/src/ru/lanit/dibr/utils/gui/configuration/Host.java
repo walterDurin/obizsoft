@@ -1,5 +1,8 @@
 package ru.lanit.dibr.utils.gui.configuration;
 
+import com.jcraft.jsch.*;
+import ru.lanit.dibr.utils.utils.MyUserInfo;
+
 /**
  * Created by IntelliJ IDEA.
  * User: VTaran
@@ -17,16 +20,17 @@ public class Host {
     private String proxyHost;
     private int proxyPrort;
     private String proxyType;
+    private Tunnel tunnel;
     public static final String SOCKS4="SOCKS4";
     public static final String SOCKS5="SOCKS5";
     public static final String HTTP="HTTP";
     public static final int DEFAULT_HTTP_PORT = 3128;
 
     public Host(String host, int port, String user, String password) {
-		this(null, host, port, user, password, null, null);
+		this(null, host, port, user, password, null, null, null);
 	}
 
-	public Host(String description, String host, int port, String user, String password, String pem, String defaultEncoding) {
+	public Host(String description, String host, int port, String user, String password, String pem, String defaultEncoding, Tunnel tunnel) {
 		this.description = description;
 		this.host = host;
         this.port = port;
@@ -34,9 +38,10 @@ public class Host {
 		this.password = password;
 		this.pem = pem;
         this.defaultEncoding = defaultEncoding;
+        this.tunnel = tunnel;
 	}
 
-    public Host(String description, String host, int port, String user, String password, String pem, String defaultEncoding, String proxyAddress, int proxyPrort, String proxyType) {
+    public Host(String description, String host, int port, String user, String password, String pem, String defaultEncoding, String proxyAddress, int proxyPrort, String proxyType, Tunnel tunnel) {
         this.description = description;
         this.host = host;
         this.port = port;
@@ -44,9 +49,43 @@ public class Host {
         this.password = password;
         this.pem = pem;
         this.defaultEncoding = defaultEncoding;
+        this.tunnel = tunnel;
         this.proxyHost = proxyAddress;
         this.proxyPrort = proxyPrort;
         this.proxyType = proxyType;
+    }
+
+    public Session connect() throws Exception {
+        JSch jsch = new JSch();
+        Session session = jsch.getSession(user, host, port);
+        if (proxyHost != null) {
+            Proxy proxy = null;
+            if (proxyType.equals(HTTP)) {
+                proxy = new ProxyHTTP(proxyHost, proxyPrort);
+            } else if (proxyType.equals(SOCKS4)) {
+                proxy = new ProxySOCKS4(proxyHost, proxyPrort);
+            } else if (proxyType.equals(SOCKS5)) {
+                proxy = new ProxySOCKS4(proxyHost, proxyPrort);
+            } else {
+                throw new Exception("Unknown proxy type! Please use one of following: '" + HTTP + "'; '" + SOCKS4 + "'; " + SOCKS5 + "'; ");
+            }
+            session.setProxy(proxy);
+        }
+        session.setConfig("StrictHostKeyChecking", "no"); //принимать неизвестные ключи от серверов
+        //сжатие потока
+        session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
+        session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
+        session.setConfig("compression_level", "9");
+
+        if (pem != null) {
+            jsch.addIdentity(pem);
+        } else {
+            UserInfo ui = new MyUserInfo(password);
+            session.setUserInfo(ui);
+        }
+
+        session.connect(30000);   // making a connection with timeout.
+        return session;
     }
 
     public String getDescription() {
@@ -57,43 +96,47 @@ public class Host {
 		return host;
 	}
 
-    public int getPort() {
-        return port;
-    }
-
-    public String getUser() {
-		return user;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-    public String getPem() {
-        return pem;
-    }
+//    public int getPort() {
+//        return port;
+//    }
+//
+//    public String getUser() {
+//		return user;
+//	}
+//
+//	public String getPassword() {
+//		return password;
+//	}
+//
+//    public String getPem() {
+//        return pem;
+//    }
 
     public String getDefaultEncoding() {
         return defaultEncoding;
     }
 
-    public String getProxyHost() {
-        return proxyHost;
-    }
-
-    public int getProxyPrort() {
-        return proxyPrort;
-    }
-
-    public String getProxyType() {
-        return proxyType;
-    }
+//    public Tunnel getTunnel() {
+//        return tunnel;
+//    }
+//
+//    public String getProxyHost() {
+//        return proxyHost;
+//    }
+//
+//    public int getProxyPrort() {
+//        return proxyPrort;
+//    }
+//
+//    public String getProxyType() {
+//        return proxyType;
+//    }
 
     @Override
 	public String toString() {
 		return "host = " + host +
 		        "; user = " + user + "; password = " + (password!=null?password.replaceAll("\\w", "*"):"") + "; pem = " + pem + 
-                "; proxyHost=" + proxyHost + "; proxyPort=" + proxyPrort + "; proxyType=" + proxyType;
+                "; proxyHost=" + proxyHost + "; proxyPort=" + proxyPrort + "; proxyType=" + proxyType + "; tunnel = [" + tunnel + "]";
 	}
 
 	@Override

@@ -3,7 +3,6 @@ package ru.lanit.dibr.utils.core;
 import com.jcraft.jsch.*;
 import ru.lanit.dibr.utils.gui.configuration.Host;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
-import ru.lanit.dibr.utils.utils.MyUserInfo;
 import ru.lanit.dibr.utils.utils.SshUtil;
 
 import java.io.BufferedReader;
@@ -38,37 +37,7 @@ public class SshSource implements LogSource {
 
     public void startRead() throws Exception {
         checkClosed();
-        JSch jsch = new JSch();
-        session = jsch.getSession(host.getUser(), host.getHost(), host.getPort());
-        if (host.getProxyHost() != null) {
-            Proxy proxy = null;
-            if (host.getProxyType().equals(Host.HTTP)) {
-                proxy = new ProxyHTTP(host.getProxyHost(), host.getProxyPrort());
-            } else if (host.getProxyType().equals(Host.SOCKS4)) {
-                proxy = new ProxySOCKS4(host.getProxyHost(), host.getProxyPrort());
-            } else if (host.getProxyType().equals(Host.SOCKS5)) {
-                proxy = new ProxySOCKS4(host.getProxyHost(), host.getProxyPrort());
-            } else {
-                throw new Exception("Unknown proxy type! Please use one of following: '" + Host.HTTP + "'; '" + Host.SOCKS4 + "'; " + Host.SOCKS5 + "'; ");
-            }
-            //proxy.
-//            Proxy proxy = new ProxySOCKS4(host.getHost(), host.getPort());
-            session.setProxy(proxy);
-        }
-        session.setConfig("StrictHostKeyChecking", "no"); //принимать неизвестные ключи от серверов
-        //сжатие потока
-        session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
-        session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
-        session.setConfig("compression_level", "9");
-
-        if (host.getPem() != null) {
-            jsch.addIdentity(host.getPem());
-        } else {
-            UserInfo ui = new MyUserInfo(host.getPassword());
-            session.setUserInfo(ui);
-        }
-
-        session.connect(30000);   // making a connection with timeout.
+        session = host.connect();
         channel = (ChannelExec) session.openChannel("exec");
         String linesCount = SshUtil.exec(host, "wc -l " + logFile.getPath() + " | awk \"{print $1}\"").getData().trim();
         System.out.println("Lines count in log file: " + linesCount);

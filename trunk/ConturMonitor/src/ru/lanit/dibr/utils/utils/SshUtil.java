@@ -80,22 +80,10 @@ public class SshUtil {
         return result;
     }
 
-    private static void init(Host host) throws JSchException {
+    private static void init(Host host) throws Exception {
         if(session==null) {
-
             JSch jsch = new JSch();
-
-            session = jsch.getSession(host.getUser(), host.getHost(), host.getPort());
-            session.setConfig("StrictHostKeyChecking", "no");
-
-            if(host.getPem()!=null) {
-                jsch.addIdentity(host.getPem());
-            } else {
-                UserInfo ui=new MyUserInfo(host.getPassword());
-                session.setUserInfo(ui);
-            }
-
-            session.connect(30000);
+            session = host.connect();
         }
     }
 }
