@@ -1,6 +1,6 @@
 <settings>
-    <tunnel name="BTC_new" host="127.0.0.1" user="was" password="prpc-2.184" port="2622">
-    	<L localPort="30122" destHost="212.98.171.227" destPort="22" />
+    <tunnel name="BTC_new" host="212.98.191.105" user="prpc" password="prpc-2.184" port="32746">
+    	<L localPort="2622" destHost="212.98.171.226" destPort="22" />
     </tunnel>
 
     <server name="DEV" host="127.0.0.1" user="was" password="prpc-2.184" port="2622" encoding="utf-8" tunnel="BTC_new">
