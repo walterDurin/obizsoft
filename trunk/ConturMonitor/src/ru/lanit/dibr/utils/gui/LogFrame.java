@@ -22,11 +22,24 @@ public class LogFrame  extends JFrame {
 
 	public LogFrame(final JButton b, final JComponent c, final String title, final LogSource logSource, final String blockPattern) {
 		setTitle(title);
-
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+        JPanel contentPanel  = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+
         final LogPanel lp = new LogPanel(logSource, blockPattern);
 		panel = lp;
-		add(lp);
+        contentPanel.add(lp);
+//
+//        JPanel bottomPanel = new JPanel();
+//        JButton scrollState = new JButton("123");
+//        bottomPanel.add(scrollState);
+//        bottomPanel.setMaximumSize(new Dimension(100, 150));
+//        bottomPanel.setMinimumSize(new Dimension(10, 150));
+//        bottomPanel.setSize(100, 150);
+//        contentPanel.add(bottomPanel);
+//
+        setContentPane(contentPanel);
 		t = new Thread() {
 			@Override
 			public void run() {
@@ -56,10 +69,5 @@ public class LogFrame  extends JFrame {
 		};
 		t.start();
 
-	}
-
-	public void stop() {
-		t.interrupt();
-		setVisible(false);
 	}
 }
