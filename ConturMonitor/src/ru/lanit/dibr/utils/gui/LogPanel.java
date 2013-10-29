@@ -31,8 +31,10 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     private String find = null;
 //    private boolean isFormatted = true;
 
-    private AbstractFilter invertedFilter = null;
-    private AbstractFilter directFilter = null;
+    private AbstractFilter grepInvertedFilter = null;
+    private AbstractFilter grepDirectFilter = null;
+    private AbstractFilter blockInvertedFilter = null;
+    private AbstractFilter blockDirectFilter = null;
 
 //    private String blockFilter = null;
 //    private boolean inverseBlockFilter = false; //if set true then block contained @blockFilter will be hidden
@@ -82,12 +84,12 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
             new Thread(new Runnable() {
                 public void run() {
-                    while (true) {
+                    while (!stopped) {
                         try {
                             if(autoScroll) {
                                 getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
                             }
-                            if(true) {
+                            if(needRepaint.getAndSet(false)) {
                                 getParent().repaint();
                                 repaint();
                             }
@@ -178,24 +180,24 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
             if(grepPattern.isEmpty()) {
                 if(inverseGrep) {
-                    invertedFilter = null;
+                    grepInvertedFilter = null;
                 } else {
-                    directFilter = null;
+                    grepDirectFilter = null;
                 }
             } else  if(inverseGrep) {
-                if(invertedFilter==null || !(invertedFilter instanceof GrepFilter)) {
-                    invertedFilter = new GrepFilter(grepPattern, true);
+                if(grepInvertedFilter ==null || !(grepInvertedFilter instanceof GrepFilter)) {
+                    grepInvertedFilter = new GrepFilter(grepPattern, true);
                 } else {
-                    ((GrepFilter)invertedFilter).addStringToSearch(grepPattern);
+                    ((GrepFilter) grepInvertedFilter).addStringToSearch(grepPattern);
                 }
-                if(directFilter!=null && !(directFilter instanceof GrepFilter)) {
-                    directFilter = null;
+                if(grepDirectFilter !=null && !(grepDirectFilter instanceof GrepFilter)) {
+                    grepDirectFilter = null;
                 }
             } else {
-                if(directFilter==null || !(directFilter instanceof GrepFilter)) {
-                    directFilter = new GrepFilter(grepPattern, false);
+                if(grepDirectFilter ==null || !(grepDirectFilter instanceof GrepFilter)) {
+                    grepDirectFilter = new GrepFilter(grepPattern, false);
                 } else {
-                    ((GrepFilter) directFilter).addStringToSearch(grepPattern);
+                    ((GrepFilter) grepDirectFilter).addStringToSearch(grepPattern);
                 }
 
             }
@@ -210,21 +212,21 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
             if(blockSearchPattern.isEmpty()) {
                 if(inverseBlock) {
-                    invertedFilter = null;
+                    blockInvertedFilter = null;
                 } else {
-                    directFilter = null;
+                    blockDirectFilter = null;
                 }
             } else if(inverseBlock) {
-                if(invertedFilter==null || !(invertedFilter instanceof BlockFilter)) {
-                    invertedFilter = new BlockFilter(blockPattern, blockSearchPattern, true);
+                if(blockInvertedFilter ==null || !(blockInvertedFilter instanceof BlockFilter)) {
+                    blockInvertedFilter = new BlockFilter(blockPattern, blockSearchPattern, true);
                 } else {
-                    ((BlockFilter) invertedFilter).addStringToSearch(blockSearchPattern);
+                    ((BlockFilter) blockInvertedFilter).addStringToSearch(blockSearchPattern);
                 }
             } else {
-                if(directFilter==null || !(directFilter instanceof BlockFilter)) {
-                    directFilter = new BlockFilter(blockPattern, blockSearchPattern, false);
+                if(grepDirectFilter ==null || !(grepDirectFilter instanceof BlockFilter)) {
+                    grepDirectFilter = new BlockFilter(blockPattern, blockSearchPattern, false);
                 } else {
-                    ((BlockFilter) directFilter).addStringToSearch(blockSearchPattern);
+                    ((BlockFilter) grepDirectFilter).addStringToSearch(blockSearchPattern);
                 }
             }
 
@@ -239,14 +241,22 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         logSource.setPaused(true);
         filtersChain = logSource;
         area.setText("");
-        if(invertedFilter!=null) {
-            filtersChain = invertedFilter.apply(filtersChain);
+        if(blockInvertedFilter !=null) {
+            filtersChain = blockInvertedFilter.apply(filtersChain);
         }
-        if(directFilter!=null) {
-            filtersChain = directFilter.apply(filtersChain);
+        if(blockDirectFilter !=null) {
+            filtersChain = blockDirectFilter.apply(filtersChain);
+        }
+        if(grepInvertedFilter !=null) {
+            filtersChain = grepInvertedFilter.apply(filtersChain);
+        }
+        if(grepDirectFilter !=null) {
+            filtersChain = grepDirectFilter.apply(filtersChain);
         }
         logSource.reset();
         logSource.setPaused(false);
+
+        autoScroll = true;
     }
 
     private void findWord(boolean isBackWard) {
