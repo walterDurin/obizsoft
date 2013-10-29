@@ -53,9 +53,10 @@ public class Configuration {
                 String name = item.getAttributes().getNamedItem("name").getNodeValue();
 
                 List<Portmap> portmapList = new ArrayList<Portmap>();
-                NodeList portmapNodeList = ((DeferredElementImpl) item).getElementsByTagName("L");
+
+                NodeList portmapNodeList = item.getChildNodes();
                 for (int j =0; j < portmapNodeList.getLength(); j++) {
-                    Node portmapNode = portmapNodeList.item(i);
+                    Node portmapNode = portmapNodeList.item(j);
                     if(!portmapNode.getNodeName().equals("L")) {
                         continue;
                     }
