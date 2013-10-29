@@ -3,6 +3,7 @@ package ru.lanit.dibr.utils.utils;
 import com.jcraft.jsch.*;
 
 import java.io.InputStream;
+import java.util.HashMap;
 
 import ru.lanit.dibr.utils.gui.configuration.Host;
 
@@ -28,13 +29,13 @@ public class SshUtil {
         }
     }
 
-    private static Session session = null;
+    private static HashMap<Host,Session> sessions = new HashMap<Host, Session>();
 
     public static ExecResult exec(Host host, String command) {
         ExecResult result = new ExecResult();
         System.out.println("SSH exec command: "+command);
         try {
-            init(host);
+            Session session = init(host);
 
             Channel channel = session.openChannel("exec");
             ((ChannelExec) channel).setCommand(command);
@@ -80,10 +81,11 @@ public class SshUtil {
         return result;
     }
 
-    private static void init(Host host) throws Exception {
-        if(session==null) {
-            JSch jsch = new JSch();
-            session = host.connect();
+    private static Session init(Host host) throws Exception {
+        //Todo: утащить всё это в Host
+        if(!sessions.containsKey(host)) {
+            sessions.put(host, host.connect());
         }
+        return sessions.get(host);
     }
 }

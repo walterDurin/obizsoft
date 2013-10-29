@@ -1,5 +1,6 @@
 package ru.lanit.dibr.utils;
 
+import com.sun.org.apache.xerces.internal.dom.DeferredElementImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -52,7 +53,7 @@ public class Configuration {
                 String name = item.getAttributes().getNamedItem("name").getNodeValue();
 
                 List<Portmap> portmapList = new ArrayList<Portmap>();
-                NodeList portmapNodeList = item.getChildNodes();
+                NodeList portmapNodeList = ((DeferredElementImpl) item).getElementsByTagName("L");
                 for (int j =0; j < portmapNodeList.getLength(); j++) {
                     Node portmapNode = portmapNodeList.item(i);
                     if(!portmapNode.getNodeName().equals("L")) {

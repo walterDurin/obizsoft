@@ -55,7 +55,12 @@ public class Host {
         this.proxyType = proxyType;
     }
 
-    public Session connect() throws Exception {
+    public Session createSession() throws Exception {
+
+        if(tunnel!=null) {
+            tunnel.connect();
+        }
+
         JSch jsch = new JSch();
         Session session = jsch.getSession(user, host, port);
         if (proxyHost != null) {
@@ -83,7 +88,11 @@ public class Host {
             UserInfo ui = new MyUserInfo(password);
             session.setUserInfo(ui);
         }
+        return session;
+    }
 
+    public Session connect() throws Exception {
+        Session session = createSession();
         session.connect(30000);   // making a connection with timeout.
         return session;
     }
