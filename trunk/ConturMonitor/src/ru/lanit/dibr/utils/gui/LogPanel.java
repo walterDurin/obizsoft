@@ -10,6 +10,7 @@ import ru.lanit.dibr.utils.core.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.awt.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -26,6 +27,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     private boolean stopped = false;
     private JTextArea area;
     private boolean autoScroll = true;
+    private AtomicBoolean needRepaint = new AtomicBoolean(true);
     private String find = null;
 //    private boolean isFormatted = true;
 
@@ -78,19 +80,24 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             area.addKeyListener(this);
             area.addCaretListener(this);
 
-//        this.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
-//            public void adjustmentValueChanged(AdjustmentEvent e) {
-//                    if(getVerticalScrollBar().isVisible()) {
-//                    System.out.println("getVerticalScrollBar().getValue(): " + getVerticalScrollBar().getValue());
-//                    System.out.println("getVerticalScrollBar().getHeight()" + getVerticalScrollBar().getVisibleAmount());
-//                    System.out.println("getVerticalScrollBar().isVisible()" + getVerticalScrollBar().isVisible());
-//                    System.out.println("getVerticalScrollBar().getMaximum()" + getVerticalScrollBar().getMaximum());
-//                    System.out.println((getVerticalScrollBar().getValue() + getVerticalScrollBar().getHeight()) - getVerticalScrollBar().getMaximum());
-//                    setAutoScroll((getVerticalScrollBar().getValue() + getVerticalScrollBar().getHeight()) - getVerticalScrollBar().getMaximum() > - 50);
-//                }
-//            }
-//        });
-
+            new Thread(new Runnable() {
+                public void run() {
+                    while (true) {
+                        try {
+                            if(autoScroll) {
+                                getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
+                            }
+                            if(true) {
+                                getParent().repaint();
+                                repaint();
+                            }
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            break;
+                        }
+                    }
+                }
+            }, "Repaint and Scroll").start();
 
             this.addMouseWheelListener(new MouseAdapter() {
                 @Override
@@ -118,8 +125,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             //area.setCaretPosition(area.getDocument().getLength() - nextLine.length());
             getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
         }
-        getParent().repaint();
-        repaint();
+        needRepaint.set(true);
+//        getParent().repaint();
+//        repaint();
     }
 
     public void stop() {
