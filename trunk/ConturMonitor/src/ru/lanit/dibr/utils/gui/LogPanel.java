@@ -5,6 +5,7 @@ import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 import javax.swing.text.BadLocationException;
 
+import com.sun.deploy.net.proxy.StaticProxyManager;
 import ru.lanit.dibr.utils.core.*;
 
 import java.awt.datatransfer.StringSelection;
@@ -29,37 +30,22 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     private boolean autoScroll = true;
     private AtomicBoolean needRepaint = new AtomicBoolean(true);
     private String find = null;
-//    private boolean isFormatted = true;
 
     private AbstractFilter grepInvertedFilter = null;
     private AbstractFilter grepDirectFilter = null;
     private AbstractFilter blockInvertedFilter = null;
     private AbstractFilter blockDirectFilter = null;
 
-//    private String blockFilter = null;
-//    private boolean inverseBlockFilter = false; //if set true then block contained @blockFilter will be hidden
-//    private StringBuilder buffer = new StringBuilder();
-//    private StringBuffer currentBlock = new StringBuffer();
-
     private int startFrom = 0;
     private int offset = 0;
-
+    boolean lastSearchDirectionIsForward = true;
 
     public LogPanel(LogSource logSource, String blockPattern) {
         super(new JTextArea());
         area = ((JTextArea) getViewport().getView());
 
-        //area.putClientProperty(sun.swing.SwingUtilities2.AA_TEXT_PROPERTY_KEY, new Boolean(false));
-
-//        ((Graphics2D)getGraphics()).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-//                RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-
         area.setEditable(false);
-//        if(System.getProperty("os.name").contains("OS X")) {
-//            area.setFont(new Font("Courier", 0, 13));
-//        } else {
         area.setFont(new Font("Courier New", 0, 12));
-//        }
         area.setBackground(new Color(0, 0, 0));
         area.setForeground(new Color(187, 187, 187));
         area.setSelectedTextColor(new Color(0, 0, 0));
@@ -77,7 +63,6 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         try {
             logSource.startRead();
             filtersChain = logSource;
-            //filtersChain.addFilterToQueue(new XmlFormatFilter(blockPattern));
             String nextLine;
             area.addKeyListener(this);
             area.addCaretListener(this);
@@ -124,12 +109,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     private void appendLine(String nextLine) {
         area.append("\n" + nextLine);
         if (autoScroll) {
-            //area.setCaretPosition(area.getDocument().getLength() - nextLine.length());
             getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
         }
         needRepaint.set(true);
-//        getParent().repaint();
-//        repaint();
     }
 
     public void stop() {
@@ -137,7 +119,6 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     public void setAutoScroll(boolean autoScroll) {
-//        System.out.println("autoscroll changed to: '" + autoScroll +"'");
         this.autoScroll = autoScroll;
     }
 
@@ -158,11 +139,8 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             area.setLineWrap(!area.getLineWrap());
         } else if ((ke.getKeyCode() == 35) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) { //Нажали Cntrl + PgDown
             setAutoScroll(true);
-        } else if ((ke.getKeyCode() == 70) && ((ke.getModifiers() == KeyEvent.CTRL_MASK) || (ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK)))) {  //  Нажали Ctrl + F
-            find = (String) JOptionPane.showInputDialog(this, "FIND:\n", "Find", JOptionPane.INFORMATION_MESSAGE, null, null, null);
-            System.out.println("find");
-            startFrom = area.getCaretPosition();
-            findWord(ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK));
+        } else if ((ke.getKeyCode() == KeyEvent.VK_F) && ((ke.getModifiers() == KeyEvent.CTRL_MASK) || (ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK)))) {  //  Нажали Ctrl + F
+            performFind();
         } else if (ke.getKeyCode() == KeyEvent.VK_F3) { // F3 (+Shift)
             findWord(ke.getModifiers() == KeyEvent.SHIFT_MASK);
         } else if (ke.getKeyCode() == KeyEvent.VK_F1) { // F1
@@ -237,6 +215,12 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         }
     }
 
+    public void performFind() {
+        find = (String) JOptionPane.showInputDialog(this, "FIND:\n", "Find", JOptionPane.INFORMATION_MESSAGE, null, null, null);
+        startFrom = area.getCaretPosition();
+        findWord(false);
+    }
+
     private void resetFilters() {
         logSource.setPaused(true);
         filtersChain = logSource;
@@ -260,6 +244,12 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     private void findWord(boolean isBackWard) {
+        if(lastSearchDirectionIsForward==isBackWard) {
+            lastSearchDirectionIsForward = !isBackWard;
+            findWord(isBackWard);
+        } else {
+            lastSearchDirectionIsForward = !isBackWard;
+        }
         for (int i = 0; i < 2; i++) {
             if (isBackWard) {
                 offset = area.getText().lastIndexOf(find, startFrom);
@@ -352,7 +342,6 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     public void mousePressed(MouseEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void mouseReleased(MouseEvent e) {
@@ -372,10 +361,8 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     public void mouseEntered(MouseEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void mouseExited(MouseEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 }
