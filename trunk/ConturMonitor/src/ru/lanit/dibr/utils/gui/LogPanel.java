@@ -31,10 +31,10 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     private AtomicBoolean needRepaint = new AtomicBoolean(true);
     private String find = null;
 
-    private AbstractFilter grepInvertedFilter = null;
-    private AbstractFilter grepDirectFilter = null;
-    private AbstractFilter blockInvertedFilter = null;
-    private AbstractFilter blockDirectFilter = null;
+    private Filter grepInvertedFilter = null;
+    private Filter grepDirectFilter = null;
+    private Filter blockInvertedFilter = null;
+    private Filter blockDirectFilter = null;
 
     private int startFrom = 0;
     private int offset = 0;
@@ -145,74 +145,87 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             findWord(ke.getModifiers() == KeyEvent.SHIFT_MASK);
         } else if (ke.getKeyCode() == KeyEvent.VK_F1) { // F1
             new HotKeysInfo();
-        } else if (ke.getKeyCode() == KeyEvent.VK_F5) { // F5
-            resetFilters();
+        } else if (ke.getKeyCode() == KeyEvent.VK_F5) { // [Shift +] F5
+            if(ke.getModifiers()==KeyEvent.SHIFT_MASK) {
+                clearFilters();
+            } else {
+                resetFilters();
+            }
+
         } else if (ke.getKeyCode() == 67) { // Key 'C'
             logSource.setPaused(true);
             area.setText("");
             logSource.setPaused(false);
+
         } else if ((ke.getKeyCode() == 71) && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {  // GREP filter
             boolean inverseGrep = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
-            String grepPattern = (String) JOptionPane.showInputDialog(this, "GREP:\n", "Grep", JOptionPane.INFORMATION_MESSAGE, null, null, null);
-            System.out.println("Grep entered: '" + grepPattern + "'");
-
-            if(grepPattern.isEmpty()) {
-                if(inverseGrep) {
-                    grepInvertedFilter = null;
-                } else {
-                    grepDirectFilter = null;
-                }
-            } else  if(inverseGrep) {
-                if(grepInvertedFilter ==null || !(grepInvertedFilter instanceof GrepFilter)) {
-                    grepInvertedFilter = new GrepFilter(grepPattern, true);
-                } else {
-                    ((GrepFilter) grepInvertedFilter).addStringToSearch(grepPattern);
-                }
-                if(grepDirectFilter !=null && !(grepDirectFilter instanceof GrepFilter)) {
-                    grepDirectFilter = null;
-                }
-            } else {
-                if(grepDirectFilter ==null || !(grepDirectFilter instanceof GrepFilter)) {
-                    grepDirectFilter = new GrepFilter(grepPattern, false);
-                } else {
-                    ((GrepFilter) grepDirectFilter).addStringToSearch(grepPattern);
-                }
-
-            }
-
-            resetFilters();
+            performGrep(inverseGrep);
 
         } else if ((ke.getKeyCode() == 66) && blockPattern != null && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {  //BLOCK filter
             //ToDo: если blockPattern==null - Сообщить об этом и предложить его ввести. Показав что нибудь по дефолту. А потом сделать визард с проверкой по строке из лога.
             boolean inverseBlock = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
-            String blockSearchPattern = (String) JOptionPane.showInputDialog(this, "Block filter:\n", "Block filter", JOptionPane.INFORMATION_MESSAGE, null, null, null);
-            System.out.println("blockFilter entered: '" + blockSearchPattern + "'");
-
-            if(blockSearchPattern.isEmpty()) {
-                if(inverseBlock) {
-                    blockInvertedFilter = null;
-                } else {
-                    blockDirectFilter = null;
-                }
-            } else if(inverseBlock) {
-                if(blockInvertedFilter ==null || !(blockInvertedFilter instanceof BlockFilter)) {
-                    blockInvertedFilter = new BlockFilter(blockPattern, blockSearchPattern, true);
-                } else {
-                    ((BlockFilter) blockInvertedFilter).addStringToSearch(blockSearchPattern);
-                }
-            } else {
-                if(grepDirectFilter ==null || !(grepDirectFilter instanceof BlockFilter)) {
-                    grepDirectFilter = new BlockFilter(blockPattern, blockSearchPattern, false);
-                } else {
-                    ((BlockFilter) grepDirectFilter).addStringToSearch(blockSearchPattern);
-                }
-            }
-
-            resetFilters();
+            performBlockFilter(inverseBlock);
 
         } else {
             System.out.println(ke.getKeyCode());
         }
+    }
+
+    public void performBlockFilter(boolean inverseBlock) {
+        String blockSearchPattern = (String) JOptionPane.showInputDialog(this, "Block filter:\n", "Block filter", JOptionPane.INFORMATION_MESSAGE, null, null, null);
+        System.out.println("blockFilter entered: '" + blockSearchPattern + "'");
+
+        if(blockSearchPattern.isEmpty()) {
+            if(inverseBlock) {
+                blockInvertedFilter = null;
+            } else {
+                blockDirectFilter = null;
+            }
+        } else if(inverseBlock) {
+            if(blockInvertedFilter ==null || !(blockInvertedFilter instanceof BlockFilter)) {
+                blockInvertedFilter = new BlockFilter(blockPattern, blockSearchPattern, true);
+            } else {
+                ((BlockFilter) blockInvertedFilter).addStringToSearch(blockSearchPattern);
+            }
+        } else {
+            if(grepDirectFilter ==null || !(grepDirectFilter instanceof BlockFilter)) {
+                grepDirectFilter = new BlockFilter(blockPattern, blockSearchPattern, false);
+            } else {
+                ((BlockFilter) grepDirectFilter).addStringToSearch(blockSearchPattern);
+            }
+        }
+
+        resetFilters();
+    }
+
+    public void performGrep(boolean inverseGrep) {
+        String grepPattern = (String) JOptionPane.showInputDialog(this, "GREP:\n", "Grep", JOptionPane.INFORMATION_MESSAGE, null, null, null);
+        System.out.println("Grep entered: '" + grepPattern + "'");
+
+        if(grepPattern.isEmpty()) {
+            if(inverseGrep) {
+                grepInvertedFilter = null;
+            } else {
+                grepDirectFilter = null;
+            }
+        } else  if(inverseGrep) {
+            if(grepInvertedFilter ==null || !(grepInvertedFilter instanceof GrepFilter)) {
+                grepInvertedFilter = new GrepFilter(grepPattern, true);
+            } else {
+                ((GrepFilter) grepInvertedFilter).addStringToSearch(grepPattern);
+            }
+            if(grepDirectFilter !=null && !(grepDirectFilter instanceof GrepFilter)) {
+                grepDirectFilter = null;
+            }
+        } else {
+            if(grepDirectFilter ==null || !(grepDirectFilter instanceof GrepFilter)) {
+                grepDirectFilter = new GrepFilter(grepPattern, false);
+            } else {
+                ((GrepFilter) grepDirectFilter).addStringToSearch(grepPattern);
+            }
+
+        }
+        resetFilters();
     }
 
     public void performFind() {
@@ -221,6 +234,13 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         findWord(false);
     }
 
+    public void clearFilters() {
+        blockInvertedFilter=null;
+        blockDirectFilter=null;
+        grepInvertedFilter=null;
+        grepDirectFilter=null;
+        resetFilters();
+    }
     private void resetFilters() {
         logSource.setPaused(true);
         filtersChain = logSource;
@@ -243,7 +263,8 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         autoScroll = true;
     }
 
-    private void findWord(boolean isBackWard) {
+    public void findWord(boolean isBackWard) {
+        setAutoScroll(false);
         if(lastSearchDirectionIsForward==isBackWard) {
             lastSearchDirectionIsForward = !isBackWard;
             findWord(isBackWard);
@@ -257,7 +278,8 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 offset = area.getText().indexOf(find, startFrom);
             }
             if (offset > -1) {
-                area.setFocusable(true);
+                area.setFocusCycleRoot(true);
+                area.requestFocusInWindow();
                 area.select(offset, find.length() + offset);
                 startFrom = offset + (isBackWard ? -1 : (find.length() + 1));
                 return;

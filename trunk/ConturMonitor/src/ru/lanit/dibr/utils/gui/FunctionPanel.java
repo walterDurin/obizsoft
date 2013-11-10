@@ -7,8 +7,6 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,28 +21,60 @@ public class FunctionPanel extends JPanel {
     private List<JButton> buttons = new ArrayList<JButton>();
     public FunctionPanel(final LogPanel lp) {
         addKeyListener(lp);
-        JButton find = new JButton(" FIND ");
-        buttons.add(find);
-        find.addActionListener(new ActionListener() {
+
+        JButton button = new JButton(" << ");
+        button.setToolTipText("Search previous <Shift + F3>");
+        buttons.add(button);
+        button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(e.getModifiers() == KeyEvent.SHIFT_MASK) {
-                    System.out.println("Shift find");
-                } else {
-                    System.out.println("find");
-                    lp.performFind();
-                }
+                lp.findWord(true);
             }
         });
-        JButton next = new JButton(" NEXT ");
-        buttons.add(next);
-        JButton previous = new JButton(" PREV ");
-        buttons.add(previous);
-        JButton lineFilter = new JButton(" LINE FILTER ");
-        buttons.add(lineFilter);
-        JButton blockFilter = new JButton(" BLOCK FILTER ");
-        buttons.add(blockFilter);
-        JButton clearFilters = new JButton(" CLR FILTERS");
-        buttons.add(clearFilters);
+
+        button = new JButton(" FIND ");
+        buttons.add(button);
+        button.setToolTipText("Search <Ctrl + F>");
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                lp.performFind();
+            }
+        });
+
+        button = new JButton(" >> ");
+        button.setToolTipText("Search next <F3>");
+        buttons.add(button);
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                lp.findWord(false);
+            }
+        });
+
+        button = new JButton(" LINE FILTER ");
+        buttons.add(button);
+        button.setToolTipText("Show the only lines with text <Ctrl + G>");
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                lp.performGrep(false);
+            }
+        });
+
+        button = new JButton(" BLOCK FILTER ");
+        buttons.add(button);
+        button.setToolTipText("Show the only blocks with text <Ctrl + B>");
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                    lp.performBlockFilter(false);
+            }
+        });
+
+        button = new JButton(" CLR FILTERS ");
+        buttons.add(button);
+        button.setToolTipText("Clear filters <Shift + F5>");
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                lp.clearFilters();
+            }
+        });
 
 
         GridBagConstraints gbc =  new GridBagConstraints();
@@ -52,11 +82,11 @@ public class FunctionPanel extends JPanel {
         gbc.gridy = GridBagConstraints.RELATIVE;
         gbc.gridx = 0;
 
-        for (JButton button : buttons) {
-            button.setBorder(new LineBorder(Color.DARK_GRAY, 1));
-            button.setFont(Font.getFont("Verdana"));
-            button.addKeyListener(lp);
-            add(button, gbc);
+        for (JButton nextBtn : buttons) {
+            nextBtn.setBorder(new LineBorder(Color.DARK_GRAY, 1));
+            nextBtn.setFont(Font.getFont("Verdana"));
+            nextBtn.addKeyListener(lp);
+            add(nextBtn, gbc);
         }
 
         setMaximumSize(new Dimension(10000, 25));
