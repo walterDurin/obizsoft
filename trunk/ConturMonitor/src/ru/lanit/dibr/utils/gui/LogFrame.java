@@ -30,15 +30,9 @@ public class LogFrame  extends JFrame {
         final LogPanel lp = new LogPanel(logSource, blockPattern);
 		panel = lp;
         contentPanel.add(lp);
-//
-//        JPanel bottomPanel = new JPanel();
-//        JButton scrollState = new JButton("123");
-//        bottomPanel.add(scrollState);
-//        bottomPanel.setMaximumSize(new Dimension(100, 150));
-//        bottomPanel.setMinimumSize(new Dimension(10, 150));
-//        bottomPanel.setSize(100, 150);
-//        contentPanel.add(bottomPanel);
-//
+
+        contentPanel.add(new FunctionPanel(lp));
+
         setContentPane(contentPanel);
 		t = new Thread() {
 			@Override
