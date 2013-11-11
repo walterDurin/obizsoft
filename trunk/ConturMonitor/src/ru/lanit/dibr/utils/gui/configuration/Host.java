@@ -3,12 +3,6 @@ package ru.lanit.dibr.utils.gui.configuration;
 import com.jcraft.jsch.*;
 import ru.lanit.dibr.utils.utils.MyUserInfo;
 
-/**
- * Created by IntelliJ IDEA.
- * User: VTaran
- * Date: 16.08.2010
- * Time: 17:21:10
- */
 public class Host {
 	private String description;
 	private String host;
@@ -105,46 +99,14 @@ public class Host {
 		return host;
 	}
 
-//    public int getPort() {
-//        return port;
-//    }
-//
-//    public String getUser() {
-//		return user;
-//	}
-//
-//	public String getPassword() {
-//		return password;
-//	}
-//
-//    public String getPem() {
-//        return pem;
-//    }
-
     public String getDefaultEncoding() {
         return defaultEncoding;
     }
 
-//    public Tunnel getTunnel() {
-//        return tunnel;
-//    }
-//
-//    public String getProxyHost() {
-//        return proxyHost;
-//    }
-//
-//    public int getProxyPrort() {
-//        return proxyPrort;
-//    }
-//
-//    public String getProxyType() {
-//        return proxyType;
-//    }
-
     @Override
 	public String toString() {
 		return "host = " + host +
-		        "; user = " + user + "; password = " + (password!=null?password.replaceAll("\\w", "*"):"") + "; pem = " + pem + 
+		        "; user = " + user + "; password = " + (password!=null?password.replaceAll(".", "*"):"") + "; pem = " + pem +
                 "; proxyHost=" + proxyHost + "; proxyPort=" + proxyPrort + "; proxyType=" + proxyType + "; tunnel = [" + tunnel + "]";
 	}
 

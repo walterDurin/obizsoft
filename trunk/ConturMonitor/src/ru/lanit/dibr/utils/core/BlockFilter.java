@@ -11,18 +11,15 @@ import java.util.regex.Pattern;
  * Date: 13.11.12
  * Time: 2:43
  */
-public class BlockFilter extends AbstractSearchFilter {
+public class BlockFilter extends AbstractFilter {
 
     private StringBuffer blockBufferToSearch = new StringBuffer();
     private StringBuffer blockBuffer = new StringBuffer();
     private int blockBufferLines = 0;
     private int skippedLines = 0;
     private StringBuffer resultBuffer = new StringBuffer();
-    private boolean isPatternFoundInCurrentBlock = false;
     private String blockPattern;
     private boolean foundSkipLine = false;
-
-    private List<String> stringsToSearch = new ArrayList<String>();
 
     public BlockFilter(String blockPattern, String pattern, boolean inverted) {
         super(pattern, inverted);
@@ -30,14 +27,9 @@ public class BlockFilter extends AbstractSearchFilter {
         this.blockPattern = blockPattern;
     }
 
-    public BlockFilter(String blockPattern, boolean inverted, String... pattern) {
-        super(pattern[0], inverted);
-        stringsToSearch.addAll(Arrays.asList(pattern));
+    public BlockFilter(String blockPattern, boolean inverted) {
+        super(inverted);
         this.blockPattern = blockPattern;
-    }
-
-    public void addStringToSearch(String str) {
-        stringsToSearch.add(str);
     }
 
     @Override
@@ -52,7 +44,6 @@ public class BlockFilter extends AbstractSearchFilter {
                 result = resultBuffer.toString();
                 resultBuffer.setLength(0);
             }
-//            System.out.println((inverted?"hide":"show")+" block filter(\"" + pattern + "\"):\n" + result);
             return result;
         }
         if(foundSkipLine) {
@@ -63,50 +54,9 @@ public class BlockFilter extends AbstractSearchFilter {
             --skippedLines;
             return LogSource.SKIP_LINE;
         }
-//        result = inverted?hideFilter(source):showFilter(source);
         result = hideFilter(source);
-//        System.out.println((inverted?"hide":"show")+" block filter(\"" + pattern + "\"):\n" + result);
         return result;
     }
-
-//    protected String showFilter(Source source) throws IOException {
-//        String nextLine = source.readLine();
-//        String result = LogSource.SKIP_LINE;
-//
-//        if(nextLine != null && nextLine!=LogSource.SKIP_LINE) {
-//            boolean isNewBlockLine = nextLine.matches(".*" + blockPattern + ".*");
-//            if(isPatternFoundInCurrentBlock) {
-//                if (isNewBlockLine) {
-//                    isPatternFoundInCurrentBlock = false;
-//                } else {
-//                    result = nextLine;
-//                }
-//            }
-//
-//            //нужна повторна€ проверка, т.к. флаг может помен€тьс€
-//            if(!isPatternFoundInCurrentBlock) {
-//                if (isNewBlockLine) {
-//                    blockBuffer.setLength(0);
-//                    blockBufferToSearch.setLength(0);
-//                }
-//                if(blockBuffer.length()>0) {
-//                    blockBuffer.append("\n");
-//                    blockBufferToSearch.append("\n");
-//                }
-//                blockBuffer.append(nextLine);
-//                blockBufferToSearch.append(removeLineNumbers(nextLine));
-//                if (pattern==null || (blockBufferToSearch.indexOf(pattern) >= 0) ^ inverted) {
-//                    isPatternFoundInCurrentBlock = true;
-////                    result = blockBuffer.toString();
-//                    resultBuffer.append(blockBuffer);
-//                    blockBuffer.setLength(0);
-//                    blockBufferToSearch.setLength(0);
-//                    return readFilteredLine(source);
-//                }
-//            }
-//        }
-//        return result;
-//    }
 
     protected String hideFilter(Source source) throws IOException {
         String nextLine;

@@ -289,7 +289,7 @@ public class TestFilters {
 
     @Test
     public void testInvertedBlockMultiFilter() throws IOException {
-        Source multiFilter = new BlockFilter("\\[block\\]", true,"aa", "222").apply(source);
+        Source multiFilter = new BlockFilter("\\[block\\]", "aa", true).addStringToSearch("222").apply(source);
 
         String expected = "SKIP_LINE\n" +
                 "SKIP_LINE\n" +
@@ -358,7 +358,7 @@ public class TestFilters {
 
     @Test
     public void testBlockMultuFilter() throws IOException {
-        Source filteredSource = new BlockFilter("\\[block\\]", false, "111", "bb").apply(source);
+        Source filteredSource = (new BlockFilter("\\[block\\]", "111", false)).addStringToSearch("bb").apply(source);
 
         String result = "";
         for (stop = false; !stop;) {

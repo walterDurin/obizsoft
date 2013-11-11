@@ -54,7 +54,7 @@ public class FunctionPanel extends JPanel {
         button.setToolTipText("Show the only lines with text <Ctrl + G>");
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                lp.performGrep(false);
+                lp.addGrepFilter(false);
             }
         });
 
@@ -63,13 +63,13 @@ public class FunctionPanel extends JPanel {
         button.setToolTipText("Show the only blocks with text <Ctrl + B>");
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                    lp.performBlockFilter(false);
+                    lp.addBlockFilter(false);
             }
         });
 
         button = new JButton(" CLR FILTERS ");
         buttons.add(button);
-        button.setToolTipText("Clear filters <Shift + F5>");
+        button.setToolTipText("Clear Filters <Shift + F5>");
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 lp.clearFilters();

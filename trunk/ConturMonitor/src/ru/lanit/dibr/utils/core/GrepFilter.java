@@ -11,9 +11,7 @@ import java.util.List;
  * Date: 13.11.12
  * Time: 2:43
  */
-public class GrepFilter extends AbstractSearchFilter {
-
-    private List<String> stringsToSearch = new ArrayList<String>();
+public class GrepFilter extends AbstractFilter {
 
     public GrepFilter(String pattern, boolean inverted) {
         super(pattern, inverted);
@@ -25,8 +23,8 @@ public class GrepFilter extends AbstractSearchFilter {
         stringsToSearch.addAll(Arrays.asList(pattern));
     }
 
-    public void addStringToSearch(String str) {
-        stringsToSearch.add(str);
+    public GrepFilter(boolean inverted) {
+        super(inverted);
     }
 
     @Override
