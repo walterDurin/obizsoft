@@ -1,6 +1,11 @@
 package ru.lanit.dibr.utils.core;
 
+import org.omg.CosNaming.NamingContextPackage.InvalidName;
+import sun.rmi.runtime.NewThreadAction;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: Vova
@@ -9,9 +14,31 @@ import java.io.IOException;
  */
 public abstract class AbstractFilter implements Filter {
 
-    abstract protected String readFilteredLine(Source source) throws IOException;
+    protected boolean inverted = false;
+    protected List<String> stringsToSearch = new ArrayList<String>();
 
+    protected AbstractFilter(boolean inverted) {
+        this.inverted = inverted;
+    }
+
+    protected AbstractFilter(String pattern, boolean inverted) {
+        this.inverted = inverted;
+        this.addStringToSearch(pattern);
+        this.isValid = true;
+    }
+
+    abstract protected String readFilteredLine(Source source) throws IOException;
+    private boolean isValid = false;
     protected void onReset() {
+    }
+
+    public void invalidate() {
+        stringsToSearch.clear();
+        isValid = false;
+    }
+
+    public boolean isValid() {
+        return isValid;
     }
 
     public Source apply(final Source source) {
@@ -43,5 +70,25 @@ public abstract class AbstractFilter implements Filter {
                 return source.isPaused();
             }
         };
+    }
+
+    protected String removeLineNumbers(String selected) {
+        selected = selected.replaceAll("^[\\s\\d]*:\\s", "");
+        selected = selected.replaceAll("\n[\\s\\d]*:\\s", "\n");
+        return selected;
+    }
+
+    public AbstractFilter addStringToSearch(String str) {
+        isValid = true;
+        stringsToSearch.add(str);
+        return this;
+    }
+
+    public void removeStringFromSearch(String str) {
+        stringsToSearch.remove(str);
+    }
+
+    public List<String> getStringsToSearch() {
+        return stringsToSearch;
     }
 }
