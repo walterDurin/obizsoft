@@ -7,6 +7,7 @@ import javax.swing.text.BadLocationException;
 
 import com.sun.deploy.net.proxy.StaticProxyManager;
 import ru.lanit.dibr.utils.core.*;
+import ru.lanit.dibr.utils.gui.forms.Filters;
 
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
@@ -41,11 +42,15 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     private int offset = 0;
     boolean lastSearchDirectionIsForward = true;
 
+    public Filters filtersWindow;
+
     public LogPanel(LogSource logSource, String blockPattern) {
         super(new JTextArea());
 
         blockInvertedFilter = new BlockFilter(blockPattern, true);
         blockDirectFilter = new BlockFilter(blockPattern, false);
+
+        filtersWindow = new Filters("Filters", this, blockDirectFilter, blockInvertedFilter, grepDirectFilter, grepInvertedFilter);
 
         area = ((JTextArea) getViewport().getView());
 
@@ -209,7 +214,8 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         grepDirectFilter.invalidate();
         resetFilters();
     }
-    private void resetFilters() {
+
+    public void resetFilters() {
         logSource.setPaused(true);
         filtersChain = logSource;
         area.setText("");

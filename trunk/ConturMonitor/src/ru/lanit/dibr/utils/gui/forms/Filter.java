@@ -1,22 +1,16 @@
 package ru.lanit.dibr.utils.gui.forms;
 
-import ru.lanit.dibr.utils.core.AbstractFilter;
+import ru.lanit.dibr.utils.gui.LogPanel;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
+import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Vova
  * Date: 12.11.13
  * Time: 1:12
- * To change this template use File | Settings | File Templates.
  */
 public class Filter extends JPanel {
     private JPanel panel1;
@@ -27,24 +21,12 @@ public class Filter extends JPanel {
     private JCheckBox checkBox1;
     private JLabel label1;
 
-    private AbstractFilter filter;
+    private java.util.List<JCheckBox> checkBoxesList = new ArrayList<JCheckBox>();
+    private Map<String, JCheckBox> checkBoxesMap = new HashMap<String, JCheckBox>();
+    private ru.lanit.dibr.utils.core.Filter filter;
+    private LogPanel lp;
 
-    public Filter(String title, final AbstractFilter filter) throws HeadlessException {
-        this.filter = filter;
-
-        for (final String s : filter.getStringsToSearch()) {
-            final JCheckBox checkBox = new JCheckBox(s);
-            checkBox.addItemListener(new ItemListener() {
-                public void itemStateChanged(ItemEvent e) {
-                    if(checkBox.isSelected()) {
-                        filter.addStringToSearch(s);
-                    } else {
-                        filter.removeStringFromSearch(s);
-                    }
-                }
-            });
-            checkBoxList.addCheckbox(checkBox);
-        }
+    public Filter(String title) throws HeadlessException {
 
         add(panel1);
         label1.setText(title);
@@ -54,21 +36,29 @@ public class Filter extends JPanel {
         addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String pattern = (String) JOptionPane.showInputDialog(panel1, "Pattern" + ":\n", "Pattern", JOptionPane.INFORMATION_MESSAGE, null, null, null);
-                checkBoxList.addCheckbox(new JCheckBox(pattern));
+                if(pattern!=null && !(pattern = pattern.trim()).isEmpty() && !checkBoxesMap.containsKey(pattern)) {
+                    JCheckBox checkBox = new JCheckBox(pattern, true);
+                    checkBoxList.addCheckbox(checkBox);
+                    checkBoxesList.add(checkBox);
+                    checkBoxesMap.put(pattern, checkBox);
+                }
             }
         });
 
         delButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(checkBoxList.getSelectedIndex()>=0) {
-                    //((JCheckBox)checkBoxList.getComponent(checkBoxList.getSelectedIndex())).setSelected(false);
+                    checkBoxesMap.remove(checkBoxesList.remove(checkBoxList.getSelectedIndex()).getText());
                     checkBoxList.removeCheckbox(checkBoxList.getSelectedIndex());
+
                 }
             }
         });
 
         clearButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                checkBoxesMap.clear();
+                checkBoxesList.clear();
                 checkBoxList.clear();
             }
         });
@@ -76,15 +66,37 @@ public class Filter extends JPanel {
         checkBox1.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 checkBoxList.markAll(checkBox1.isSelected());
-                System.out.println(checkBox1.isSelected());
             }
         });
     }
 
-    private void createUIComponents() {
+    public void applyFilter(final LogPanel logPanel, final ru.lanit.dibr.utils.core.Filter filter) {
+        this.filter = filter;
+        this.lp = logPanel;
+        for (JCheckBox jCheckBox : checkBoxesList) {
+            jCheckBox.setSelected(false);
+        }
+        for (final String s : filter.getStringsToSearch()) {
+            if(!checkBoxesMap.containsKey(s)) {
+                final JCheckBox checkBox = new JCheckBox(s, true);
+                checkBoxesMap.put(s,checkBox);
+                checkBoxesList.add(checkBox);
+                checkBoxList.addCheckbox(checkBox);
+            } else {
+                checkBoxesMap.get(s).setSelected(true   );
+            }
+        }
     }
 
-    public void actionPerformed(ActionEvent e) {
-
+    public void apply() {
+        filter.invalidate();
+        for (JCheckBox jCheckBox : checkBoxesList) {
+            if(jCheckBox.isSelected()) {
+                filter.addStringToSearch(jCheckBox.getText());
+            } else {
+                filter.removeStringFromSearch(jCheckBox.getText());
+            }
+        }
+        lp.resetFilters();
     }
 }

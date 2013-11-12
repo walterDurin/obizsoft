@@ -22,7 +22,17 @@ public class FunctionPanel extends JPanel {
     public FunctionPanel(final LogPanel lp) {
         addKeyListener(lp);
 
-        JButton button = new JButton(" << ");
+        JButton button = new JButton(" Filters ");
+        button.setToolTipText("Show filters");
+        buttons.add(button);
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                lp.filtersWindow.refresh();
+                lp.filtersWindow.setVisible(true);
+            }
+        });
+
+        button = new JButton(" << ");
         button.setToolTipText("Search previous <Shift + F3>");
         buttons.add(button);
         button.addActionListener(new ActionListener() {

@@ -32,11 +32,10 @@ public class LogChoicer extends JFrame {
 
 
     public LogChoicer(Configuration cfg) throws HeadlessException {
-		setTitle("Log monitor 3.3");
+		setTitle("Log monitor 3.4");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//setAlwaysOnTop(true);
 		pane = new JPanel();
-		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS)); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
 		//setLocationByPlatform(true);
         setLocation(0, 250);
 		for (Map.Entry<Host, Map<String, LogFile>> entry : cfg.getServers().entrySet()) {
@@ -105,7 +104,7 @@ public class LogChoicer extends JFrame {
 				System.out.println(e.paramString());
 				if(lf==null) {
 					if(logFile.isLocal()) {
-                        //TODO: СЂРµР°Р»РёР·РѕРІР°С‚СЊ РЅРѕСЂРјР°Р»СЊРЅС‹Р№ Source РґР»СЏ Р»РѕРєР°Р»СЊРЅС‹С… С„Р°Р№Р»РѕРІ, РёСЃРїРѕР»СЊР·СѓСЋСЏ org.apache.commons.io.input.Tailer
+                        //TODO: реализовать нормальный Source для локальных файлов, используюя org.apache.commons.io.input.Tailer
                         lf = new LogFrame(b, menuButton, logFile.getName(), new TestSource(logFile.getPath()), logFile.getBlockPattern());
                     } else {
                         lf = new LogFrame(b, menuButton, host.getDescription()+ " : " + logFile.getName(), new SshSource(host, logFile), logFile.getBlockPattern());
@@ -160,22 +159,6 @@ public class LogChoicer extends JFrame {
         gbc.gridx = 0;
 
 		buttons.add(b, gbc);
-
-
-/*
-		final JCheckBox c = new JCheckBox();
-        c.setSelected(false);
-		c.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				if(logs.get(logName)!=null)
-					logs.get(logName).setAutoScroll(!c.isSelected());
-				else
-					c.setSelected(!c.isSelected());
-			}
-		});
-        gbc.gridx++;
-		buttons.add(c, gbc);
-*/
 
         gbc.gridx++;
         if(menuButton!=null) {
