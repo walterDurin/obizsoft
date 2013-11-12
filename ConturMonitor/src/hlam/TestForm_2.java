@@ -4,11 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Vova
  * Date: 21.08.2010
  * Time: 1:36:43
- * To change this template use File | Settings | File Templates.
  */
 public class TestForm_2 extends JFrame {
     public static void main(String[] args) {

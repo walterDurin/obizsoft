@@ -20,7 +20,6 @@ import ru.lanit.dibr.utils.gui.configuration.Portmap;
 import ru.lanit.dibr.utils.gui.configuration.Tunnel;
 
 /**
- * Created by IntelliJ IDEA.
  * User: VTaran
  * Date: 16.08.2010
  * Time: 22:07:28
@@ -38,13 +37,13 @@ public class Configuration {
 		this.servers = servers;
 	}
 
-	public Configuration() {
+	public Configuration(String path) {
 		try {
 			
 			servers = new LinkedHashMap<Host, Map<String, LogFile>>();
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         	DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(new File("settings.xml"));
+			Document doc = db.parse(new File(path));
 
             NodeList tunnelsList = doc.getElementsByTagName("tunnel");
             for (int i = 0; i < tunnelsList.getLength(); i++) {

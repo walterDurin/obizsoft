@@ -10,7 +10,6 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: VTaran
  * Date: 16.08.2010
  * Time: 17:57:48

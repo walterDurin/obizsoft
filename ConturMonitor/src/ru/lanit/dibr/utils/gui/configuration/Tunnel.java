@@ -5,11 +5,9 @@ import com.jcraft.jsch.Session;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Vova
  * Date: 22.10.13
  * Time: 0:39
- * To change this template use File | Settings | File Templates.
  */
 public class Tunnel {
     private Host host;

@@ -15,7 +15,6 @@ import java.beans.XMLDecoder;
 import ru.lanit.dibr.utils.gui.configuration.Host;
 
 /**
- * Created by IntelliJ IDEA.
  * User: VTaran
  * Date: 16.08.2010
  * Time: 22:44:38

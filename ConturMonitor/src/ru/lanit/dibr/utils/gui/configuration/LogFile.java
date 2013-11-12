@@ -1,11 +1,9 @@
 package ru.lanit.dibr.utils.gui.configuration;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Vova
  * Date: 23.10.12
  * Time: 1:44
- * To change this template use File | Settings | File Templates.
  */
 public class LogFile {
     private String name;

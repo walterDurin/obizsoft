@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
- * Created by IntelliJ IDEA.
  * User: VTaran
  * Date: 16.08.2010
  * Time: 15:56:23

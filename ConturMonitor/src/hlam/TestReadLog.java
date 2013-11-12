@@ -7,7 +7,6 @@ import ru.lanit.dibr.utils.utils.MyUserInfo;
 import java.io.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: VTaran
  * Date: 17.08.2010
  * Time: 10:28:19

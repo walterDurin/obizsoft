@@ -3,7 +3,6 @@ package ru.lanit.dibr.utils.utils;
 import javax.swing.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: VTaran
  * Date: 20.08.2010
  * Time: 19:42:49
