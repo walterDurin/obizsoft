@@ -11,11 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Vova
  * Date: 10.11.13
  * Time: 2:20
- * To change this template use File | Settings | File Templates.
  */
 public class FunctionPanel extends JPanel {
     private List<JButton> buttons = new ArrayList<JButton>();

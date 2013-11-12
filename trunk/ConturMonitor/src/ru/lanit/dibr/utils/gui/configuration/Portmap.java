@@ -1,11 +1,9 @@
 package ru.lanit.dibr.utils.gui.configuration;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Vova
  * Date: 22.10.13
  * Time: 1:47
- * To change this template use File | Settings | File Templates.
  */
 public class Portmap {
     private int localPort;

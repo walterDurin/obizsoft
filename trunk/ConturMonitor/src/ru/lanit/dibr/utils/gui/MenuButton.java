@@ -13,11 +13,9 @@ import java.util.Map;
 import com.jcraft.jsch.JSchException;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Vova
  * Date: 07.09.2010
  * Time: 23:47:43
- * To change this template use File | Settings | File Templates.
  */
 public class MenuButton extends JButton {
     public MenuButton(final Host host, final String file, final String fileDescription) {

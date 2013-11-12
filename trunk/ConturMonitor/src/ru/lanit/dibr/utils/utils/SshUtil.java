@@ -8,11 +8,9 @@ import java.util.HashMap;
 import ru.lanit.dibr.utils.gui.configuration.Host;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Vova
  * Date: 13.09.2010
  * Time: 0:24:30
- * To change this template use File | Settings | File Templates.
  */
 public class SshUtil {
 

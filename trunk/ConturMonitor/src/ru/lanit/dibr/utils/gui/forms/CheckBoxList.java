@@ -10,11 +10,9 @@ import java.util.*;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Vova
  * Date: 12.11.13
  * Time: 2:10
- * To change this template use File | Settings | File Templates.
  */
 public class CheckBoxList extends JList {
     protected static Border noFocusBorder = new EmptyBorder(1, 1, 1, 1);

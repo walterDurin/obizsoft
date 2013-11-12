@@ -10,11 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Vova
  * Date: 12.11.13
  * Time: 4:05
- * To change this template use File | Settings | File Templates.
  */
 public class Filters extends JFrame{
     private JPanel panel1;
