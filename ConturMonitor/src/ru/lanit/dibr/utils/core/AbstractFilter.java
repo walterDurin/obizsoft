@@ -1,8 +1,5 @@
 package ru.lanit.dibr.utils.core;
 
-import org.omg.CosNaming.NamingContextPackage.InvalidName;
-import sun.rmi.runtime.NewThreadAction;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
