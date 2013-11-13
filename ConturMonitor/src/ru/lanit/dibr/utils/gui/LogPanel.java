@@ -4,8 +4,9 @@ import javax.swing.*;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
 
-import com.sun.deploy.net.proxy.StaticProxyManager;
 import ru.lanit.dibr.utils.core.*;
 import ru.lanit.dibr.utils.gui.forms.Filters;
 
@@ -55,10 +56,14 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
         area.setEditable(false);
         area.setFont(new Font("Courier New", 0, 12));
-        area.setBackground(new Color(0, 0, 0));
-        area.setForeground(new Color(187, 187, 187));
-        area.setSelectedTextColor(new Color(0, 0, 0));
-        area.setSelectionColor(new Color(187, 187, 187));
+//        area.setBackground(new Color(0, 0, 0));
+        area.setBackground(new Color(36, 17, 11));
+//        area.setForeground(new Color(187, 187, 187));
+        area.setForeground(new Color(214, 203, 176));
+//        area.setSelectedTextColor(new Color(0, 0, 0));
+        area.setSelectedTextColor(new Color(53, 56, 204));
+        area.setSelectionColor(new Color(247, 247, 134));
+//        area.setSelectionColor(new Color(187, 187, 187));
         area.addMouseListener(this);
 
         area.setWrapStyleWord(true);
@@ -80,10 +85,12 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 public void run() {
                     while (!stopped) {
                         try {
+                            int cnt = 0;
                             if(autoScroll) {
                                 getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
                             }
-                            if(needRepaint.getAndSet(false)) {
+                            if(needRepaint.getAndSet(false) || 8==cnt++) {
+                                cnt=0;
                                 getParent().repaint();
                                 repaint();
                             }
@@ -181,7 +188,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     public void addBlockFilter(boolean inverseBlock) {
-        addFilter(inverseBlock?grepInvertedFilter:blockDirectFilter, "Block filter");
+        addFilter(inverseBlock?blockInvertedFilter:blockDirectFilter, "Block filter");
     }
 
     public void addGrepFilter(boolean inverseGrep) {
@@ -203,7 +210,8 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     public void performFind() {
         find = (String) JOptionPane.showInputDialog(this, "FIND:\n", "Find", JOptionPane.INFORMATION_MESSAGE, null, null, null);
         startFrom = area.getCaretPosition();
-        findWord(false);
+        if (highlightFound()>0)
+            findWord(false);
     }
 
     public void clearFilters() {
@@ -236,11 +244,12 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         autoScroll = true;
     }
 
-    public void findWord(boolean isBackWard) {
+    public boolean findWord(boolean isBackWard) {
         setAutoScroll(false);
         if(lastSearchDirectionIsForward==isBackWard) {
             lastSearchDirectionIsForward = !isBackWard;
-            findWord(isBackWard);
+            if(!findWord(isBackWard))
+                return false;
         } else {
             lastSearchDirectionIsForward = !isBackWard;
         }
@@ -254,13 +263,41 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 area.setFocusCycleRoot(true);
                 area.requestFocusInWindow();
                 area.select(offset, find.length() + offset);
+                area.setCaretPosition(offset);
                 startFrom = offset + (isBackWard ? -1 : (find.length() + 1));
-                return;
+                return true;
             }
             startFrom = isBackWard ? (area.getText().length() - 1) : 0;
         }
         JOptionPane.showMessageDialog(this, "No matches found!");
+        return false;
     }
+
+    public int highlightFound() {
+        autoScroll = false;
+        Highlighter h = area.getHighlighter();
+        h.removeAllHighlights();
+        int pos = 0;
+        int cnt = 0;
+        while(pos >=0) {
+            pos = area.getText().indexOf(find, pos);
+            System.out.println("pos: " + pos);
+            if (pos > -1) {
+                try {
+                    cnt++;
+                    h.addHighlight(pos ,find.length() + pos, DefaultHighlighter.DefaultPainter);
+                    int y = area.getHeight()/(area.getText().length()/pos);
+                    area.getGraphics().drawLine(0,y,25,y);
+                    pos+=find.length();
+                } catch (BadLocationException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        JOptionPane.showMessageDialog(this, cnt + " matches found");
+        return cnt;
+    }
+
 
     public void keyTyped(KeyEvent e) {
     }
