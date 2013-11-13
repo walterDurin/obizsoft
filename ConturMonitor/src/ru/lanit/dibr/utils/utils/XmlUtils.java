@@ -35,12 +35,13 @@ public class XmlUtils {
                     char nextChar = s.charAt(i + 1);
                     if (nextChar == '/')
                         indent -= indentNumChars;
-                    if (!singleLine)   // Don't indent before closing element if we're creating opening and closing elements on a single line.
+                    if (!singleLine) {  // Don't indent before closing element if we're creating opening and closing elements on a single line.
                         if(isFirstTag) {
                             isFirstTag = false;
                             sb.append("\n");
                         }
                         sb.append(buildWhitespace(indent));
+                    }
                     if (nextChar != '?' && nextChar != '!' && nextChar != '/')
                         indent += indentNumChars;
                     singleLine = false;  // Reset flag.
