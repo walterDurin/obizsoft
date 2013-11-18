@@ -18,7 +18,6 @@ public class Host {
     public static final String SOCKS4="SOCKS4";
     public static final String SOCKS5="SOCKS5";
     public static final String HTTP="HTTP";
-    public static final int DEFAULT_HTTP_PORT = 3128;
 
     public Host(String host, int port, String user, String password) {
 		this(null, host, port, user, password, null, null, null);
@@ -114,4 +113,5 @@ public class Host {
 	public int hashCode() {
 		return toString().hashCode();
 	}
+
 }

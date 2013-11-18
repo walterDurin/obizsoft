@@ -36,23 +36,38 @@ public class LogFrame  extends JFrame {
 		t = new Thread() {
 			@Override
 			public void run() {
-				try {
-					lp.connect();
-				} catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println(e);
-					JOptionPane.showMessageDialog(LogFrame.this, "Can't open log '" + title + "'!\n" + e.getMessage());
-                    LogFrame.this.setVisible(false);
+                boolean retry = true;
+				while(retry) {
+                    try {
+                        lp.connect();
+                    } catch (Exception e) {
+                        e.printStackTrace(System.out);
+                        System.out.println(e);
+    //					JOptionPane.showMessageDialog(LogFrame.this, "Can't open log '" + title + "'!\n" + e.getMessage());
+                        Object[] options = {"Yes, please",
+                        "No, thanks"};
+                        retry = JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(LogFrame.this,
+                            "Can't open log '" + title + "'!\n" + e.getMessage() + "\nLet's try to reconnect?",
+                            "Error",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.ERROR_MESSAGE,
+                            null,
+                            options,
+                            options[1]);
+                    }
+                }
 
-                    //ToDO: убрать отсюда эту порнографию!
-                    if(b!=null) {
-                        b.setBorder(new LineBorder(Color.RED));
-                        b.setEnabled(false);
-                    }
-                    if(c!=null) {
-                        c.setEnabled(false);
-                    }
-				}
+                LogFrame.this.setVisible(false);
+
+                //ToDO: убрать отсюда эту порнографию!
+                if(b!=null) {
+                    b.setBorder(new LineBorder(Color.RED));
+                    b.setEnabled(false);
+                }
+                if(c!=null) {
+                    c.setEnabled(false);
+                }
+
 			}
 
 			@Override
