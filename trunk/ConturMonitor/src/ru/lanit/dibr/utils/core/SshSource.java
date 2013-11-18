@@ -20,10 +20,9 @@ public class SshSource implements LogSource {
 
     private boolean isClosed = false;
     private boolean paused = false;
-    List<String> buffer = new ArrayList<String>();
+    List<String> buffer;
 
-    int readedLines = 0;
-    //    StringBuffer buffer = new StringBuffer();
+    int readedLines;
     private Host host;
     private LogFile logFile;
     BufferedReader reader = null;
@@ -36,23 +35,26 @@ public class SshSource implements LogSource {
     }
 
     public void startRead() throws Exception {
-        checkClosed();
+        //checkClosed();
+        readedLines = 0;
+        paused = false;
+        buffer = new ArrayList<String>();
+
         session = host.connect();
+        isClosed = false;
         channel = (ChannelExec) session.openChannel("exec");
         String linesCount = SshUtil.exec(host, "wc -l " + logFile.getPath() + " | awk \"{print $1}\"").getData().trim();
         System.out.println("Lines count in log file: " + linesCount);
-        channel.setCommand("tail -5000f " + logFile.getPath());
+        channel.setCommand("tail -1000f " + logFile.getPath());
         //channel.setCommand("tail -c +0 -f " + logFile.getPath()); //Так можно загрузить весь файл
         reader = new BufferedReader(new InputStreamReader(channel.getInputStream(), host.getDefaultEncoding()));
         channel.connect(3 * 1000);
 
-
-        Thread readThread = new Thread(new Runnable() {
+        final Thread readThread = new Thread(new Runnable() {
             public void run() {
                 String nextLine;
                 try {
                     while ((nextLine = reader.readLine()) != null && !isClosed) {
-
                         buffer.add(String.format("%6d: %s", (buffer.size()+1), nextLine));
                     }
                 } catch (IOException e) {
@@ -66,21 +68,36 @@ public class SshSource implements LogSource {
             }
         });
 
+        new Thread(new Runnable() {
+            public void run() {
+                while(channel.isConnected()) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                System.out.println("Connection closed!");
+                readThread.interrupt();
+                try {
+                    close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "Conn monitor").start();
         readThread.start();
 
     }
 
-    private void checkClosed() {
-        if (isClosed) {
-            throw new RuntimeException("Reader is closed");
-        }
-    }
-
     public String readLine() throws IOException {
         try {
-            while (paused) {
+            while (paused && !isClosed) {
                 System.out.println("I'm asleep..");
                 Thread.sleep(200);
+            }
+            if(isClosed) {
+                throw new IOException("Connection lost.");
             }
             if (buffer.size() > readedLines) {
                 return buffer.get(readedLines++);
@@ -130,4 +147,5 @@ public class SshSource implements LogSource {
     public boolean isPaused() {
         return paused;
     }
+
 }

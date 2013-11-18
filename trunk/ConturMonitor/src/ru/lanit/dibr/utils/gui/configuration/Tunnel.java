@@ -32,13 +32,30 @@ public class Tunnel {
         if(isConnected)
             return;
         try {
-            Session session = host.createSession();
+            final Session session = host.createSession();
             for (Portmap portmap : portmaps) {
                 session.setPortForwardingL(portmap.getLocalPort(), portmap.getDestHost(), portmap.getDestPort());
             }
-            session.connect();
-
+            session.connect(3000);
             isConnected = true;
+
+            new Thread(new Runnable() {
+                public void run() {
+                    while (session.isConnected()) {
+                        try {
+                            session.sendKeepAliveMsg();
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        isConnected = false;
+                        session.disconnect();
+                    }
+                }
+            }, "tunel connection monitor").start();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

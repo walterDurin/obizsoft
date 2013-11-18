@@ -27,13 +27,11 @@ public class SshUtil {
         }
     }
 
-    private static HashMap<Host,Session> sessions = new HashMap<Host, Session>();
-
     public static ExecResult exec(Host host, String command) {
         ExecResult result = new ExecResult();
         System.out.println("SSH exec command: "+command);
         try {
-            Session session = init(host);
+            Session session = host.connect();
 
             Channel channel = session.openChannel("exec");
             ((ChannelExec) channel).setCommand(command);
@@ -75,15 +73,6 @@ public class SshUtil {
             e.printStackTrace();
         }
 
-
         return result;
-    }
-
-    private static Session init(Host host) throws Exception {
-        //Todo: утащить всё это в Host
-        if(!sessions.containsKey(host)) {
-            sessions.put(host, host.connect());
-        }
-        return sessions.get(host);
     }
 }
