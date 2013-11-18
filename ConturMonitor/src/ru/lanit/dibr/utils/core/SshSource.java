@@ -20,6 +20,8 @@ public class SshSource implements LogSource {
 
     private boolean isClosed = false;
     private boolean paused = false;
+    private boolean writeLineNumbers = false;
+
     List<String> buffer;
 
     int readedLines;
@@ -55,7 +57,8 @@ public class SshSource implements LogSource {
                 String nextLine;
                 try {
                     while ((nextLine = reader.readLine()) != null && !isClosed) {
-                        buffer.add(String.format("%6d: %s", (buffer.size()+1), nextLine));
+//                        buffer.add(String.format("%6d: %s", (buffer.size()+1), nextLine));
+                        buffer.add(nextLine);
                     }
                 } catch (IOException e) {
                     try {
@@ -100,7 +103,11 @@ public class SshSource implements LogSource {
                 throw new IOException("Connection lost.");
             }
             if (buffer.size() > readedLines) {
-                return buffer.get(readedLines++);
+                if(writeLineNumbers) {
+                    return String.format("%6d: %s", readedLines + 1, buffer.get(readedLines++));
+                } else {
+                    return buffer.get(readedLines++);
+                }
             } else {
                 Thread.sleep(200);
             }
@@ -142,6 +149,14 @@ public class SshSource implements LogSource {
     public void setPaused(boolean paused) {
         System.out.println("set paused: " + paused);
         this.paused = paused;
+    }
+
+    public boolean isWriteLineNumbers() {
+        return writeLineNumbers;
+    }
+
+    public void setWriteLineNumbers(boolean writeLineNumbers) {
+        this.writeLineNumbers = writeLineNumbers;
     }
 
     public boolean isPaused() {

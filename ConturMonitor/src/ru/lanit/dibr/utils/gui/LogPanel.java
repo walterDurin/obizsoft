@@ -149,11 +149,19 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             WindowEvent closingEvent = new WindowEvent((Window) container, WindowEvent.WINDOW_CLOSING);
             Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);
 
-        } else if ((ke.getKeyCode() == 33)) { //Нажали PgUp
+        } else if ((ke.getKeyCode() == KeyEvent.VK_PAGE_UP)) { //Нажали PgUp
             setAutoScroll(false);
-        } else if ((ke.getKeyCode() == 87)) { //Нажали W
+        } else if ((ke.getKeyCode() == KeyEvent.VK_W)) { //Нажали W - перенос строк
             area.setLineWrap(!area.getLineWrap());
-        } else if ((ke.getKeyCode() == 35) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) { //Нажали Cntrl + PgDown
+        } else if ((ke.getKeyCode() == KeyEvent.VK_N) && (logSource instanceof SshSource)) { //Нажали N - номера строк
+            logSource.setPaused(true);
+            area.setText("");
+            autoScroll = true;
+            ((SshSource)logSource).setWriteLineNumbers(!((SshSource) logSource).isWriteLineNumbers());
+            logSource.reset();
+            logSource.setPaused(false);
+
+        } else if ((ke.getKeyCode() == KeyEvent.VK_END) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) { //Нажали Cntrl + End
             setAutoScroll(true);
         } else if ((ke.getKeyCode() == KeyEvent.VK_F) && ((ke.getModifiers() == KeyEvent.CTRL_MASK) || (ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK)))) {  //  Нажали Ctrl + F
             performFind();
@@ -168,16 +176,16 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 resetFilters();
             }
 
-        } else if (ke.getKeyCode() == 67) { // Key 'C'
+        } else if (ke.getKeyCode() == KeyEvent.VK_C) { // Key 'C'
             logSource.setPaused(true);
             area.setText("");
             logSource.setPaused(false);
 
-        } else if ((ke.getKeyCode() == 71) && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {  // GREP filter
+        } else if ((ke.getKeyCode() == KeyEvent.VK_G) && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {  // GREP filter
             boolean inverseGrep = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
             addGrepFilter(inverseGrep);
 
-        } else if ((ke.getKeyCode() == 66) && blockPattern != null && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {  //BLOCK filter
+        } else if ((ke.getKeyCode() == KeyEvent.VK_B) && blockPattern != null && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {  //BLOCK filter
             //ToDo: если blockPattern==null - Сообщить об этом и предложить его ввести. Показав что нибудь по дефолту. А потом сделать визард с проверкой по строке из лога.
             boolean inverseBlock = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
             addBlockFilter(inverseBlock);
@@ -323,7 +331,11 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         }
         if (e.getClickCount() == 2 && blockPattern != null) {
             try {
-                Pattern compiledBlockPattern = Pattern.compile("\\s*\\d{1,6}: .*" + this.blockPattern + ".*");
+                String patternPrefix = "";
+                if(logSource instanceof SshSource && ((SshSource)logSource).isWriteLineNumbers()) {
+                    patternPrefix = "\\s*\\d{1,6}: ";
+                }
+                Pattern compiledBlockPattern = Pattern.compile(patternPrefix + this.blockPattern + ".*");
                 boolean isBeginFound = false;
                 boolean isEndFound = false;
                 int firstStartPos, firstEndPos;
@@ -379,7 +391,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     public void mouseReleased(MouseEvent e) {
         if (area.getSelectedText() != null) {
             String selected = area.getSelectedText();
-            selected = removeLineNumbers(selected);
+            if(logSource instanceof SshSource && ((SshSource)logSource).isWriteLineNumbers()) {
+                selected = removeLineNumbers(selected);
+            }
             setAutoScroll(false);
             StringSelection ss = new StringSelection(selected);
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
