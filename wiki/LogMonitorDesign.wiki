@@ -2,6 +2,7 @@
 #Дизайн монитора логов
 
 = Требования =
+  # перевод и реклама на http://serverfault.com/questions/217192/best-tools-for-ssh-tail-f-style-log-file-monitoring-and-analysis и http://stackoverflow.com/questions/106668/simultaneously-monitoring-multiple-log-files-over-ssh-on-windows
   # диалог поиска с выбором из истории / поиск любой из строк + поиск regex
   # сохранение истории фильтров и поиска в файл
   # отладка выкачивания лога (сейчас часто качается не сжатая версия)
