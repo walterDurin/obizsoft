@@ -50,9 +50,9 @@ public class Tunnel {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        isConnected = false;
-                        session.disconnect();
                     }
+                    isConnected = false;
+                    session.disconnect();
                 }
             }, "tunel connection monitor").start();
 
