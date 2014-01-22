@@ -92,12 +92,12 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                             if(autoScroll) {
                                 getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
                             }
-                            if(needRepaint.getAndSet(false) || 8==cnt++) {
+                            if(needRepaint.getAndSet(false) || (cnt++) == 8) {
                                 cnt=0;
-                                getParent().repaint();
-                                repaint();
+                                getParent().repaint(0);
+                                repaint(0);
                             }
-                            Thread.sleep(100);
+                            Thread.sleep(10);
                         } catch (InterruptedException e) {
                             break;
                         }
@@ -350,38 +350,58 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 int firstStartPos, firstEndPos;
                 int secondStartPos, secondEndPos;
                 int cursorPos = area.getCaretPosition()-1;
-                firstStartPos = firstEndPos = secondStartPos = secondEndPos = cursorPos;
+                if(area.getText().charAt(cursorPos)=='\n') {
+                    cursorPos--;
+                }
+                firstStartPos = secondStartPos = cursorPos;
                 String first, second;
-                for (int i = 0; i < 250; i++) {
+                for (int i = 0; i < 500; i++) {
                     if (!isBeginFound) {
-                        firstStartPos = area.getText().lastIndexOf("\n", firstEndPos - 1) + 1;
+                        firstStartPos = area.getText().lastIndexOf("\n", firstStartPos) + 1;
+                        firstEndPos = area.getText().indexOf("\n", firstStartPos) - 1;
+                        System.out.println("firstStartPos = " + firstStartPos);
+                        System.out.println("firstEndPos = " + firstEndPos);
                         if (firstStartPos < 0) {
+                            System.out.println("Begin detected. Use begining of log.");
                             firstStartPos = 0;
                             isBeginFound = true;
                         } else {
+                            if(firstEndPos < 0 ) {
+                                System.out.println("End detected. Use end of log.");
+                                firstEndPos = secondStartPos = area.getText().length();
+                                isEndFound = true;
+                            }
                             first = area.getText().substring(firstStartPos, firstEndPos);
+                            System.out.println("first = " + first);
                             if (compiledBlockPattern.matcher(first).matches()) {
                                 System.out.println("start line found: \"" + first + "\"");
                                 isBeginFound = true;
                             } else {
-                                firstEndPos = firstStartPos - 1;
+                                firstStartPos = firstStartPos - 2;
                             }
                         }
                     }
 
                     if (!isEndFound) {
-                        secondEndPos = area.getText().indexOf("\n", secondStartPos + 1);
-                        if (secondEndPos < 0) {
+                        secondStartPos = area.getText().indexOf("\n", secondStartPos + 1) + 1;
+                        secondEndPos = area.getText().indexOf("\n", secondStartPos);
+                        System.out.println("secondStartPos = " + secondStartPos);
+                        System.out.println("secondEndPos = " + secondEndPos);
+                        if (secondStartPos < 0) {
                             System.out.println("End detected. Use end of log.");
                             isEndFound = true;
-                            secondStartPos = area.getText().length()-1;
+                            secondStartPos = area.getText().length();
                         } else {
+                            if(secondEndPos < 0 ) {
+                                secondEndPos = area.getText().length();
+                            }
                             second = area.getText().substring(secondStartPos, secondEndPos);
+                            System.out.println("second = " + second);
                             if (compiledBlockPattern.matcher(second).matches()) {
                                 System.out.println("second line found: \"" + second + "\"");
                                 isEndFound = true;
                             } else {
-                                secondStartPos = secondEndPos + 1;
+                                secondStartPos = secondEndPos;
                             }
                         }
                     }
@@ -389,13 +409,21 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                     if(isBeginFound && isEndFound) {
                         String block = area.getText().substring(firstStartPos, secondStartPos);
                         System.out.println("found block: " + block);
-                        new PopupBlock("123", block);
+                        int firstLineOfBlockEndPos = block.indexOf('\n');
+                        if(firstLineOfBlockEndPos<0) {
+                            firstLineOfBlockEndPos = block.length();
+                        }
+                        String title = block.substring(0, firstLineOfBlockEndPos);
+                        new PopupBlock(title, block);
                         break;
                     }
 
                 }
             } catch (PatternSyntaxException ex) {
                 JOptionPane.showMessageDialog(this, "Block pattern is wrong!");
+            } catch (Exception e1) {
+                System.out.println("Can't create block popup window!");
+                e1.printStackTrace();
             } finally {
                 logSource.setPaused(false);
             }

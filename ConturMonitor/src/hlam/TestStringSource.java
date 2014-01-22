@@ -16,6 +16,8 @@ public class TestStringSource implements LogSource {
 
     private boolean isClosed = false;
     private boolean paused = false;
+    private int delay = 100;
+    private boolean showLineNums = true;
     List<String> buffer = new ArrayList<String>();
 
     private List<String> strings;
@@ -26,6 +28,12 @@ public class TestStringSource implements LogSource {
         strings = Arrays.asList(data.split("\n"));
     }
 
+    public TestStringSource(String data, int delay, boolean showLineNums) {
+        strings = Arrays.asList(data.split("\n"));
+        this.delay = delay;
+        this.showLineNums = showLineNums;
+    }
+
     public void startRead() throws Exception {
         checkClosed();
         Thread readThread = new Thread(new Runnable() {
@@ -33,8 +41,11 @@ public class TestStringSource implements LogSource {
                 String nextLine;
                 try {
                     while ((nextLine = readNextLine()) != null && !isClosed) {
-                        Thread.sleep(100);
-                        buffer.add(String.format("%6d: %s", (buffer.size()+1), nextLine));
+                        Thread.sleep(delay);
+                        if(showLineNums)
+                            buffer.add(String.format("%6d: %s", (buffer.size()+1), nextLine));
+                        else
+                            buffer.add(nextLine);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
