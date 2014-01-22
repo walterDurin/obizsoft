@@ -358,7 +358,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 for (int i = 0; i < 500; i++) {
                     if (!isBeginFound) {
                         firstStartPos = area.getText().lastIndexOf("\n", firstStartPos) + 1;
-                        firstEndPos = area.getText().indexOf("\n", firstStartPos) - 1;
+                        firstEndPos = area.getText().indexOf("\n", firstStartPos);
                         System.out.println("firstStartPos = " + firstStartPos);
                         System.out.println("firstEndPos = " + firstEndPos);
                         if (firstStartPos < 0) {
@@ -383,7 +383,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                     }
 
                     if (!isEndFound) {
-                        secondStartPos = area.getText().indexOf("\n", secondStartPos + 1) + 1;
+                        secondStartPos = area.getText().indexOf("\n", secondStartPos) + 1;
                         secondEndPos = area.getText().indexOf("\n", secondStartPos);
                         System.out.println("secondStartPos = " + secondStartPos);
                         System.out.println("secondEndPos = " + secondEndPos);
@@ -391,7 +391,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                             System.out.println("End detected. Use end of log.");
                             isEndFound = true;
                             secondStartPos = area.getText().length();
-                        } else {
+                        } else if(secondStartPos == area.getText().length()) {
+                            isEndFound = true;
+                        } else if(secondEndPos != secondStartPos) {
                             if(secondEndPos < 0 ) {
                                 secondEndPos = area.getText().length();
                             }
@@ -401,7 +403,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                                 System.out.println("second line found: \"" + second + "\"");
                                 isEndFound = true;
                             } else {
-                                secondStartPos = secondEndPos - 1;
+                                secondStartPos = secondEndPos;
                             }
                         }
                     }

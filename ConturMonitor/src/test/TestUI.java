@@ -110,7 +110,7 @@ public class TestUI {
                 "\n" +
                 "2014-01-22 23:50:28,365 [j2ee14_ws,maxpri=10]] [  STANDARD] [ LoanFWPhase21:01.01] (n_Work_CreditCard_Front.Action) INFO    - [ START UpdateFromParallel ]: WO ID=PIL-1084, parallelID=ABBYY, Status=Resolved, Transform=\n" +
                 "2014-01-22 23:50:28,366 [j2ee14_ws,maxpri=10]] [  STANDARD] [ LoanFWPhase21:01.01] (n_Work_CreditCard_Front.Action) INFO    - Step 1: After GetChildrenToWait: ABBYY\n" +
-                "2014-01-22 23:50:28,366 [j2ee14_ws,maxpri=10]] [  STANDARD] [ LoanFWPhase21:01.01] (W_Loan_Work_Application.Action) INFO    - [ START LoadParallelChildList ]: ChildIDs=ABBYY", 5, false);
+                "2014-01-22 23:50:28,366 [j2ee14_ws,maxpri=10]] [  STANDARD] [ LoanFWPhase21:01.01] (W_Loan_Work_Application.Action) INFO    - [ START LoadParallelChildList ]: ChildIDs=ABBYY\n\n", 5, false);
         LogFrame logFrame = new LogFrame(null, null, "tst", source, "\\d{4}-\\d\\d?-\\d\\d? \\d\\d?:\\d\\d?:\\d\\d?[,:]\\d{1,3}");
         logFrame.setSize(1400, 1000);
         logFrame.setVisible(true);
