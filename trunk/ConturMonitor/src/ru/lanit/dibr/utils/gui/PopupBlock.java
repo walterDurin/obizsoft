@@ -1,8 +1,10 @@
 package ru.lanit.dibr.utils.gui;
 
+import hlam.TestStringSource;
 import ru.lanit.dibr.utils.utils.XmlUtils;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 
 /**
@@ -12,28 +14,46 @@ import java.awt.*;
  */
 public class PopupBlock extends JFrame {
 
-    public PopupBlock(String title, String data) throws HeadlessException {
+    public PopupBlock(final String title, String data) throws Exception {
+
         setTitle(title);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JTextArea textArea = new JTextArea();
-        textArea.setFont(new Font("Courier New", 0, 12));
-//        }
-        textArea.setBackground(new Color(0, 0, 0));
-        textArea.setForeground(new Color(187, 187, 187));
-        textArea.setSelectedTextColor(new Color(0, 0, 0));
-        textArea.setSelectionColor(new Color(187, 187, 187));
+        final LogPanel logPanel = new LogPanel(new TestStringSource(XmlUtils.formatXml(data), 0, false), null);
+        setContentPane(logPanel);
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                boolean retry = true;
+                while(retry) {
+                    try {
+                        logPanel.connect();
+                    } catch (Exception e) {
+                        e.printStackTrace(System.out);
+                        System.out.println(e);
+                        //					JOptionPane.showMessageDialog(LogFrame.this, "Can't open log '" + title + "'!\n" + e.getMessage());
+                        Object[] options = {"Yes, please",
+                                "No, thanks"};
+                        retry = JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(PopupBlock.this,
+                                "Can't open log '" + title + "'!\n" + e.getMessage() + "\nLet's try to reconnect?",
+                                "Error",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.ERROR_MESSAGE,
+                                null,
+                                options,
+                                options[1]);
+                    }
+                }
 
-//        textArea.setWrapStyleWord(true);
-//        textArea.setLineWrap(true);
+                PopupBlock.this.setVisible(false);
+            }
 
-        textArea.setEditable(false);
-        JScrollPane jScrollPane = new JScrollPane(textArea);
-        add(jScrollPane);
-
-        textArea.append(XmlUtils.formatXml(data));
-
+            @Override
+            public void interrupt() {
+                logPanel.stop();
+            }
+        };
+        t.start();
         setSize(1100, 800);
-
         setVisible(true);
     }
 }
