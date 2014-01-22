@@ -58,6 +58,7 @@ public class LogFrame  extends JFrame {
                 }
 
                 LogFrame.this.setVisible(false);
+                LogFrame.this.setTitle(LogFrame.this.getTitle() + " [ STOPPED ]");
 
                 //ToDO: убрать отсюда эту порнографию!
                 if(b!=null) {

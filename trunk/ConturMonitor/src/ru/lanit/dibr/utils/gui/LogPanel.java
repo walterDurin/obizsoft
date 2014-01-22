@@ -401,7 +401,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                                 System.out.println("second line found: \"" + second + "\"");
                                 isEndFound = true;
                             } else {
-                                secondStartPos = secondEndPos;
+                                secondStartPos = secondEndPos - 1;
                             }
                         }
                     }
