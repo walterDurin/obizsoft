@@ -9,10 +9,13 @@ import javax.swing.text.Highlighter;
 
 import ru.lanit.dibr.utils.core.*;
 import ru.lanit.dibr.utils.gui.forms.Filters;
+import ru.lanit.dibr.utils.utils.Utils;
 
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -252,7 +255,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         autoScroll = true;
     }
 
-    public boolean findWord(boolean isBackWard) {
+    public boolean  findWord(boolean isBackWard) {
         setAutoScroll(false);
         if(lastSearchDirectionIsForward==isBackWard) {
             lastSearchDirectionIsForward = !isBackWard;
@@ -263,9 +266,11 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         }
         for (int i = 0; i < 2; i++) {
             if (isBackWard) {
-                offset = area.getText().lastIndexOf(find, startFrom);
+                //offset = area.getText().lastIndexOf(find, startFrom);
+                offset = Utils.lastIndexOf(area.getText(), false, startFrom, find);
             } else {
-                offset = area.getText().indexOf(find, startFrom);
+//                offset = area.getText().indexOf(find, startFrom);
+                offset = Utils.indexOf(area.getText(), false, startFrom, find);
             }
             if (offset > -1) {
                 area.setFocusCycleRoot(true);
@@ -288,7 +293,8 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         int pos = 0;
         int cnt = 0;
         while(pos >=0) {
-            pos = area.getText().indexOf(find, pos);
+            //pos = area.getText().indexOf(find, pos);
+            pos = Utils.indexOf(area.getText(), false, pos, find);
             System.out.println("pos: " + pos);
             if (pos > -1) {
                 try {
@@ -331,6 +337,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         }
         if (e.getClickCount() == 2 && blockPattern != null) {
             try {
+                setAutoScroll(false);
+                logSource.setPaused(true);
+
                 String patternPrefix = "";
                 if(logSource instanceof SshSource && ((SshSource)logSource).isWriteLineNumbers()) {
                     patternPrefix = "\\s*\\d{1,6}: ";
@@ -340,34 +349,40 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 boolean isEndFound = false;
                 int firstStartPos, firstEndPos;
                 int secondStartPos, secondEndPos;
-                firstStartPos = firstEndPos = secondStartPos = secondEndPos = area.getCaretPosition();
+                int cursorPos = area.getCaretPosition()-1;
+                firstStartPos = firstEndPos = secondStartPos = secondEndPos = cursorPos;
                 String first, second;
                 for (int i = 0; i < 250; i++) {
                     if (!isBeginFound) {
                         firstStartPos = area.getText().lastIndexOf("\n", firstEndPos - 1) + 1;
                         if (firstStartPos < 0) {
-                            break;
-                        }
-                        first = area.getText().substring(firstStartPos, firstEndPos);
-                        if (compiledBlockPattern.matcher(first).matches()) {
-                            System.out.println("start line found: \"" + first + "\"");
+                            firstStartPos = 0;
                             isBeginFound = true;
                         } else {
-                            firstEndPos = firstStartPos - 1;
+                            first = area.getText().substring(firstStartPos, firstEndPos);
+                            if (compiledBlockPattern.matcher(first).matches()) {
+                                System.out.println("start line found: \"" + first + "\"");
+                                isBeginFound = true;
+                            } else {
+                                firstEndPos = firstStartPos - 1;
+                            }
                         }
                     }
 
                     if (!isEndFound) {
                         secondEndPos = area.getText().indexOf("\n", secondStartPos + 1);
                         if (secondEndPos < 0) {
-                            break;
-                        }
-                        second = area.getText().substring(secondStartPos, secondEndPos);
-                        if (compiledBlockPattern.matcher(second).matches()) {
-                            System.out.println("second line found: \"" + second + "\"");
+                            System.out.println("End detected. Use end of log.");
                             isEndFound = true;
+                            secondStartPos = area.getText().length()-1;
                         } else {
-                            secondStartPos = secondEndPos + 1;
+                            second = area.getText().substring(secondStartPos, secondEndPos);
+                            if (compiledBlockPattern.matcher(second).matches()) {
+                                System.out.println("second line found: \"" + second + "\"");
+                                isEndFound = true;
+                            } else {
+                                secondStartPos = secondEndPos + 1;
+                            }
                         }
                     }
 
@@ -381,7 +396,10 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 }
             } catch (PatternSyntaxException ex) {
                 JOptionPane.showMessageDialog(this, "Block pattern is wrong!");
+            } finally {
+                logSource.setPaused(false);
             }
+
         }
     }
 
