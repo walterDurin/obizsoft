@@ -29,7 +29,10 @@ public class TestStringSource implements LogSource {
     }
 
     public TestStringSource(String data, int delay, boolean showLineNums) {
-        strings = Arrays.asList(data.split("\n"));
+        strings = new ArrayList<String>();
+        strings.addAll(Arrays.asList(data.split("\n")));
+        strings.add("\n");
+        strings.add("\n");
         this.delay = delay;
         this.showLineNums = showLineNums;
     }
