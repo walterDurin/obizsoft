@@ -31,7 +31,7 @@ public class LogChoicer extends JFrame {
 
 
     public LogChoicer(Configuration cfg) throws HeadlessException {
-		setTitle("Log monitor 3.4");
+		setTitle("Log monitor 3.5");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pane = new JPanel();
 		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));

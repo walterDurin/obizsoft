@@ -3,6 +3,7 @@ package test;
 import hlam.TestStringSource;
 import org.junit.Test;
 import ru.lanit.dibr.utils.core.LogSource;
+import ru.lanit.dibr.utils.gui.HotKeysInfo;
 import ru.lanit.dibr.utils.gui.LogFrame;
 import ru.lanit.dibr.utils.gui.PopupBlock;
 import sun.rmi.runtime.Log;
@@ -28,7 +29,9 @@ public class TestUI {
     }
 
     public static void main(String[] args) {
-        debugDoubleBlock();
+        //debugDoubleBlock();
+        showHelp();
+
     }
 
 
@@ -112,9 +115,14 @@ public class TestUI {
                 "2014-01-22 23:50:28,366 [j2ee14_ws,maxpri=10]] [  STANDARD] [ LoanFWPhase21:01.01] (n_Work_CreditCard_Front.Action) INFO    - Step 1: After GetChildrenToWait: ABBYY\n" +
                 "2014-01-22 23:50:28,366 [j2ee14_ws,maxpri=10]] [  STANDARD] [ LoanFWPhase21:01.01] (W_Loan_Work_Application.Action) INFO    - [ START LoadParallelChildList ]: ChildIDs=ABBYY\n\n", 5, false);
         LogFrame logFrame = new LogFrame(null, null, "tst", source, "\\d{4}-\\d\\d?-\\d\\d? \\d\\d?:\\d\\d?:\\d\\d?[,:]\\d{1,3}");
-        logFrame.setSize(1400, 1000);
+        logFrame.setSize(1400, 1100);
         logFrame.setVisible(true);
         logFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    @Test
+    public static void showHelp() {
+        new HotKeysInfo();
     }
 
 }
