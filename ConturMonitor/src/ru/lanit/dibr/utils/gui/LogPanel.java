@@ -184,6 +184,11 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             area.setText("");
             logSource.setPaused(false);
 
+        } else if (ke.getKeyCode() == KeyEvent.VK_S && ke.getModifiers() == KeyEvent.CTRL_MASK) { // Key Ctrl + 'S'
+            logSource.setPaused(true);
+            findSimilar();
+            logSource.setPaused(false);
+
         } else if ((ke.getKeyCode() == KeyEvent.VK_G) && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {  // GREP filter
             boolean inverseGrep = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
             addGrepFilter(inverseGrep);
@@ -337,90 +342,18 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         }
         if (e.getClickCount() == 2 && blockPattern != null) {
             try {
-                setAutoScroll(false);
-                logSource.setPaused(true);
 
-                String patternPrefix = "";
-                if(logSource instanceof SshSource && ((SshSource)logSource).isWriteLineNumbers()) {
-                    patternPrefix = "\\s*\\d{1,6}: ";
-                }
-                Pattern compiledBlockPattern = Pattern.compile(patternPrefix + this.blockPattern + ".*");
-                boolean isBeginFound = false;
-                boolean isEndFound = false;
-                int firstStartPos, firstEndPos;
-                int secondStartPos, secondEndPos;
-                int cursorPos = area.getCaretPosition()-1;
-                if(area.getText().charAt(cursorPos)=='\n') {
-                    cursorPos--;
-                }
-                firstStartPos = secondStartPos = cursorPos;
-                String first, second;
-                for (int i = 0; i < 500; i++) {
-                    if (!isBeginFound) {
-                        firstStartPos = area.getText().lastIndexOf("\n", firstStartPos) + 1;
-                        firstEndPos = area.getText().indexOf("\n", firstStartPos);
-                        System.out.println("firstStartPos = " + firstStartPos);
-                        System.out.println("firstEndPos = " + firstEndPos);
-                        if (firstStartPos < 0) {
-                            System.out.println("Begin detected. Use begining of log.");
-                            firstStartPos = 0;
-                            isBeginFound = true;
-                        } else {
-                            if(firstEndPos < 0 ) {
-                                System.out.println("End detected. Use end of log.");
-                                firstEndPos = secondStartPos = area.getText().length();
-                                isEndFound = true;
-                            }
-                            first = area.getText().substring(firstStartPos, firstEndPos);
-                            System.out.println("first = " + first);
-                            if (compiledBlockPattern.matcher(first).matches()) {
-                                System.out.println("start line found: \"" + first + "\"");
-                                isBeginFound = true;
-                            } else {
-                                firstStartPos = firstStartPos - 2;
-                            }
-                        }
+                String block = findBlockAroundCursor();
+
+                if(block!=null) {
+                    int firstLineOfBlockEndPos = block.indexOf('\n');
+                    if(firstLineOfBlockEndPos<0) {
+                        firstLineOfBlockEndPos = block.length();
                     }
-
-                    if (!isEndFound) {
-                        secondStartPos = area.getText().indexOf("\n", secondStartPos) + 1;
-                        secondEndPos = area.getText().indexOf("\n", secondStartPos);
-                        System.out.println("secondStartPos = " + secondStartPos);
-                        System.out.println("secondEndPos = " + secondEndPos);
-                        if (secondStartPos < 0) {
-                            System.out.println("End detected. Use end of log.");
-                            isEndFound = true;
-                            secondStartPos = area.getText().length();
-                        } else if(secondStartPos == area.getText().length()) {
-                            isEndFound = true;
-                        } else if(secondEndPos != secondStartPos) {
-                            if(secondEndPos < 0 ) {
-                                secondEndPos = area.getText().length();
-                            }
-                            second = area.getText().substring(secondStartPos, secondEndPos);
-                            System.out.println("second = " + second);
-                            if (compiledBlockPattern.matcher(second).matches()) {
-                                System.out.println("second line found: \"" + second + "\"");
-                                isEndFound = true;
-                            } else {
-                                secondStartPos = secondEndPos;
-                            }
-                        }
-                    }
-
-                    if(isBeginFound && isEndFound) {
-                        String block = area.getText().substring(firstStartPos, secondStartPos);
-                        System.out.println("found block: " + block);
-                        int firstLineOfBlockEndPos = block.indexOf('\n');
-                        if(firstLineOfBlockEndPos<0) {
-                            firstLineOfBlockEndPos = block.length();
-                        }
-                        String title = block.substring(0, firstLineOfBlockEndPos);
-                        new PopupBlock(title, block);
-                        break;
-                    }
-
+                    String title = block.substring(0, firstLineOfBlockEndPos);
+                    new PopupBlock(title, block);
                 }
+
             } catch (PatternSyntaxException ex) {
                 JOptionPane.showMessageDialog(this, "Block pattern is wrong!");
             } catch (Exception e1) {
@@ -431,6 +364,136 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             }
 
         }
+    }
+
+    private String findBlockAroundCursor() {
+        setAutoScroll(false);
+        logSource.setPaused(true);
+
+        Pattern compiledBlockPattern = getBlockPatern();
+        boolean isBeginFound = false;
+        boolean isEndFound = false;
+        int firstStartPos, firstEndPos;
+        int secondStartPos, secondEndPos;
+        int cursorPos = area.getCaretPosition()-1;
+        if(area.getText().charAt(cursorPos)=='\n') {
+            cursorPos--;
+        }
+        firstStartPos = secondStartPos = cursorPos;
+        String first, second;
+        String block = null;
+        for (int i = 0; i < 500; i++) {
+            if (!isBeginFound) {
+                firstStartPos = area.getText().lastIndexOf("\n", firstStartPos) + 1;
+                firstEndPos = area.getText().indexOf("\n", firstStartPos);
+                System.out.println("firstStartPos = " + firstStartPos);
+                System.out.println("firstEndPos = " + firstEndPos);
+                if (firstStartPos < 0) {
+                    System.out.println("Begin detected. Use begining of log.");
+                    firstStartPos = 0;
+                    isBeginFound = true;
+                } else {
+                    if(firstEndPos < 0 ) {
+                        System.out.println("End detected. Use end of log.");
+                        firstEndPos = secondStartPos = area.getText().length();
+                        isEndFound = true;
+                    }
+                    first = area.getText().substring(firstStartPos, firstEndPos);
+                    System.out.println("first = " + first);
+                    if (compiledBlockPattern.matcher(first).matches()) {
+                        System.out.println("start line found: \"" + first + "\"");
+                        isBeginFound = true;
+                    } else {
+                        firstStartPos = firstStartPos - 2;
+                    }
+                }
+            }
+
+            if (!isEndFound) {
+                secondStartPos = area.getText().indexOf("\n", secondStartPos) + 1;
+                secondEndPos = area.getText().indexOf("\n", secondStartPos);
+                System.out.println("secondStartPos = " + secondStartPos);
+                System.out.println("secondEndPos = " + secondEndPos);
+                if (secondStartPos < 0) {
+                    System.out.println("End detected. Use end of log.");
+                    isEndFound = true;
+                    secondStartPos = area.getText().length();
+                } else if(secondStartPos == area.getText().length()) {
+                    isEndFound = true;
+                } else if(secondEndPos != secondStartPos) {
+                    if(secondEndPos < 0 ) {
+                        secondEndPos = area.getText().length();
+                    }
+                    second = area.getText().substring(secondStartPos, secondEndPos);
+                    System.out.println("second = " + second);
+                    if (compiledBlockPattern.matcher(second).matches()) {
+                        System.out.println("second line found: \"" + second + "\"");
+                        isEndFound = true;
+                    } else {
+                        secondStartPos = secondEndPos;
+                    }
+                }
+            }
+
+            if(isBeginFound && isEndFound) {
+                block = area.getText().substring(firstStartPos, secondStartPos);
+                System.out.println("found block: " + block);
+                break;
+            }
+
+        }
+        logSource.setPaused(false);
+        return block;
+    }
+
+    private Pattern getBlockPatern() {
+        String patternPrefix = "";
+        if(logSource instanceof SshSource && ((SshSource)logSource).isWriteLineNumbers()) {
+            patternPrefix = "\\s*\\d{1,6}: ";
+        }
+        return Pattern.compile(patternPrefix + this.blockPattern + ".*");
+    }
+
+
+    public void findSimilar() {
+        System.out.println("LeviDistance\tBlock Size1\tBlock size2");
+        Pattern compiledBlockPattern = getBlockPatern();
+        String blockAroundCursor = findBlockAroundCursor();
+        String log = area.getText();
+        int b0size = blockAroundCursor.length();
+        int lineStart = 0;
+        int curBlockStartPos = 0;
+        int lineEnd=0;
+        StringBuffer blockBuffer = new StringBuffer();
+        StringBuffer result = new StringBuffer();
+        while ( (lineEnd = log.indexOf('\n',lineStart)) >= 0) {
+            String line = log.substring(lineStart, lineEnd);
+            if(compiledBlockPattern.matcher(line).matches()) {
+                int b1size = blockBuffer.length();
+                double m1 = (b0size+b1size+100)/(Math.abs(b0size-b1size+0.0));
+                if(m1 > 10) { //Разница размеров блоков не менее чем в 10 раз меньше суммы
+                    int distance = Utils.getLevenshteinDistance(blockAroundCursor, blockBuffer.toString(), 1000);
+                    double m2 = Math.abs((b0size-100)/(distance+0.0));
+                    if(m2 > 5) {
+                        result.append("--------------------------------------------------------------------------------------------------------------------------------\n");
+                        //result.append(distance + "\t" + blockAroundCursor.length() + "\t" + blockBuffer.length() + "\t" + m1 + "\t" + m2);
+                        result.append(blockBuffer).append("\n");
+                    }
+                }
+                blockBuffer.setLength(0);
+                curBlockStartPos = lineEnd;
+            }
+            blockBuffer.append(line).append("\n");
+            lineStart = lineEnd + 1;
+        }
+
+        System.out.println(result);
+        try {
+            new PopupBlock("Similar blocks", result.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void mousePressed(MouseEvent e) {
