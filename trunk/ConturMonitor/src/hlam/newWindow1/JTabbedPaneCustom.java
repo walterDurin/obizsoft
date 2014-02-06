@@ -1,5 +1,7 @@
 package hlam.newWindow1;
 
+import ru.lanit.dibr.utils.CmdLineConfiguration;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -46,7 +48,7 @@ public class JTabbedPaneCustom extends JTabbedPane {
         JPanel pnl = new JPanel();
         pnl.setPreferredSize(new Dimension(120, 30));
         goAwayButton.setPreferredSize(new Dimension(50, 25));
-        goAwayButton.setFont(new Font("Courier New", 0, 14));
+        goAwayButton.setFont(new Font("Courier New", 0, CmdLineConfiguration.fontSize));
         pnl.setOpaque(false);
         pnl.add(goAwayButton);
         pnl.add(new JLabel(title));

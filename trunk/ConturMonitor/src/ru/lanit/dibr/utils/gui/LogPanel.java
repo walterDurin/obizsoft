@@ -7,6 +7,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 
+import ru.lanit.dibr.utils.CmdLineConfiguration;
 import ru.lanit.dibr.utils.core.*;
 import ru.lanit.dibr.utils.gui.forms.Filters;
 import ru.lanit.dibr.utils.utils.Utils;
@@ -58,7 +59,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         area = ((JTextArea) getViewport().getView());
 
         area.setEditable(false);
-        area.setFont(new Font("Courier New", 0, 12));
+        area.setFont(new Font("Courier New", 0, CmdLineConfiguration.fontSize));
 //        area.setBackground(new Color(0, 0, 0));
         area.setBackground(new Color(36, 17, 11));
 //        area.setForeground(new Color(187, 187, 187));
