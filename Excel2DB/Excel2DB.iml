@@ -10,6 +10,7 @@
     <orderEntry type="library" name="POI" level="project" />
     <orderEntry type="library" name="Oracle JDBC" level="project" />
     <orderEntry type="library" name="sqlite-jdbc-3.7.15-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="javacsv" level="project" />
   </component>
 </module>
 
