@@ -1,5 +1,6 @@
 package ru.lanit.dibr.utils.gui;
 
+import ru.lanit.dibr.utils.CmdLineConfiguration;
 import ru.lanit.dibr.utils.Configuration;
 import ru.lanit.dibr.utils.core.SshSource;
 import ru.lanit.dibr.utils.core.TestSource;
@@ -41,7 +42,7 @@ public class LogChoicer extends JFrame {
 			JPanel hostPane = new JPanel();
 			hostPane.setLayout(new BoxLayout(hostPane, BoxLayout.Y_AXIS));
 			Label hostLabel = new Label(entry.getKey().getDescription(), Label.CENTER);
-			hostLabel.setFont(new Font("Courier", Font.BOLD, 16));
+			hostLabel.setFont(new Font("Courier", Font.BOLD, CmdLineConfiguration.fontSize+4));
 			hostPane.add(hostLabel);
 			JPanel buttons = new JPanel();
 			GridBagLayout mgr = new GridBagLayout();
@@ -69,7 +70,7 @@ public class LogChoicer extends JFrame {
                         localFilesPane = new JPanel();
                         localFilesPane.setLayout(new BoxLayout(localFilesPane, BoxLayout.Y_AXIS));
                         Label hostLabel = new Label("Local files(NOT tailed!)");
-                        hostLabel.setFont(new Font("Courier", Font.BOLD, 16));
+                        hostLabel.setFont(new Font("Courier", Font.BOLD, CmdLineConfiguration.fontSize + 4));
                         localFilesPane.add(hostLabel);
                         localFilesButtons = new JPanel();
                         GridBagLayout mgr = new GridBagLayout();
@@ -95,6 +96,8 @@ public class LogChoicer extends JFrame {
 
 	private void addButton(JPanel buttons, final LogFile logFile, final Host host) {
         final JButton b = new JButton(logFile.getName());
+        System.out.println(b.getFont());
+        b.setFont(new Font("Courier", 0, CmdLineConfiguration.fontSize+2));
         b.setBorder(new LineBorder(Color.GRAY));
         final MenuButton menuButton = logFile.isLocal()? null : new MenuButton(host, logFile.getPath(), logFile.getName());
 		b.addActionListener(new AbstractAction() {

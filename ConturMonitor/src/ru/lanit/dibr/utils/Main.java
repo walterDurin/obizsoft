@@ -1,6 +1,8 @@
 package ru.lanit.dibr.utils;
 
 import com.jcraft.jsch.*;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 import ru.lanit.dibr.utils.gui.LogChoicer;
 
 import javax.swing.text.BadLocationException;
@@ -12,13 +14,18 @@ import java.io.*;
  * Time: 15:30:23
  */
 public class Main {
-	public static void main(String[] args) throws JSchException, IOException, BadLocationException, InterruptedException {
+	public static void main(String[] args) {
 
+        CmdLineParser parser = new CmdLineParser(new CmdLineConfiguration());
+        try {
+            parser.parseArgument(args);
+            Configuration cfg = new Configuration(CmdLineConfiguration.settingsFileName);
 
-		Configuration cfg = new Configuration(args.length>0?args[0]:"settings.xml");
+            LogChoicer logs = new LogChoicer(cfg);
+            logs.setVisible(true);
 
-		LogChoicer logs = new LogChoicer(cfg);
-		logs.setVisible(true);
-
+        } catch (CmdLineException e) {
+            e.printStackTrace();
+        }
 	}
 }

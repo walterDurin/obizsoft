@@ -1,5 +1,6 @@
 package ru.lanit.dibr.utils.gui;
 
+import ru.lanit.dibr.utils.CmdLineConfiguration;
 import sun.awt.HorizBagLayout;
 
 import javax.swing.*;
@@ -92,7 +93,7 @@ public class FunctionPanel extends JPanel {
 
         for (JButton nextBtn : buttons) {
             nextBtn.setBorder(new LineBorder(Color.DARK_GRAY, 1));
-            nextBtn.setFont(Font.getFont("Verdana"));
+            nextBtn.setFont(new Font("Verdana", 0, CmdLineConfiguration.fontSize));
             nextBtn.addKeyListener(lp);
             add(nextBtn, gbc);
         }
