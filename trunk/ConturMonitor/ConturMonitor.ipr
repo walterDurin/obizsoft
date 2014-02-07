@@ -48,9 +48,10 @@
     <option name="DEPRECATION" value="false" />
   </component>
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
+    <file url="file://$PROJECT_DIR$/ToDo.txt" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/res/Shortcuts.html" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/ru/lanit/dibr/utils/core/SshSource.java" charset="windows-1251" />
-    <file url="file://$PROJECT_DIR$/src/ru/lanit/dibr/utils/gui/LogChoicer.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/src/ru/lanit/dibr/utils/gui/LogChoicer.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/ru/lanit/dibr/utils/gui/LogFrame.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/ru/lanit/dibr/utils/gui/LogPanel.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/ru/lanit/dibr/utils/gui/MenuButton.java" charset="windows-1251" />
