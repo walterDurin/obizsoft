@@ -10,6 +10,7 @@ import ru.lanit.dibr.utils.utils.FileDrop;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.xml.stream.Location;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -146,10 +147,12 @@ public class LogChoicer extends JFrame {
                     }
                 }
                 int height = (int) (GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight()/visibleWindows.size());
+                int width= (int) (GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth());
+                Point zeroLocation = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getLocation();
                 int i = 0;
                 for (LogFrame visibleWindow : visibleWindows) {
-                    visibleWindow.setLocation(LogChoicer.size,(int)((i++)*height));
-                    visibleWindow.setSize((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth() - LogChoicer.size), height);
+                    visibleWindow.setLocation((int) (zeroLocation.getX() + LogChoicer.size),(int)((i++)*height));
+                    visibleWindow.setSize((int)(width - LogChoicer.size), height);
                 }
 
 			}
