@@ -50,6 +50,8 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
     public LogPanel(LogSource logSource, String blockPattern) {
         super(new JTextArea());
+        this.logSource = logSource;
+        this.blockPattern = blockPattern;
 
         blockInvertedFilter = new BlockFilter(blockPattern, true);
         blockDirectFilter = new BlockFilter(blockPattern, false);
@@ -72,9 +74,6 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
         area.setWrapStyleWord(true);
         area.setLineWrap(true);
-
-        this.logSource = logSource;
-        this.blockPattern = blockPattern;
     }
 
     public void connect() throws Exception {
@@ -205,7 +204,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     public void addBlockFilter(boolean inverseBlock) {
-        addFilter(inverseBlock?blockInvertedFilter:blockDirectFilter, "Block filter");
+        addFilter(inverseBlock ? blockInvertedFilter:blockDirectFilter, "Block filter");
     }
 
     public void addGrepFilter(boolean inverseGrep) {
@@ -221,6 +220,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         } else {
             filter.addStringToSearch(pattern);
         }
+        filtersWindow.addTo(filter);
         resetFilters();
     }
 
@@ -522,5 +522,10 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     public void mouseExited(MouseEvent e) {
+    }
+
+
+    public String getLogSourceName() {
+        return logSource.getName();
     }
 }

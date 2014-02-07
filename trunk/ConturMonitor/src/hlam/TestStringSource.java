@@ -105,6 +105,11 @@ public class TestStringSource implements LogSource {
         isClosed = true;
     }
 
+    @Override
+    public String getName() {
+        return "TestStringSource";
+    }
+
     public void setPaused(boolean paused) {
         System.out.println("set paused: " + paused);
         this.paused = paused;
