@@ -30,7 +30,7 @@ public class TestSource implements LogSource {
     public TestSource(String filename) {
         fileToRead = new File(filename);
         if(!fileToRead.exists() || !fileToRead.isFile() || !fileToRead.canRead()) {
-            throw new RuntimeException("Не можу відкрити файл!");
+            throw new RuntimeException("пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ!");
         }
     }
 
@@ -106,6 +106,11 @@ public class TestSource implements LogSource {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+    }
+
+    @Override
+    public String getName() {
+        return "Test Source";
     }
 
     public void setPaused(boolean paused) {

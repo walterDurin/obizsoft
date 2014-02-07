@@ -26,7 +26,6 @@ public class FunctionPanel extends JPanel {
         buttons.add(button);
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                lp.filtersWindow.refresh();
                 lp.filtersWindow.setVisible(true);
             }
         });
@@ -78,7 +77,7 @@ public class FunctionPanel extends JPanel {
 
         button = new JButton(" CLR FILTERS ");
         buttons.add(button);
-        button.setToolTipText("Clear Filter <Shift + F5>");
+        button.setToolTipText("Clear FilterPanel <Shift + F5>");
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 lp.clearFilters();

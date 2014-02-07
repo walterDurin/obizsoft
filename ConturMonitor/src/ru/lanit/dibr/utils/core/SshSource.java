@@ -163,4 +163,8 @@ public class SshSource implements LogSource {
         return paused;
     }
 
+    @Override
+    public String getName() {
+        return host.getHost()+logFile.getPath()+logFile.getName();
+    }
 }

@@ -98,6 +98,22 @@ public class Host {
 		return host;
 	}
 
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
     public String getDefaultEncoding() {
         return defaultEncoding;
     }

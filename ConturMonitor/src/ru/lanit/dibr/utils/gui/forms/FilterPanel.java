@@ -1,18 +1,22 @@
 package ru.lanit.dibr.utils.gui.forms;
 
+import ru.lanit.dibr.utils.gui.FilterEntry;
 import ru.lanit.dibr.utils.gui.LogPanel;
+import ru.lanit.dibr.utils.gui.LogSettings;
+import ru.lanit.dibr.utils.gui.SessionSettings;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * User: Vova
  * Date: 12.11.13
  * Time: 1:12
  */
-public class Filter extends JPanel {
+public class FilterPanel extends JPanel {
     private JPanel panel1;
     private JButton delButton;
     private JButton addButton;
@@ -25,32 +29,47 @@ public class Filter extends JPanel {
     private Map<String, JCheckBox> checkBoxesMap = new HashMap<String, JCheckBox>();
     private ru.lanit.dibr.utils.core.Filter filter;
     private LogPanel lp;
+    private SessionSettings settings;
+    private List<FilterEntry> filterEntries;
 
-    public Filter(String title) throws HeadlessException {
+    public void init(final LogPanel logPanel) {
+        this.lp = logPanel;
 
-        add(panel1);
+        settings = SessionSettings.getInstance();
+        LogSettings logSettings = settings.getLogSettingsMap().get(getFilterSettingsKey());
+        if(logSettings == null) {
+            logSettings = new LogSettings();
+            settings.getLogSettingsMap().put(getFilterSettingsKey(), logSettings);
+        }
+        filterEntries = logSettings.getFiltersList();
+        for (FilterEntry filterEntry : filterEntries) {
+            addFilter(filterEntry.getPattern());
+        }
+
+    }
+
+    public FilterPanel(String title) throws HeadlessException {
         label1.setText(title);
-
+        add(panel1);
         setVisible(true);
 
         addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String pattern = (String) JOptionPane.showInputDialog(panel1, "Pattern" + ":\n", "Pattern", JOptionPane.INFORMATION_MESSAGE, null, null, null);
                 if(pattern!=null && !(pattern = pattern.trim()).isEmpty() && !checkBoxesMap.containsKey(pattern)) {
-                    JCheckBox checkBox = new JCheckBox(pattern, true);
-                    checkBoxList.addCheckbox(checkBox);
-                    checkBoxesList.add(checkBox);
-                    checkBoxesMap.put(pattern, checkBox);
+                    addFilterAndSave(pattern);
                 }
             }
         });
 
         delButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(checkBoxList.getSelectedIndex()>=0) {
-                    checkBoxesMap.remove(checkBoxesList.remove(checkBoxList.getSelectedIndex()).getText());
-                    checkBoxList.removeCheckbox(checkBoxList.getSelectedIndex());
-
+                int selectedIndex = checkBoxList.getSelectedIndex();
+                if(selectedIndex >=0) {
+                    checkBoxesMap.remove(checkBoxesList.remove(selectedIndex).getText());
+                    checkBoxList.removeCheckbox(selectedIndex);
+                    filterEntries.remove(selectedIndex);
+                    settings.saveSettings();
                 }
             }
         });
@@ -60,6 +79,8 @@ public class Filter extends JPanel {
                 checkBoxesMap.clear();
                 checkBoxesList.clear();
                 checkBoxList.clear();
+                filterEntries.clear();
+                settings.saveSettings();
             }
         });
 
@@ -70,20 +91,34 @@ public class Filter extends JPanel {
         });
     }
 
-    public void applyFilter(final LogPanel logPanel, final ru.lanit.dibr.utils.core.Filter filter) {
+    private String getFilterSettingsKey() {
+        return lp.getLogSourceName() + "|" + label1.getText();
+    }
+
+    private void addFilterAndSave(String pattern) {
+        addFilter(pattern);
+        //TODO: save check bos states so
+        filterEntries.add(new FilterEntry(pattern, false));
+        settings.saveSettings();
+    }
+
+    private void addFilter(String pattern) {
+        JCheckBox checkBox = new JCheckBox(pattern, true);
+        checkBoxList.addCheckbox(checkBox);
+        checkBoxesList.add(checkBox);
+        checkBoxesMap.put(pattern, checkBox);
+    }
+
+    public void applyFilter(final ru.lanit.dibr.utils.core.Filter filter) {
         this.filter = filter;
-        this.lp = logPanel;
         for (JCheckBox jCheckBox : checkBoxesList) {
             jCheckBox.setSelected(false);
         }
         for (final String s : filter.getStringsToSearch()) {
             if(!checkBoxesMap.containsKey(s)) {
-                final JCheckBox checkBox = new JCheckBox(s, true);
-                checkBoxesMap.put(s,checkBox);
-                checkBoxesList.add(checkBox);
-                checkBoxList.addCheckbox(checkBox);
+                addFilterAndSave(s);
             } else {
-                checkBoxesMap.get(s).setSelected(true   );
+                checkBoxesMap.get(s).setSelected(true);
             }
         }
     }
