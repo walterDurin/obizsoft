@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="CSV2DB:jar" />
+      <artifact name="Excel2DB:jar" />
     </artifacts-to-build>
   </component>
   <component name="BookmarkManager">
@@ -10,121 +10,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1396ae32-337a-4e93-bb77-6b9909714aed" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/crc" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/crypt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/decode" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/exception" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/impl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/io" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/javacsv-src.zip" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/javacsv.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/ppm" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unsigned" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/util" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ru/btc/utils/utils" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/vm" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/AVHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/ppm/AnalyzeHeapDump.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/Archive.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/decode/AudioVariables.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/BaseBlock.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/decode/BitDecode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/vm/BitInput.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/BlockHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/ppm/BlockTypes.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/decode/CodeType.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/CommentHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/ComprDataIO.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/decode/Compress.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ru/btc/utils/utils/CompressUtil.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ru/btc/utils/utils/DataBaseWorker.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/decode/Decode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/decode/DistDecode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/EAHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/EndArcHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/FileHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/FileNameDecoder.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/impl/FileVolume.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/impl/FileVolumeManager.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/decode/FilterType.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/ppm/FreqData.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/HostSystem.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/io/IReadOnlyAccess.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/io/InputStreamReadOnlyAccessFile.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/decode/LitDecode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadCSV.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadXLSX.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/decode/LowDistDecode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST2.MF" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/MacInfoHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/MainHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/MarkHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/ppm/ModelPPM.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/decode/MultDecode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/NewSubHeaderType.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/ppm/PPMContext.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/ppm/Pointer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/ProtectHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/io/RandomAccessStream.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/ppm/RangeCoder.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/crc/RarCRC.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/exception/RarException.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/ppm/RarMemBlock.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/ppm/RarNode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/vm/RarVM.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/io/Raw.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/io/ReadOnlyAccessByteArray.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/io/ReadOnlyAccessFile.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/io/ReadOnlyAccessInputStream.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/decode/RepDecode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/crypt/Rijndael.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/ppm/SEE2Context.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/SignHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/ppm/State.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/ppm/StateRef.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/ppm/SubAllocator.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/SubBlockHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/SubBlockHeaderType.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/UnixOwnersHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/Unpack.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/Unpack15.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/Unpack20.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/UnpackFilter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/UnrarCallback.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/rarfile/UnrarHeadertype.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unsigned/UnsignedByte.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unsigned/UnsignedInteger.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unsigned/UnsignedLong.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unsigned/UnsignedShort.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/vm/VMCmdFlags.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/vm/VMCommands.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/vm/VMFlags.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/vm/VMOpType.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/vm/VMPreparedCommand.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/vm/VMPreparedOperand.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/vm/VMPreparedProgram.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/vm/VMStandardFilterSignature.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/unpack/vm/VMStandardFilters.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/Volume.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/util/VolumeHelper.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/junrar/VolumeManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Excel2DB.iml" afterPath="$PROJECT_DIR$/Excel2DB.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/Main.java" afterPath="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/Test.java" afterPath="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/Test.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadCSV.java" afterPath="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadCSV.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadXLSX.java" afterPath="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadXLSX.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Excel2CSV.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/fragment.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391602791264" ignored="false" />
-    <file path="/Main.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391003948285" ignored="false" />
+    <file path="/fragment.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391695071506" ignored="false" />
+    <file path="/Main.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391692226565" ignored="false" />
     <file path="/DataBaseWorker.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391170682984" ignored="false" />
     <file path="/log4j.properties" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391174538027" ignored="false" />
     <file path="/Test.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1390993472102" ignored="false" />
@@ -133,9 +26,37 @@
     <file path="/LoadCSV.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391674661137" ignored="false" />
     <file path="/CompressUtil.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391591170852" ignored="false" />
     <file path="/MANIFEST2.MF" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391602894822" ignored="false" />
-    <file path="/Dummy.txt" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391689232815" ignored="false" />
+    <file path="/Dummy.txt" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391782504000" ignored="false" />
     <file path="/Archive.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391689192367" ignored="false" />
     <file path="/SubBlockHeaderType.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391689221345" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/Main.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391767074310" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/utils/CLAJR.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391690581753" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/utils/clajr.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391690597467" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/utils/Clajr.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391690612469" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/com/beust/jcommander/JCommander.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391691040240" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/com/beust/jcommander/Parameters.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391691040240" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/com/beust/jcommander/ParametersDelegate.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391691040240" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/com/beust/jcommander/IParameterValidator.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391691040240" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/com/beust/jcommander/IParameterValidator2.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391691040241" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/CmdLineConfiguration.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391692276507" ignored="false" />
+    <file path="/CmdLineConfiguration.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391692114202" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/gui/LogPanel.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391767043786" ignored="false" />
+    <file path="/LogPanel.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391691244488" ignored="false" />
+    <file path="/a.dummy" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391692388875" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/gui/LogChoicer.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391767043786" ignored="false" />
+    <file path="/LogChoicer.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391694964130" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/hlam/newWindow1/JTabbedPaneCustom.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391692457987" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/gui/FunctionPanel.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391767043786" ignored="false" />
+    <file path="/FunctionPanel.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391692703636" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/gui/forms/Filters.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391767043786" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/versions.txt" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391767043786" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/hlam/TestStringSource.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391767043786" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/core/LogSource.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391767043786" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/gui/configuration/Host.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391767043786" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/core/SshSource.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391767043786" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/ToDo.txt" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391768423733" ignored="false" />
+    <file path="/ToDo.txt" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391768423733" ignored="false" />
+    <file path="/LoadXLSX.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391778566413" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -258,10 +179,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="LoadXLSX.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="LoadXLSX.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadXLSX.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="21" selection-start="377" selection-end="377" vertical-scroll-proportion="0.0">
+            <state line="49" column="52" selection-start="1536" selection-end="1536" vertical-scroll-proportion="0.12045454">
               <folding />
             </state>
           </provider>
@@ -270,7 +191,7 @@
       <file leaf-file-name="MANIFEST.MF" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/META-INF/MANIFEST.MF">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="45" selection-start="66" selection-end="66" vertical-scroll-proportion="0.0">
+            <state line="2" column="0" selection-start="66" selection-end="66" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -288,7 +209,7 @@
       <file leaf-file-name="LoadCSV.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadCSV.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="90" column="47" selection-start="3435" selection-end="3435" vertical-scroll-proportion="-646.0">
+            <state line="90" column="36" selection-start="3424" selection-end="3424" vertical-scroll-proportion="-263.5">
               <folding />
             </state>
           </provider>
@@ -298,7 +219,9 @@
         <entry file="file://$PROJECT_DIR$/src/com/github/junrar/io/InputStreamReadOnlyAccessFile.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="42" column="4" selection-start="900" selection-end="900" vertical-scroll-proportion="0.0">
-              <folding />
+              <folding>
+                <element signature="imports" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -319,7 +242,10 @@
         <entry file="file://$PROJECT_DIR$/src/com/github/junrar/impl/FileVolume.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="51" column="4" selection-start="1398" selection-end="1398" vertical-scroll-proportion="0.0">
-              <folding />
+              <folding>
+                <element signature="e#0#1526#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -327,8 +253,11 @@
       <file leaf-file-name="FileVolumeManager.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/github/junrar/impl/FileVolumeManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="50" column="62" selection-start="1667" selection-end="1667" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="50" column="51" selection-start="1667" selection-end="1667" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#0#1673#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -342,10 +271,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SubBlockHeaderType.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="SubBlockHeaderType.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/github/junrar/rarfile/SubBlockHeaderType.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="55" column="106" selection-start="1437" selection-end="1437" vertical-scroll-proportion="0.50859106">
+            <state line="41" column="73" selection-start="1078" selection-end="1078" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -368,15 +297,15 @@
         <option value="$PROJECT_DIR$/src/log4j.xml" />
         <option value="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/DataBaseWorker.java" />
         <option value="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/Main2.java" />
-        <option value="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadXLSX.java" />
         <option value="$PROJECT_DIR$/src/META-INF/MANIFEST2.MF" />
-        <option value="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadCSV.java" />
         <option value="$PROJECT_DIR$/src/com/github/junrar/io/InputStreamReadOnlyAccessFile.java" />
         <option value="$PROJECT_DIR$/src/ru/btc/utils/utils/CompressUtil.java" />
         <option value="$PROJECT_DIR$/src/com/github/junrar/impl/FileVolume.java" />
         <option value="$PROJECT_DIR$/src/com/github/junrar/impl/FileVolumeManager.java" />
         <option value="$PROJECT_DIR$/src/com/github/junrar/Archive.java" />
         <option value="$PROJECT_DIR$/src/com/github/junrar/rarfile/SubBlockHeaderType.java" />
+        <option value="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadCSV.java" />
+        <option value="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadXLSX.java" />
       </list>
     </option>
   </component>
@@ -544,20 +473,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="junrar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Excel2CSV" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Excel2DB" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lib" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -911,6 +826,11 @@
       <created>1390854950366</created>
       <updated>1390854950366</updated>
     </task>
+    <task id="LOCAL-00001" summary="added supporting of  large xslx and CSV files">
+      <created>1391689312104</created>
+      <updated>1391689312104</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -946,13 +866,13 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3289183" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27704194" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3289183" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="JProfiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32929516" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1670224" sideWeight="0.67108166" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1670224" sideWeight="0.722958" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.48454747" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1005,7 +925,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="added supporting of  large xslx and CSV files" />
+    <option name="LAST_COMMIT_MESSAGE" value="minor chages" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1020,6 +940,7 @@
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
     <MESSAGE value="added supporting of  large xslx and CSV files" />
+    <MESSAGE value="minor chages" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1071,16 +992,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadXLSX.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="21" selection-start="377" selection-end="377" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/META-INF/MANIFEST.MF">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="45" selection-start="66" selection-end="66" vertical-scroll-proportion="0.0">
+        <state line="2" column="0" selection-start="66" selection-end="66" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -1092,17 +1006,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadCSV.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="90" column="47" selection-start="3435" selection-end="3435" vertical-scroll-proportion="-646.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/github/junrar/io/InputStreamReadOnlyAccessFile.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="42" column="4" selection-start="900" selection-end="900" vertical-scroll-proportion="0.0">
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1119,14 +1028,20 @@
     <entry file="file://$PROJECT_DIR$/src/com/github/junrar/impl/FileVolume.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="51" column="4" selection-start="1398" selection-end="1398" vertical-scroll-proportion="0.0">
-          <folding />
+          <folding>
+            <element signature="e#0#1526#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/github/junrar/impl/FileVolumeManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="62" selection-start="1667" selection-end="1667" vertical-scroll-proportion="0.0">
-          <folding />
+        <state line="50" column="51" selection-start="1667" selection-end="1667" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#0#1673#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1139,7 +1054,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/github/junrar/rarfile/SubBlockHeaderType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="55" column="106" selection-start="1437" selection-end="1437" vertical-scroll-proportion="0.50859106">
+        <state line="41" column="73" selection-start="1078" selection-end="1078" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadCSV.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="90" column="36" selection-start="3424" selection-end="3424" vertical-scroll-proportion="-263.5">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadXLSX.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="49" column="52" selection-start="1536" selection-end="1536" vertical-scroll-proportion="0.12045454">
           <folding />
         </state>
       </provider>
