@@ -88,7 +88,7 @@ public class LoadCSV {
                     sqlValues = sqlValues.replaceFirst(m.group(), cellData);
                 }
 
-                String sql = "INSERT /*+ APPEND */ INTO " + dbTableName + "(" + dbFields + ") VALUES(" + sqlValues + ")";
+                String sql = "INSERT INTO " + dbTableName + "(" + dbFields + ") VALUES(" + sqlValues + ")";
 //                System.out.println(sql);
                 try {
                     dataBaseWorker.execSqlInBatch(sql);

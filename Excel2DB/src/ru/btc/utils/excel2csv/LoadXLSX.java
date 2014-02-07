@@ -65,7 +65,7 @@ public class LoadXLSX {
                         if(celllData==null) {
                             celllData = "";
                         }
-                        celllData = celllData.replaceAll("'", "''");
+                        celllData = celllData.replaceAll("'", "''").trim();
                         sqlValues = sqlValues.replaceFirst(m.group(), celllData);
                     }
 
