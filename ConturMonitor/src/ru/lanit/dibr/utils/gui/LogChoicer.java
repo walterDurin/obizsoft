@@ -32,7 +32,7 @@ public class LogChoicer extends JFrame {
 
 
     public LogChoicer(Configuration cfg) throws HeadlessException {
-		setTitle("Log monitor 3.5");
+		setTitle("Log monitor 3.6");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pane = new JPanel();
 		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
@@ -106,7 +106,7 @@ public class LogChoicer extends JFrame {
 				System.out.println(e.paramString());
 				if(lf==null) {
 					if(logFile.isLocal()) {
-                        //TODO: реализовать нормальный Source для локальных файлов, используюя org.apache.commons.io.input.Tailer
+                        //TODO: СЂРµР°Р»РёР·РѕРІР°С‚СЊ РЅРѕСЂРјР°Р»СЊРЅС‹Р№ Source РґР»СЏ Р»РѕРєР°Р»СЊРЅС‹С… С„Р°Р№Р»РѕРІ, РёСЃРїРѕР»СЊР·СѓСЋСЏ org.apache.commons.io.input.Tailer
                         lf = new LogFrame(b, menuButton, logFile.getName(), new TestSource(logFile.getPath()), logFile.getBlockPattern());
                     } else {
                         lf = new LogFrame(b, menuButton, host.getDescription()+ " : " + logFile.getName(), new SshSource(host, logFile), logFile.getBlockPattern());
