@@ -15,6 +15,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ import java.util.Map;
  * Date: 16.08.2010
  * Time: 18:34:16
  */
-public class LogChoicer extends JFrame {
+public class LogChoicer extends JFrame implements WindowStateListener {
     public static int size;
     public static int countShownLogWindow = 0;
     public static int logsCnt = 0;
@@ -35,6 +36,7 @@ public class LogChoicer extends JFrame {
     public LogChoicer(Configuration cfg) throws HeadlessException {
 		setTitle("Log monitor 3.6");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        addWindowStateListener(this);
 		pane = new JPanel();
 		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
 		//setLocationByPlatform(true);
@@ -170,4 +172,17 @@ public class LogChoicer extends JFrame {
             buttons.add(menuButton, gbc);
         }
 	}
+
+    @Override
+    public void windowStateChanged(WindowEvent e) {
+        if(e.getNewState() == 1) {
+            for (LogFrame log : logs) {
+                log.setVisible(false);
+            }
+        } else if( e.getNewState() == 0) {
+            for (LogFrame log : logs) {
+                log.setVisible(true);
+            }
+        }
+    }
 }

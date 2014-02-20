@@ -14,7 +14,7 @@ import java.awt.*;
  * Date: 16.08.2010
  * Time: 17:57:48
  */
-public class LogFrame  extends JFrame {
+public class LogFrame  extends JDialog {
 
 	private Thread t;
 	private LogPanel panel;
