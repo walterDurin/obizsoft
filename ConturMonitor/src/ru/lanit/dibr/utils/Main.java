@@ -1,12 +1,8 @@
 package ru.lanit.dibr.utils;
 
-import com.jcraft.jsch.*;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import ru.lanit.dibr.utils.gui.LogChoicer;
-
-import javax.swing.text.BadLocationException;
-import java.io.*;
 
 /**
  * User: VTaran
