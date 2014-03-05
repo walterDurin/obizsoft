@@ -40,7 +40,7 @@ public class LogChoicer extends JFrame implements WindowStateListener {
 		pane = new JPanel();
 		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
 		//setLocationByPlatform(true);
-        setLocation(0, 250);
+        setLocation((int) GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getLocation().getX(), 250);
 		for (Map.Entry<Host, Map<String, LogFile>> entry : cfg.getServers().entrySet()) {
 			JPanel hostPane = new JPanel();
 			hostPane.setLayout(new BoxLayout(hostPane, BoxLayout.Y_AXIS));
