@@ -3,6 +3,7 @@ package ru.lanit.dibr.utils;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import ru.lanit.dibr.utils.gui.LogChoicer;
+import ru.lanit.dibr.utils.gui.forms.MainWindow;
 
 /**
  * User: VTaran
@@ -16,9 +17,10 @@ public class Main {
         try {
             parser.parseArgument(args);
             Configuration cfg = new Configuration(CmdLineConfiguration.settingsFileName);
+            MainWindow mainWindow = new MainWindow(cfg);
 
-            LogChoicer logs = new LogChoicer(cfg);
-            logs.setVisible(true);
+//            LogChoicer logs = new LogChoicer(cfg);
+//            logs.setVisible(true);
 
         } catch (CmdLineException e) {
             e.printStackTrace();
