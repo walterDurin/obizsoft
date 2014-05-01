@@ -44,7 +44,7 @@ public class FunctionPanel extends JPanel {
         button.setToolTipText("Search <Ctrl + F>");
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                lp.performFind();
+                lp.performFind(false);
             }
         });
 

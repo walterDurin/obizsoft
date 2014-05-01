@@ -12,6 +12,6 @@ public interface Filter {
     public List<String> getStringsToSearch();
     public void removeStringFromSearch(String str);
     public Source apply(Source source);
-    public void invalidate();
-    public boolean isValid();
+    public void disable();
+    public boolean isActive();
 }

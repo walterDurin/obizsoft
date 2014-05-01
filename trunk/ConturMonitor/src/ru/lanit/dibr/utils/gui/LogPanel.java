@@ -15,8 +15,6 @@ import ru.lanit.dibr.utils.utils.Utils;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -67,8 +65,8 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 //        area.setForeground(new Color(187, 187, 187));
         area.setForeground(new Color(214, 203, 176));
 //        area.setSelectedTextColor(new Color(0, 0, 0));
-        area.setSelectedTextColor(new Color(53, 56, 204));
-        area.setSelectionColor(new Color(247, 247, 134));
+        area.setSelectedTextColor(new Color(74, 247, 51));
+        area.setSelectionColor(new Color(77, 95, 114));
 //        area.setSelectionColor(new Color(187, 187, 187));
         area.addMouseListener(this);
 
@@ -89,11 +87,11 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                     while (!stopped) {
                         try {
                             int cnt = 0;
-                            if(autoScroll) {
+                            if (autoScroll) {
                                 getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
                             }
-                            if(needRepaint.getAndSet(false) || (cnt++) == 8) {
-                                cnt=0;
+                            if (needRepaint.getAndSet(false) || (cnt++) == 8) {
+                                cnt = 0;
                                 getParent().repaint(0);
                                 repaint(0);
                             }
@@ -143,68 +141,75 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
     public void keyPressed(KeyEvent ke) {
 
-        if ((ke.getKeyCode() == 27)) { //Нажали PgUp
-            //TODO fix: tight coupling with parent Frame (LogFrame)
-            Container container = getParent();
-            while (!JFrame.class.isAssignableFrom(container.getClass())) {
-                container = container.getParent();
+        if (ke.getModifiers() == 0) {
+            if ((ke.getKeyCode() == 27)) { //Нажали PgUp
+                //TODO fix: tight coupling with parent Frame (LogFrame)
+                Container container = getParent();
+                while (!JFrame.class.isAssignableFrom(container.getClass())) {
+                    container = container.getParent();
+                }
+                WindowEvent closingEvent = new WindowEvent((Window) container, WindowEvent.WINDOW_CLOSING);
+                Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);
+
+            } else if ((ke.getKeyCode() == KeyEvent.VK_PAGE_UP)) { //Нажали PgUp
+                setAutoScroll(false);
+            } else if ((ke.getKeyCode() == KeyEvent.VK_W)) { //Нажали W - перенос строк
+                area.setLineWrap(!area.getLineWrap());
+            } else if ((ke.getKeyCode() == KeyEvent.VK_N) && (logSource instanceof SshSource)) { //Нажали N - номера строк
+                logSource.setPaused(true);
+                area.setText("");
+                autoScroll = true;
+                ((SshSource) logSource).setWriteLineNumbers(!((SshSource) logSource).isWriteLineNumbers());
+                logSource.reset();
+                logSource.setPaused(false);
+            } else if (ke.getKeyCode() == KeyEvent.VK_F1) { // F1
+                new HotKeysInfo();
+            } else if (ke.getKeyCode() == KeyEvent.VK_C) { // Key 'C'
+                logSource.setPaused(true);
+                area.setText("");
+                logSource.setPaused(false);
             }
-            WindowEvent closingEvent = new WindowEvent((Window) container, WindowEvent.WINDOW_CLOSING);
-            Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);
-
-        } else if ((ke.getKeyCode() == KeyEvent.VK_PAGE_UP)) { //Нажали PgUp
-            setAutoScroll(false);
-        } else if ((ke.getKeyCode() == KeyEvent.VK_W)) { //Нажали W - перенос строк
-            area.setLineWrap(!area.getLineWrap());
-        } else if ((ke.getKeyCode() == KeyEvent.VK_N) && (logSource instanceof SshSource)) { //Нажали N - номера строк
-            logSource.setPaused(true);
-            area.setText("");
-            autoScroll = true;
-            ((SshSource)logSource).setWriteLineNumbers(!((SshSource) logSource).isWriteLineNumbers());
-            logSource.reset();
-            logSource.setPaused(false);
-
-        } else if ((ke.getKeyCode() == KeyEvent.VK_END) && (ke.getModifiers() == KeyEvent.CTRL_MASK)) { //Нажали Cntrl + End
-            setAutoScroll(true);
-        } else if ((ke.getKeyCode() == KeyEvent.VK_F) && ((ke.getModifiers() == KeyEvent.CTRL_MASK) || (ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK)))) {  //  Нажали Ctrl + F
-            performFind();
-        } else if (ke.getKeyCode() == KeyEvent.VK_F3) { // F3 (+Shift)
-            findWord(ke.getModifiers() == KeyEvent.SHIFT_MASK);
-        } else if (ke.getKeyCode() == KeyEvent.VK_F1) { // F1
-            new HotKeysInfo();
-        } else if (ke.getKeyCode() == KeyEvent.VK_F5) { // [Shift +] F5
-            if(ke.getModifiers()==KeyEvent.SHIFT_MASK) {
-                clearFilters();
-            } else {
-                resetFilters();
+        }
+        if(ke.getModifiers() == 0 || ke.getModifiers() == KeyEvent.SHIFT_MASK) {
+            if (ke.getKeyCode() == KeyEvent.VK_F3) { // F3 (+Shift)
+                findWord(ke.getModifiers() == KeyEvent.SHIFT_MASK);
+            } else if (ke.getKeyCode() == KeyEvent.VK_F5) { // [Shift +] F5
+                if (ke.getModifiers() == KeyEvent.SHIFT_MASK) {
+                    clearFilters();
+                } else {
+                    resetFilters();
+                }
             }
+        } else if ((ke.getModifiers() == KeyEvent.CTRL_MASK ) || ( ke.getModifiers() == (KeyEvent.SHIFT_MASK | KeyEvent.CTRL_MASK))) {
+            boolean isOnlyShiftAdditionalPressed = (ke.getModifiers()&KeyEvent.SHIFT_MASK) != 0;
+            if(!isOnlyShiftAdditionalPressed) {
+                if ((ke.getKeyCode() == KeyEvent.VK_HOME)) { //Нажали Cntrl + Home
+                    setAutoScroll(false);
+                    area.setCaretPosition(0);
+                } else if ((ke.getKeyCode() == KeyEvent.VK_END)) { //Нажали Cntrl + End
+                    setAutoScroll(true);
+                } else if (ke.getKeyCode() == KeyEvent.VK_S ) { // Key Ctrl + 'S'
+                    logSource.setPaused(true);
+                    findSimilar();
+                    logSource.setPaused(false);
 
-        } else if (ke.getKeyCode() == KeyEvent.VK_C) { // Key 'C'
-            logSource.setPaused(true);
-            area.setText("");
-            logSource.setPaused(false);
-
-        } else if (ke.getKeyCode() == KeyEvent.VK_S && ke.getModifiers() == KeyEvent.CTRL_MASK) { // Key Ctrl + 'S'
-            logSource.setPaused(true);
-            findSimilar();
-            logSource.setPaused(false);
-
-        } else if ((ke.getKeyCode() == KeyEvent.VK_G) && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {  // GREP filter
-            boolean inverseGrep = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
-            addGrepFilter(inverseGrep);
-
-        } else if ((ke.getKeyCode() == KeyEvent.VK_B) && blockPattern != null && (ke.getModifiers() == KeyEvent.CTRL_MASK || ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK))) {  //BLOCK filter
-            //ToDo: если blockPattern==null - Сообщить об этом и предложить его ввести. Показав что нибудь по дефолту. А потом сделать визард с проверкой по строке из лога.
-            boolean inverseBlock = ke.getModifiers() == (KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
-            addBlockFilter(inverseBlock);
-
+                }
+            }
+            if (ke.getKeyCode() == KeyEvent.VK_F) {  //  Нажали Ctrl [+Shift] + F
+                performFind(isOnlyShiftAdditionalPressed);
+            } else if (ke.getKeyCode() == KeyEvent.VK_G) {  // GREP filter
+                addGrepFilter(isOnlyShiftAdditionalPressed);
+            } else if ((ke.getKeyCode() == KeyEvent.VK_B) && blockPattern != null ) {  //BLOCK filter
+                //ToDo: если blockPattern==null - Сообщить об этом и предложить его ввести. Показав что нибудь по дефолту. А потом сделать визард с проверкой по строке из лога.
+                addBlockFilter(isOnlyShiftAdditionalPressed);
+            }
         } else {
             System.out.println(ke.getKeyCode());
         }
     }
 
     public void addBlockFilter(boolean inverseBlock) {
-        addFilter(inverseBlock ? blockInvertedFilter:blockDirectFilter, "Block filter");
+        addFilter(inverseBlock ? blockInvertedFilter : blockDirectFilter, "Block filter");
     }
 
     public void addGrepFilter(boolean inverseGrep) {
@@ -215,8 +220,8 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         String pattern = (String) JOptionPane.showInputDialog(this, title + ":\n", title, JOptionPane.INFORMATION_MESSAGE, null, null, null);
         System.out.println(title + " entered: '" + pattern + "'");
 
-        if(pattern.isEmpty()) {
-                filter.invalidate();
+        if (pattern.isEmpty()) {
+            filter.disable();
         } else {
             filter.addStringToSearch(pattern);
         }
@@ -224,18 +229,18 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         resetFilters();
     }
 
-    public void performFind() {
+    public void performFind(boolean isBackWard) {
         find = (String) JOptionPane.showInputDialog(this, "FIND:\n", "Find", JOptionPane.INFORMATION_MESSAGE, null, null, null);
         startFrom = area.getCaretPosition();
-        if (highlightFound()>0)
-            findWord(false);
+        if (highlightFound() > 0)
+            findWord(isBackWard);
     }
 
     public void clearFilters() {
-        blockInvertedFilter.invalidate();
-        blockDirectFilter.invalidate();
-        grepInvertedFilter.invalidate();
-        grepDirectFilter.invalidate();
+        blockInvertedFilter.disable();
+        blockDirectFilter.disable();
+        grepInvertedFilter.disable();
+        grepDirectFilter.disable();
         resetFilters();
     }
 
@@ -243,16 +248,16 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         logSource.setPaused(true);
         filtersChain = logSource;
         area.setText("");
-        if(blockInvertedFilter.isValid()) {
+        if (blockInvertedFilter.isActive()) {
             filtersChain = blockInvertedFilter.apply(filtersChain);
         }
-        if(blockDirectFilter.isValid()) {
+        if (blockDirectFilter.isActive()) {
             filtersChain = blockDirectFilter.apply(filtersChain);
         }
-        if(grepInvertedFilter.isValid()) {
+        if (grepInvertedFilter.isActive()) {
             filtersChain = grepInvertedFilter.apply(filtersChain);
         }
-        if(grepDirectFilter.isValid()) {
+        if (grepDirectFilter.isActive()) {
             filtersChain = grepDirectFilter.apply(filtersChain);
         }
         logSource.reset();
@@ -261,11 +266,11 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         autoScroll = true;
     }
 
-    public boolean  findWord(boolean isBackWard) {
+    public boolean findWord(boolean isBackWard) {
         setAutoScroll(false);
-        if(lastSearchDirectionIsForward==isBackWard) {
+        if (lastSearchDirectionIsForward == isBackWard) {
             lastSearchDirectionIsForward = !isBackWard;
-            if(!findWord(isBackWard))
+            if (!findWord(isBackWard))
                 return false;
         } else {
             lastSearchDirectionIsForward = !isBackWard;
@@ -281,8 +286,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             if (offset > -1) {
                 area.setFocusCycleRoot(true);
                 area.requestFocusInWindow();
-                area.select(offset, find.length() + offset);
-                area.setCaretPosition(offset);
+//                area.select(offset, find.length() + offset);
+                area.setCaretPosition(offset+find.length());
+                area.moveCaretPosition(offset);
                 startFrom = offset + (isBackWard ? -1 : (find.length() + 1));
                 return true;
             }
@@ -298,17 +304,17 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         h.removeAllHighlights();
         int pos = 0;
         int cnt = 0;
-        while(pos >=0) {
+        while (pos >= 0) {
             //pos = area.getText().indexOf(find, pos);
             pos = Utils.indexOf(area.getText(), false, pos, find);
             System.out.println("pos: " + pos);
             if (pos > -1) {
                 try {
                     cnt++;
-                    h.addHighlight(pos ,find.length() + pos, DefaultHighlighter.DefaultPainter);
-                    int y = area.getHeight()/(area.getText().length()/pos);
-                    area.getGraphics().drawLine(0,y,25,y);
-                    pos+=find.length();
+                    h.addHighlight(pos, find.length() + pos, DefaultHighlighter.DefaultPainter);
+                    int y = area.getHeight() / (area.getText().length() / pos);
+                    area.getGraphics().drawLine(0, y, 25, y);
+                    pos += find.length();
                 } catch (BadLocationException e) {
                     e.printStackTrace();
                 }
@@ -330,12 +336,12 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     public void mouseClicked(MouseEvent e) {
-        if(e.getClickCount()==2) {
+        if (e.getClickCount() == 2) {
             try {
-                int  ss = area.getSelectionStart();
+                int ss = area.getSelectionStart();
                 ss = area.getText().lastIndexOf("\n", ss) + 1;
-                int se  = area.getText().indexOf("\n", ss);
-                System.out.println("DblClk! \n" + area.getText(ss, se-ss) );
+                int se = area.getText().indexOf("\n", ss);
+                System.out.println("DblClk! \n" + area.getText(ss, se - ss));
             } catch (BadLocationException e1) {
                 e1.printStackTrace();
             }
@@ -346,9 +352,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
                 String block = findBlockAroundCursor();
 
-                if(block!=null) {
+                if (block != null) {
                     int firstLineOfBlockEndPos = block.indexOf('\n');
-                    if(firstLineOfBlockEndPos<0) {
+                    if (firstLineOfBlockEndPos < 0) {
                         firstLineOfBlockEndPos = block.length();
                     }
                     String title = block.substring(0, firstLineOfBlockEndPos);
@@ -376,8 +382,8 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         boolean isEndFound = false;
         int firstStartPos, firstEndPos;
         int secondStartPos, secondEndPos;
-        int cursorPos = area.getCaretPosition()-1;
-        if(area.getText().charAt(cursorPos)=='\n') {
+        int cursorPos = area.getCaretPosition() - 1;
+        if (area.getText().charAt(cursorPos) == '\n') {
             cursorPos--;
         }
         firstStartPos = secondStartPos = cursorPos;
@@ -394,7 +400,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                     firstStartPos = 0;
                     isBeginFound = true;
                 } else {
-                    if(firstEndPos < 0 ) {
+                    if (firstEndPos < 0) {
                         System.out.println("End detected. Use end of log.");
                         firstEndPos = secondStartPos = area.getText().length();
                         isEndFound = true;
@@ -415,16 +421,13 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 secondEndPos = area.getText().indexOf("\n", secondStartPos);
                 System.out.println("secondStartPos = " + secondStartPos);
                 System.out.println("secondEndPos = " + secondEndPos);
-                if (secondStartPos < 0) {
+                if (secondEndPos < 0 || secondStartPos < 0) {
                     System.out.println("End detected. Use end of log.");
                     isEndFound = true;
                     secondStartPos = area.getText().length();
-                } else if(secondStartPos == area.getText().length()) {
+                } else if (secondStartPos == area.getText().length()) {
                     isEndFound = true;
-                } else if(secondEndPos != secondStartPos) {
-                    if(secondEndPos < 0 ) {
-                        secondEndPos = area.getText().length();
-                    }
+                } else if (secondEndPos != secondStartPos) {
                     second = area.getText().substring(secondStartPos, secondEndPos);
                     System.out.println("second = " + second);
                     if (compiledBlockPattern.matcher(second).matches()) {
@@ -436,7 +439,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 }
             }
 
-            if(isBeginFound && isEndFound) {
+            if (isBeginFound && isEndFound) {
                 block = area.getText().substring(firstStartPos, secondStartPos);
                 System.out.println("found block: " + block);
                 break;
@@ -449,7 +452,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
     private Pattern getBlockPatern() {
         String patternPrefix = "";
-        if(logSource instanceof SshSource && ((SshSource)logSource).isWriteLineNumbers()) {
+        if (logSource instanceof SshSource && ((SshSource) logSource).isWriteLineNumbers()) {
             patternPrefix = "\\s*\\d{1,6}: ";
         }
         return Pattern.compile(patternPrefix + this.blockPattern + ".*");
@@ -464,18 +467,18 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         int b0size = blockAroundCursor.length();
         int lineStart = 0;
         int curBlockStartPos = 0;
-        int lineEnd=0;
+        int lineEnd = 0;
         StringBuffer blockBuffer = new StringBuffer();
         StringBuffer result = new StringBuffer();
-        while ( (lineEnd = log.indexOf('\n',lineStart)) >= 0) {
+        while ((lineEnd = log.indexOf('\n', lineStart)) >= 0) {
             String line = log.substring(lineStart, lineEnd);
-            if(compiledBlockPattern.matcher(line).matches()) {
+            if (compiledBlockPattern.matcher(line).matches()) {
                 int b1size = blockBuffer.length();
-                double m1 = (b0size+b1size+100)/(Math.abs(b0size-b1size+0.0));
-                if(m1 > 10) { //Разница размеров блоков не менее чем в 10 раз меньше суммы
+                double m1 = (b0size + b1size + 100) / (Math.abs(b0size - b1size + 0.0));
+                if (m1 > 10) { //Разница размеров блоков не менее чем в 10 раз меньше суммы
                     int distance = Utils.getLevenshteinDistance(blockAroundCursor, blockBuffer.toString(), 1000);
-                    double m2 = Math.abs((b0size-100)/(distance+0.0));
-                    if(m2 > 5) {
+                    double m2 = Math.abs((b0size - 100) / (distance + 0.0));
+                    if (m2 > 5) {
                         result.append("--------------------------------------------------------------------------------------------------------------------------------\n");
                         //result.append(distance + "\t" + blockAroundCursor.length() + "\t" + blockBuffer.length() + "\t" + m1 + "\t" + m2);
                         result.append(blockBuffer).append("\n");
@@ -503,7 +506,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     public void mouseReleased(MouseEvent e) {
         if (area.getSelectedText() != null) {
             String selected = area.getSelectedText();
-            if(logSource instanceof SshSource && ((SshSource)logSource).isWriteLineNumbers()) {
+            if (logSource instanceof SshSource && ((SshSource) logSource).isWriteLineNumbers()) {
                 selected = removeLineNumbers(selected);
             }
             setAutoScroll(false);
