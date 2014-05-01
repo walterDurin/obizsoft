@@ -1,6 +1,7 @@
 package ru.lanit.dibr.utils.gui;
 
 import hlam.TestStringSource;
+import ru.lanit.dibr.utils.CmdLineConfiguration;
 import ru.lanit.dibr.utils.utils.XmlUtils;
 
 import javax.swing.*;
@@ -53,7 +54,8 @@ public class PopupBlock extends JFrame {
             }
         };
         t.start();
-        setSize(1100, 800);
+        setSize((int)(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth()* 0.7), (int)(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight()* 0.8));
+//        GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds()
         setVisible(true);
     }
 }
