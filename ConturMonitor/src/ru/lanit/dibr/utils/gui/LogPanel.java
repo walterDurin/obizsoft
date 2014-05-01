@@ -123,8 +123,13 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         }
     }
 
-    private void appendLine(String nextLine) {
-        area.append("\n" + nextLine);
+    private void appendLine(final String nextLine) {
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                area.append("\n" + nextLine);
+            }
+        });
         if (autoScroll) {
             getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
         }
@@ -287,7 +292,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 area.setFocusCycleRoot(true);
                 area.requestFocusInWindow();
 //                area.select(offset, find.length() + offset);
-                area.setCaretPosition(offset+find.length());
+                area.setCaretPosition(offset + find.length());
                 area.moveCaretPosition(offset);
                 startFrom = offset + (isBackWard ? -1 : (find.length() + 1));
                 return true;
