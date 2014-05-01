@@ -90,12 +90,12 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                             if (autoScroll) {
                                 getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
                             }
-                            if (needRepaint.getAndSet(false) || (cnt++) == 8) {
+                            /*if (needRepaint.getAndSet(false) || (cnt++) == 8) {
                                 cnt = 0;
                                 getParent().repaint(0);
                                 repaint(0);
-                            }
-                            Thread.sleep(10);
+                            }*/
+                            Thread.sleep(100);
                         } catch (InterruptedException e) {
                             break;
                         }
@@ -127,7 +127,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
+                int pos = area.getText().length()-1;
                 area.append("\n" + nextLine);
+                highlightFromCursor(area.getHighlighter(), pos);
             }
         });
         if (autoScroll) {
@@ -308,6 +310,12 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         Highlighter h = area.getHighlighter();
         h.removeAllHighlights();
         int pos = 0;
+        int cnt = highlightFromCursor(h, pos);
+        JOptionPane.showMessageDialog(this, cnt + " matches found");
+        return cnt;
+    }
+
+    private int highlightFromCursor(Highlighter h, int pos) {
         int cnt = 0;
         while (pos >= 0) {
             //pos = area.getText().indexOf(find, pos);
@@ -325,7 +333,6 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 }
             }
         }
-        JOptionPane.showMessageDialog(this, cnt + " matches found");
         return cnt;
     }
 
