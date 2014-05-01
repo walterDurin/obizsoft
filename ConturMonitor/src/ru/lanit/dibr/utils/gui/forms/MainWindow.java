@@ -13,9 +13,7 @@ import ru.lanit.dibr.utils.gui.configuration.LogFile;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -79,7 +77,7 @@ public class MainWindow {
                 System.out.println(e.paramString());
                 if(lp ==null) {
                     if(logFile.isLocal()) {
-                        //TODO: реализовать нормальный Source для локальных файлов, используюя org.apache.commons.io.input.Tailer
+                        //TODO: СЂРµР°Р»РёР·РѕРІР°С‚СЊ РЅРѕСЂРјР°Р»СЊРЅС‹Р№ Source РґР»СЏ Р»РѕРєР°Р»СЊРЅС‹С… С„Р°Р№Р»РѕРІ, РёСЃРїРѕР»СЊР·СѓСЋСЏ org.apache.commons.io.input.Tailer
                         //lp = new LogFrame(b, menuButton, logFile.getName(), new TestSource(logFile.getPath()), logFile.getBlockPattern());
                     } else {
                         JPanel contentPanel  = new JPanel();
@@ -102,6 +100,7 @@ public class MainWindow {
                     }
                 }
                 tabbedPane1.setSelectedComponent(tab);
+                lp.getViewport().getView().requestFocusInWindow();
             }
         });
 

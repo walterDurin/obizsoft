@@ -24,6 +24,7 @@ public class FilterPanel extends JPanel {
     private CheckBoxList checkBoxList;
     private JCheckBox checkBox1;
     private JLabel label1;
+    private JButton editButton;
 
     private java.util.List<JCheckBox> checkBoxesList = new ArrayList<JCheckBox>();
     private Map<String, JCheckBox> checkBoxesMap = new HashMap<String, JCheckBox>();
@@ -56,9 +57,7 @@ public class FilterPanel extends JPanel {
         addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String pattern = (String) JOptionPane.showInputDialog(panel1, "Pattern" + ":\n", "Pattern", JOptionPane.INFORMATION_MESSAGE, null, null, null);
-                if(pattern!=null && !(pattern = pattern.trim()).isEmpty() && !checkBoxesMap.containsKey(pattern)) {
-                    addFilterAndSave(pattern);
-                }
+                add(pattern);
             }
         });
 
@@ -66,10 +65,18 @@ public class FilterPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 int selectedIndex = checkBoxList.getSelectedIndex();
                 if(selectedIndex >=0) {
-                    checkBoxesMap.remove(checkBoxesList.remove(selectedIndex).getText());
-                    checkBoxList.removeCheckbox(selectedIndex);
-                    filterEntries.remove(selectedIndex);
-                    settings.saveSettings();
+                    del(selectedIndex);
+                }
+            }
+        });
+
+        editButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int selectedIndex = checkBoxList.getSelectedIndex();
+                if(selectedIndex >=0) {
+                    String curPattern =  del(selectedIndex);
+                    String pattern = (String) JOptionPane.showInputDialog(panel1, "Pattern" + ":\n", "Pattern", JOptionPane.INFORMATION_MESSAGE, null, null, curPattern);
+                    add(pattern);
                 }
             }
         });
@@ -89,6 +96,20 @@ public class FilterPanel extends JPanel {
                 checkBoxList.markAll(checkBox1.isSelected());
             }
         });
+    }
+
+    private void add(String pattern) {
+        if (pattern != null && !(pattern = pattern.trim()).isEmpty() && !checkBoxesMap.containsKey(pattern)) {
+            addFilterAndSave(pattern);
+        }
+    }
+
+    private String del(int selectedIndex) {
+        checkBoxesMap.remove(checkBoxesList.remove(selectedIndex).getText());
+        checkBoxList.removeCheckbox(selectedIndex);
+        String removedPattern = filterEntries.remove(selectedIndex).getPattern();
+        settings.saveSettings();
+        return removedPattern;
     }
 
     private String getFilterSettingsKey() {
@@ -124,7 +145,7 @@ public class FilterPanel extends JPanel {
     }
 
     public void apply() {
-        filter.invalidate();
+        filter.disable();
         for (JCheckBox jCheckBox : checkBoxesList) {
             if(jCheckBox.isSelected()) {
                 filter.addStringToSearch(jCheckBox.getText());

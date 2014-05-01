@@ -61,7 +61,7 @@ public class BlockFilter extends AbstractFilter {
     protected String hideFilter(Source source) throws IOException {
         String nextLine;
         String nextBlockFirstLine = null;
-        //Вычитываем блок до следующего блока или до появления SKIP_LINE (что пока что считаем появлением нового блока)
+        //Р’С‹С‡РёС‚С‹РІР°РµРј Р±Р»РѕРє РґРѕ СЃР»РµРґСѓСЋС‰РµРіРѕ Р±Р»РѕРєР° РёР»Рё РґРѕ РїРѕСЏРІР»РµРЅРёСЏ SKIP_LINE (С‡С‚Рѕ РїРѕРєР° С‡С‚Рѕ СЃС‡РёС‚Р°РµРј РїРѕСЏРІР»РµРЅРёРµРј РЅРѕРІРѕРіРѕ Р±Р»РѕРєР°)
         while ( !(foundSkipLine = ((nextLine = source.readLine()) == LogSource.SKIP_LINE)) && nextLine != null) {
             if(blockBuffer.length()>0 && nextLine.matches(".*" + blockPattern + ".*")) {
                 nextBlockFirstLine = nextLine;
@@ -98,7 +98,7 @@ public class BlockFilter extends AbstractFilter {
         }
         blockBuffer.setLength(0);
         if(blockBufferLines > 0) {
-            skippedLines = blockBufferLines-1; //т.к. итак возвращаем SKIP_LINE
+            skippedLines = blockBufferLines-1; //С‚.Рє. РёС‚Р°Рє РІРѕР·РІСЂР°С‰Р°РµРј SKIP_LINE
             if(foundSkipLine) {
                 ++skippedLines;
             }

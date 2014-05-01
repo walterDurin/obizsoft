@@ -29,12 +29,12 @@ public abstract class AbstractFilter implements Filter {
     protected void onReset() {
     }
 
-    public void invalidate() {
+    public void disable() {
         stringsToSearch.clear();
         isValid = false;
     }
 
-    public boolean isValid() {
+    public boolean isActive() {
         return isValid;
     }
 
