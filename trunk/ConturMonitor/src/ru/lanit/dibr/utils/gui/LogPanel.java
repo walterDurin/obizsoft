@@ -152,7 +152,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
 
             while ((nextLine = filtersChain.readLine()) != null && !stopped) {
-                if (nextLine == LogSource.SKIP_LINE) { //ñðàâíåíèå èìåííî ïî ññûëêå, à íå ïî çíà÷åíèþ!
+                if (nextLine == LogSource.SKIP_LINE) { //ÑÑ€Ð°Ð²Ð½ÐµÐ½Ð¸Ðµ Ð¸Ð¼ÐµÐ½Ð½Ð¾ Ð¿Ð¾ ÑÑÑ‹Ð»ÐºÐµ, Ð° Ð½Ðµ Ð¿Ð¾ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸ÑŽ!
                     continue;
                 }
                 appendLine(nextLine);
@@ -192,7 +192,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     public void keyPressed(KeyEvent ke) {
 
         if (ke.getModifiers() == 0) {
-            if ((ke.getKeyCode() == 27)) { //Íàæàëè PgUp
+            if ((ke.getKeyCode() == 27)) { //ÐÐ°Ð¶Ð°Ð»Ð¸ PgUp
                 //TODO fix: tight coupling with parent Frame (LogFrame)
                 Container container = getParent();
                 while (!JFrame.class.isAssignableFrom(container.getClass())) {
@@ -201,11 +201,11 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 WindowEvent closingEvent = new WindowEvent((Window) container, WindowEvent.WINDOW_CLOSING);
                 Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);
 
-            } else if ((ke.getKeyCode() == KeyEvent.VK_PAGE_UP)) { //Íàæàëè PgUp
+            } else if ((ke.getKeyCode() == KeyEvent.VK_PAGE_UP)) { //ÐÐ°Ð¶Ð°Ð»Ð¸ PgUp
                 setAutoScroll(false);
-            } else if ((ke.getKeyCode() == KeyEvent.VK_W)) { //Íàæàëè W - ïåðåíîñ ñòðîê
+            } else if ((ke.getKeyCode() == KeyEvent.VK_W)) { //ÐÐ°Ð¶Ð°Ð»Ð¸ W - Ð¿ÐµÑ€ÐµÐ½Ð¾Ñ ÑÑ‚Ñ€Ð¾Ðº
                 area.setLineWrap(!area.getLineWrap());
-            } else if ((ke.getKeyCode() == KeyEvent.VK_N) && (logSource instanceof SshSource)) { //Íàæàëè N - íîìåðà ñòðîê
+            } else if ((ke.getKeyCode() == KeyEvent.VK_N) && (logSource instanceof SshSource)) { //ÐÐ°Ð¶Ð°Ð»Ð¸ N - Ð½Ð¾Ð¼ÐµÑ€Ð° ÑÑ‚Ñ€Ð¾Ðº
                 logSource.setPaused(true);
                 area.setText("");
                 autoScroll = true;
@@ -233,10 +233,10 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         } else if ((ke.getModifiers() == KeyEvent.CTRL_MASK ) || ( ke.getModifiers() == (KeyEvent.SHIFT_MASK | KeyEvent.CTRL_MASK))) {
             boolean isOnlyShiftAdditionalPressed = (ke.getModifiers()&KeyEvent.SHIFT_MASK) != 0;
             if(!isOnlyShiftAdditionalPressed) {
-                if ((ke.getKeyCode() == KeyEvent.VK_HOME)) { //Íàæàëè Cntrl + Home
+                if ((ke.getKeyCode() == KeyEvent.VK_HOME)) { //ÐÐ°Ð¶Ð°Ð»Ð¸ Cntrl + Home
                     setAutoScroll(false);
                     area.setCaretPosition(0);
-                } else if ((ke.getKeyCode() == KeyEvent.VK_END)) { //Íàæàëè Cntrl + End
+                } else if ((ke.getKeyCode() == KeyEvent.VK_END)) { //ÐÐ°Ð¶Ð°Ð»Ð¸ Cntrl + End
                     setAutoScroll(true);
                 } else if (ke.getKeyCode() == KeyEvent.VK_S ) { // Key Ctrl + 'S'
                     logSource.setPaused(true);
@@ -245,12 +245,12 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
                 }
             }
-            if (ke.getKeyCode() == KeyEvent.VK_F) {  //  Íàæàëè Ctrl [+Shift] + F
+            if (ke.getKeyCode() == KeyEvent.VK_F) {  //  ÐÐ°Ð¶Ð°Ð»Ð¸ Ctrl [+Shift] + F
                 performFind(isOnlyShiftAdditionalPressed);
             } else if (ke.getKeyCode() == KeyEvent.VK_G) {  // GREP filter
                 addGrepFilter(isOnlyShiftAdditionalPressed);
             } else if ((ke.getKeyCode() == KeyEvent.VK_B) && blockPattern != null ) {  //BLOCK filter
-                //ToDo: åñëè blockPattern==null - Ñîîáùèòü îá ýòîì è ïðåäëîæèòü åãî ââåñòè. Ïîêàçàâ ÷òî íèáóäü ïî äåôîëòó. À ïîòîì ñäåëàòü âèçàðä ñ ïðîâåðêîé ïî ñòðîêå èç ëîãà.
+                //ToDo: ÐµÑÐ»Ð¸ blockPattern==null - Ð¡Ð¾Ð¾Ð±Ñ‰Ð¸Ñ‚ÑŒ Ð¾Ð± ÑÑ‚Ð¾Ð¼ Ð¸ Ð¿Ñ€ÐµÐ´Ð»Ð¾Ð¶Ð¸Ñ‚ÑŒ ÐµÐ³Ð¾ Ð²Ð²ÐµÑÑ‚Ð¸. ÐŸÐ¾ÐºÐ°Ð·Ð°Ð² Ñ‡Ñ‚Ð¾ Ð½Ð¸Ð±ÑƒÐ´ÑŒ Ð¿Ð¾ Ð´ÐµÑ„Ð¾Ð»Ñ‚Ñƒ. Ð Ð¿Ð¾Ñ‚Ð¾Ð¼ ÑÐ´ÐµÐ»Ð°Ñ‚ÑŒ Ð²Ð¸Ð·Ð°Ñ€Ð´ Ñ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÐ¾Ð¹ Ð¿Ð¾ ÑÑ‚Ñ€Ð¾ÐºÐµ Ð¸Ð· Ð»Ð¾Ð³Ð°.
                 addBlockFilter(isOnlyShiftAdditionalPressed);
             }
         } else {
@@ -530,7 +530,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             if (compiledBlockPattern.matcher(line).matches()) {
                 int b1size = blockBuffer.length();
                 double m1 = (b0size + b1size + 100) / (Math.abs(b0size - b1size + 0.0));
-                if (m1 > 10) { //Ðàçíèöà ðàçìåðîâ áëîêîâ íå ìåíåå ÷åì â 10 ðàç ìåíüøå ñóììû
+                if (m1 > 10) { //Ð Ð°Ð·Ð½Ð¸Ñ†Ð° Ñ€Ð°Ð·Ð¼ÐµÑ€Ð¾Ð² Ð±Ð»Ð¾ÐºÐ¾Ð² Ð½Ðµ Ð¼ÐµÐ½ÐµÐµ Ñ‡ÐµÐ¼ Ð² 10 Ñ€Ð°Ð· Ð¼ÐµÐ½ÑŒÑˆÐµ ÑÑƒÐ¼Ð¼Ñ‹
                     int distance = Utils.getLevenshteinDistance(blockAroundCursor, blockBuffer.toString(), 1000);
                     double m2 = Math.abs((b0size - 100) / (distance + 0.0));
                     if (m2 > 5) {
