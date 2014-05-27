@@ -77,14 +77,24 @@ public class BlockFilter extends AbstractFilter {
         }
 
         boolean oneOfStringIsFound = false;
+        boolean oneOfStringIsNotFound = false;
         for (String nextString : stringsToSearch) {
-            if(oneOfStringIsFound = blockBufferToSearch.indexOf(nextString) >= 0) {
-                break;
+            int indexOfCurString = blockBufferToSearch.indexOf(nextString);
+            if(indexOfCurString >= 0) {
+                oneOfStringIsFound = true;
+            } else {
+                oneOfStringIsNotFound = true;
             }
         }
 
-        if (blockBufferToSearch.length ()!=0 && (oneOfStringIsFound ^ inverted)) {
-//                    result = blockBuffer.toString();
+        boolean show;
+        if(inverted) {
+            show = !oneOfStringIsFound;
+        } else {
+            show = !oneOfStringIsNotFound;
+        }
+
+        if (blockBufferToSearch.length ()!=0 && show) {
             resultBuffer.append(blockBuffer);
             blockBuffer.setLength(0);
             blockBufferLines = 0;

@@ -48,7 +48,7 @@ public class CachedPOC {
         }
     }
 
-    public void loadFile() throws FileNotFoundException {
+    public void loadFile() throws IOException {
         analyseFile();
         textArea1.setFont(Font.getFont(Font.MONOSPACED));
         int mcnt = textArea1.getWidth()/textArea1.getFontMetrics(textArea1.getFont()).charWidth('m');
@@ -63,7 +63,7 @@ public class CachedPOC {
         textArea1.setText(text.deleteCharAt(text.length() - 1).toString());
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
         new CachedPOC("SystemOut.log").init().loadFile();
     }
 }
