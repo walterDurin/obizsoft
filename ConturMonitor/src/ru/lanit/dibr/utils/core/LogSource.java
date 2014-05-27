@@ -11,4 +11,8 @@ public interface LogSource extends Source {
     public void reloadFull() throws Exception;
     public void close() throws Exception;
     public String getName();
+    public boolean isWriteLineNumbers();
+
+    public void setWriteLineNumbers(boolean writeLineNumbers);
+
 }

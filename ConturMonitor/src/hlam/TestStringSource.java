@@ -110,6 +110,16 @@ public class TestStringSource implements LogSource {
         return "TestStringSource";
     }
 
+    @Override
+    public boolean isWriteLineNumbers() {
+        return false;
+    }
+
+    @Override
+    public void setWriteLineNumbers(boolean writeLineNumbers) {
+
+    }
+
     public void setPaused(boolean paused) {
         System.out.println("set paused: " + paused);
         this.paused = paused;

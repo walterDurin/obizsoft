@@ -21,12 +21,17 @@ public class TestSource implements LogSource {
     private boolean paused = false;
     List<String> buffer = new ArrayList<String>();
     private long SLEEP = 100;
+    private boolean writeLineNumbers = false;
 
     private File fileToRead;
     int readedLines = 0;
     //    StringBuffer buffer = new StringBuffer();
     BufferedReader reader = null;
 
+    public TestSource(String filename, long sleep) {
+        this(filename);
+        SLEEP = 0;
+    }
     public TestSource(String filename) {
         fileToRead = new File(filename);
         if(!fileToRead.exists() || !fileToRead.isFile() || !fileToRead.canRead()) {
@@ -44,9 +49,14 @@ public class TestSource implements LogSource {
                 String nextLine;
                 try {
                     while ((nextLine = reader.readLine()) != null && !isClosed) {
-                        if(buffer.size() > 400)
+                        if(buffer.size() > 400 && SLEEP > 0) {
                             Thread.sleep(SLEEP);
-                        buffer.add(String.format("%6d: %s", (buffer.size()+1), nextLine));
+                        }
+                        if(writeLineNumbers) {
+                            buffer.add(String.format("%6d: %s", (buffer.size()+1), nextLine));
+                        } else {
+                            buffer.add(nextLine);
+                        }
                     }
                 } catch (IOException e) {
                     try {
@@ -111,6 +121,16 @@ public class TestSource implements LogSource {
     @Override
     public String getName() {
         return "Test Source";
+    }
+
+    @Override
+    public boolean isWriteLineNumbers() {
+        return writeLineNumbers;
+    }
+
+    @Override
+    public void setWriteLineNumbers(boolean writeLineNumbers) {
+        this.writeLineNumbers = writeLineNumbers;
     }
 
     public void setPaused(boolean paused) {

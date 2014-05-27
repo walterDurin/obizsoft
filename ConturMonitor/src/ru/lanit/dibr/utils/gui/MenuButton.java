@@ -1,6 +1,8 @@
 package ru.lanit.dibr.utils.gui;
 
+import ru.lanit.dibr.utils.core.TestSource;
 import ru.lanit.dibr.utils.gui.configuration.Host;
+import ru.lanit.dibr.utils.gui.forms.MainWindow;
 import ru.lanit.dibr.utils.utils.ScpUtils;
 import ru.lanit.dibr.utils.utils.SshUtil;
 
@@ -18,79 +20,33 @@ import com.jcraft.jsch.JSchException;
  * Time: 23:47:43
  */
 public class MenuButton extends JButton {
-    public MenuButton(final Host host, final String file, final String fileDescription) {
+    public MenuButton(final Host host, final String file, final String fileDescription, final MainWindow mainWindow, final String blockPattern) {
         setText("...");
         setPreferredSize(new Dimension(15,15));
 
         final JPopupMenu opts = new JPopupMenu();
         opts.setInvoker(MenuButton.this);
 
-        // ÃÂÌ˛ ======== —Œ’–¿Õ»“‹ ============
-        JMenuItem menuItem = new JMenuItem("—Óı‡ÌËÚ¸");
+        // –ú–µ–Ω—é ======== –°–û–•–†–ê–ù–ò–¢–¨ ============
+        JMenuItem menuItem = new JMenuItem("–°–æ—Ö—Ä–∞–Ω–∏—Ç—å –≤–µ—Å—å —Ñ–∞–π–ª");
         menuItem.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println(e);
-                try {
-                    String savedFileName;
-                    // `basename /smartpaas-app/was/node1/WAShome/profiles/AppSrv01/logs/server1/stopServer.log`.` date +%Y%m%d%H%M%S -r /smartpaas-app/was/node1/WAShome/profiles/AppSrv01/logs/server1/stopServer.log`.zip
-                    String tmpDir = SshUtil.exec(host, "if [ -z \"$TMPDIR\" ]; then echo \"/tmp\"; else echo $TMPDIR; fi;").getData().trim();
-                    if(SshUtil.exec(host, "zip --help").getStatusCode()==0) {
-                        //Use ZIP
-                        String zipFileName = SshUtil.exec(host, "echo " + tmpDir + "/`basename "+file+"`.`date +%Y%m%d%H%M%S -r " + file +"`.zip ").getData().trim();
-                        System.out.println("zipFileName: " + zipFileName);
-                        SshUtil.ExecResult execResult = SshUtil.exec(host, "zip -j -9 " + zipFileName + " " + file);
-                        if(!(execResult.getData().contains("error") || execResult.getStatusCode()!=0)) {
-                            savedFileName = ScpUtils.getFile(host, zipFileName, host.getDescription()+"_"+fileDescription);
-                            SshUtil.exec(host, "rm " + zipFileName);
-                            JOptionPane.showMessageDialog(MenuButton.this, "‘‡ÈÎ \n'"+file+"'\nÒ ıÓÒÚ‡\n'"+host.getHost()+"'\nÁ‡‡ıË‚ËÓ‚‡Ì Ë ÒÓı‡Ì∏Ì ‚ Í‡ÚÎÓ„Â ÔÓ„‡ÏÏ˚ Í‡Í\n'"+savedFileName+"'.");
-                        } else {
-                            savedFileName = ScpUtils.getFile(host, file, host.getDescription()+"_"+fileDescription);
-                            JOptionPane.showMessageDialog(MenuButton.this, "‘‡ÈÎ \n'"+file+"'\nÒ ıÓÒÚ‡\n'"+host.getHost()+"'\nÒÓı‡Ì∏Ì ‚ Í‡ÚÎÓ„Â ÔÓ„‡ÏÏ˚ Í‡Í\n'"+savedFileName+"'.");
-                        }
-
-                    } else if(SshUtil.exec(host, "gzip --help").getStatusCode()==0) {
-                        //gzip
-                        String gzipFileName = SshUtil.exec(host, "echo " + tmpDir + "/`basename "+file+"`.`date +%Y%m%d%H%M%S -r " + file +"`.gz ").getData().trim();
-                        System.out.println("gzipFileName: " + gzipFileName);
-                        SshUtil.ExecResult execResult = SshUtil.exec(host, "gzip -c9 " + file + " > " + gzipFileName);
-                        if(!(execResult.getData().contains("error") || execResult.getStatusCode()!=0)) {
-                            savedFileName = ScpUtils.getFile(host, gzipFileName, host.getDescription()+"_"+fileDescription);
-                            SshUtil.exec(host, "rm " + gzipFileName);
-                            JOptionPane.showMessageDialog(MenuButton.this, "‘‡ÈÎ \n'"+file+"'\nÒ ıÓÒÚ‡\n'"+host.getHost()+"'\nÁ‡‡ıË‚ËÓ‚‡Ì Ë ÒÓı‡Ì∏Ì ‚ Í‡ÚÎÓ„Â ÔÓ„‡ÏÏ˚ Í‡Í\n'"+savedFileName+"'.");
-                        } else {
-                            savedFileName = ScpUtils.getFile(host, file, host.getDescription()+"_"+fileDescription);
-                            JOptionPane.showMessageDialog(MenuButton.this, "‘‡ÈÎ \n'"+file+"'\nÒ ıÓÒÚ‡\n'"+host.getHost()+"'\nÒÓı‡Ì∏Ì ‚ Í‡ÚÎÓ„Â ÔÓ„‡ÏÏ˚ Í‡Í\n'"+savedFileName+"'.");
-                        }
-                    }  else {
-                        //Plain
-                        savedFileName = ScpUtils.getFile(host, file, host.getDescription()+"_"+fileDescription);
-                        JOptionPane.showMessageDialog(MenuButton.this, "‘‡ÈÎ \n'"+file+"'\nÒ ıÓÒÚ‡\n'"+host.getHost()+"'\nÒÓı‡Ì∏Ì ‚ Í‡ÚÎÓ„Â ÔÓ„‡ÏÏ˚ Í‡Í\n'"+savedFileName+"'.");
-                    }
-
-                } catch (JSchException e1) {
-                    e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (IOException e1) {
-                    e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
+                saveFile(e, host, file, fileDescription, false);
 
             }
         });
         opts.add(menuItem);
 
-        // ÃÂÌ˛ ======== —“Œœ — –ŒÀÀ ============
-//        final JCheckBoxMenuItem scroolChBoxItm = new JCheckBoxMenuItem("ŒÒÚ‡ÌÓ‚ËÚ¸ ÒÍÓÎÎ", false);
-//        scroolChBoxItm.addActionListener(new AbstractAction() {
-//			public void actionPerformed(ActionEvent e) {
-//                System.out.println(e);
-//                if(logs.get(logName)!=null)
-//                    logs.get(logName).setAutoScroll(!scroolChBoxItm.isSelected());
-//                else
-//                    scroolChBoxItm.setSelected(!scroolChBoxItm.isSelected());
-//			}
-//		});
-//        opts.add(scroolChBoxItm);
+        menuItem = new JMenuItem("–°–æ—Ö—Ä–∞–Ω–∏—Ç—å –≤–µ—Å—å —Ñ–∞–π–ª –∏ –æ—Ç–∫—Ä—ã—Ç—å –≤ —Ç–∞–±–µ");
+        menuItem.addActionListener(new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                String fileName = saveFile(e, host, file, fileDescription, true);
+                mainWindow.createTab(new LogPanel(new TestSource(fileName, 0), blockPattern), host.getDescription() + ": [saved] " + file);
+            }
+        });
+        opts.add(menuItem);
 
-        //  œÓÍ‡Á ÏÂÌ˛
+        //  –ü–æ–∫–∞–∑ –º–µ–Ω—é
         addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
                 if(opts.isVisible()) {
@@ -101,6 +57,58 @@ public class MenuButton extends JButton {
                 }
             }
         });
+    }
+
+    private String saveFile(ActionEvent e, Host host, String file, String fileDescription, boolean forcePlain) {
+        System.out.println(e);
+        String savedFileName = null;
+        try {
+            // `basename /smartpaas-app/was/node1/WAShome/profiles/AppSrv01/logs/server1/stopServer.log`.` date +%Y%m%d%H%M%S -r /smartpaas-app/was/node1/WAShome/profiles/AppSrv01/logs/server1/stopServer.log`.zip
+            String tmpDir = SshUtil.exec(host, "if [ -z \"$TMPDIR\" ]; then echo \"/tmp\"; else echo $TMPDIR; fi;").getData().trim();
+            if(forcePlain) {
+                savedFileName = savePlain(host, file, fileDescription);
+            } else if(SshUtil.exec(host, "zip --help").getStatusCode()==0) {
+                //Use ZIP
+                String zipFileName = SshUtil.exec(host, "echo " + tmpDir + "/`basename "+file+"`.`date +%Y%m%d%H%M%S -r " + file +"`.zip ").getData().trim();
+                System.out.println("zipFileName: " + zipFileName);
+                SshUtil.ExecResult execResult = SshUtil.exec(host, "zip -j -9 " + zipFileName + " " + file);
+                if(!(execResult.getData().contains("error") || execResult.getStatusCode()!=0)) {
+                    savedFileName = ScpUtils.getFile(host, zipFileName, host.getDescription() + "_" + fileDescription);
+                    SshUtil.exec(host, "rm " + zipFileName);
+                    JOptionPane.showMessageDialog(this, "–§–∞–π–ª \n'" + file + "'\n—Å —Ö–æ—Å—Ç–∞\n'" + host.getHost() + "'\n–∑–∞–∞—Ä—Ö–∏–≤–∏—Ä–æ–≤–∞–Ω –∏ —Å–æ—Ö—Ä–∞–Ω—ë–Ω –≤ –∫–∞—Ç–ª–æ–≥–µ –ø—Ä–æ–≥—Ä–∞–º–º—ã –∫–∞–∫\n'" + savedFileName + "'.");
+                } else {
+                    savedFileName = savePlain(host, file, fileDescription);
+                }
+
+            } else if(SshUtil.exec(host, "gzip --help").getStatusCode()==0) {
+                //gzip
+                String gzipFileName = SshUtil.exec(host, "echo " + tmpDir + "/`basename "+file+"`.`date +%Y%m%d%H%M%S -r " + file +"`.gz ").getData().trim();
+                System.out.println("gzipFileName: " + gzipFileName);
+                SshUtil.ExecResult execResult = SshUtil.exec(host, "gzip -c9 " + file + " > " + gzipFileName);
+                if(!(execResult.getData().contains("error") || execResult.getStatusCode()!=0)) {
+                    savedFileName = ScpUtils.getFile(host, gzipFileName, host.getDescription()+"_"+fileDescription);
+                    SshUtil.exec(host, "rm " + gzipFileName);
+                    JOptionPane.showMessageDialog(this, "–§–∞–π–ª \n'"+file+"'\n—Å —Ö–æ—Å—Ç–∞\n'"+host.getHost()+"'\n–∑–∞–∞—Ä—Ö–∏–≤–∏—Ä–æ–≤–∞–Ω –∏ —Å–æ—Ö—Ä–∞–Ω—ë–Ω –≤ –∫–∞—Ç–ª–æ–≥–µ –ø—Ä–æ–≥—Ä–∞–º–º—ã –∫–∞–∫\n'"+savedFileName+"'.");
+                } else {
+                    savedFileName = savePlain(host, file, fileDescription);
+                }
+            }  else {
+                //Plain
+                savedFileName = savePlain(host, file, fileDescription);
+            }
+        } catch (JSchException e1) {
+            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e1) {
+            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return savedFileName;
+    }
+
+    private String savePlain(Host host, String file, String fileDescription) throws JSchException, IOException {
+        String savedFileName;
+        savedFileName = ScpUtils.getFile(host, file, host.getDescription() + "_" + fileDescription);
+        JOptionPane.showMessageDialog(this, "–§–∞–π–ª \n'" + file + "'\n—Å —Ö–æ—Å—Ç–∞\n'" + host.getHost() + "'\n—Å–æ—Ö—Ä–∞–Ω—ë–Ω –≤ –∫–∞—Ç–ª–æ–≥–µ –ø—Ä–æ–≥—Ä–∞–º–º—ã –∫–∞–∫\n'" + savedFileName + "'.");
+        return savedFileName;
     }
 }
 

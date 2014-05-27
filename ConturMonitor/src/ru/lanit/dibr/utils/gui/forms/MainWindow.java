@@ -3,17 +3,20 @@ package ru.lanit.dibr.utils.gui.forms;
 import ru.lanit.dibr.utils.CmdLineConfiguration;
 import ru.lanit.dibr.utils.Configuration;
 import ru.lanit.dibr.utils.core.SshSource;
+import ru.lanit.dibr.utils.core.TestSource;
 import ru.lanit.dibr.utils.gui.FunctionPanel;
 import ru.lanit.dibr.utils.gui.LogFrame;
 import ru.lanit.dibr.utils.gui.LogPanel;
 import ru.lanit.dibr.utils.gui.MenuButton;
 import ru.lanit.dibr.utils.gui.configuration.Host;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
+import ru.lanit.dibr.utils.utils.FileDrop;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -69,7 +72,7 @@ public class MainWindow {
         System.out.println(b.getFont());
         b.setFont(new Font("Courier", 0, CmdLineConfiguration.fontSize+2));
         b.setBorder(new LineBorder(Color.GRAY));
-        final MenuButton menuButton = logFile.isLocal()? null : new MenuButton(host, logFile.getPath(), logFile.getName());
+        final MenuButton menuButton = logFile.isLocal()? null : new MenuButton(host, logFile.getPath(), logFile.getName(), this, logFile.getBlockPattern());
         b.addActionListener(new AbstractAction() {
             LogPanel lp = null;
             Component tab;
@@ -80,28 +83,22 @@ public class MainWindow {
                         //TODO: реализовать нормальный Source для локальных файлов, используюя org.apache.commons.io.input.Tailer
                         //lp = new LogFrame(b, menuButton, logFile.getName(), new TestSource(logFile.getPath()), logFile.getBlockPattern());
                     } else {
-                        JPanel contentPanel  = new JPanel();
-                        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
                         lp = new LogPanel(new SshSource(host, logFile), logFile.getBlockPattern());
-                        contentPanel.add(lp);
-                        contentPanel.add(new FunctionPanel(lp));
-
-                        new Thread() {
+                        tab = createTab(lp, host.getDescription()+ " : " + logFile.getName());
+                        new FileDrop(System.out, lp.getViewport().getView(), new FileDrop.Listener() {
                             @Override
-                            public void run() {
-                                try {
-                                    lp.connect();
-                                } catch (Exception e1) {
-                                    e1.printStackTrace();
+                            public void filesDropped(File[] files) {
+                                for (int i = 0; i < files.length; i++) {
+                                    createTab(new LogPanel(new TestSource(files[i].getAbsolutePath(), 0), logFile.getBlockPattern()), "[" + files[i].getName() + "]");
                                 }
                             }
-                        }.start();
-                        tab = tabbedPane1.add(host.getDescription()+ " : " + logFile.getName(), contentPanel);
+                        });
                     }
                 }
                 tabbedPane1.setSelectedComponent(tab);
                 lp.getViewport().getView().requestFocusInWindow();
             }
+
         });
 
         GridBagConstraints gbc =  new GridBagConstraints();
@@ -116,4 +113,26 @@ public class MainWindow {
             buttons.add(menuButton, gbc);
         }
     }
+
+    public Component createTab(final LogPanel lp, String name) {
+        JPanel contentPanel  = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.add(lp);
+        contentPanel.add(new FunctionPanel(lp));
+
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    lp.connect();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }.start();
+        Component newTab = tabbedPane1.add(name, contentPanel);
+        tabbedPane1.setSelectedComponent(newTab);
+        return newTab;
+    }
+
 }
