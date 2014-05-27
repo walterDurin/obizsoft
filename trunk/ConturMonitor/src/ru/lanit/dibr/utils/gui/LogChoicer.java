@@ -10,7 +10,6 @@ import ru.lanit.dibr.utils.utils.FileDrop;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.xml.stream.Location;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -24,6 +23,7 @@ import java.util.Map;
  * Date: 16.08.2010
  * Time: 18:34:16
  */
+@Deprecated
 public class LogChoicer extends JFrame implements WindowStateListener {
     public static int size;
     public static int countShownLogWindow = 0;
@@ -101,7 +101,7 @@ public class LogChoicer extends JFrame implements WindowStateListener {
         System.out.println(b.getFont());
         b.setFont(new Font("Courier", 0, CmdLineConfiguration.fontSize+2));
         b.setBorder(new LineBorder(Color.GRAY));
-        final MenuButton menuButton = logFile.isLocal()? null : new MenuButton(host, logFile.getPath(), logFile.getName());
+        final MenuButton menuButton = logFile.isLocal()? null : new MenuButton(host, logFile.getPath(), logFile.getName(), null, null);
 		b.addActionListener(new AbstractAction() {
 			LogFrame lf = null;
 			public void actionPerformed(ActionEvent e) {
