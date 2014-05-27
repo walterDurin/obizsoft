@@ -62,7 +62,7 @@ public class LogFrame  extends JDialog {
                 LogFrame.this.setVisible(false);
                 LogFrame.this.setTitle(LogFrame.this.getTitle() + " [ STOPPED ]");
 
-                //ToDO: убрать отсюда эту порнографию!
+                //ToDO: СѓР±СЂР°С‚СЊ РѕС‚СЃСЋРґР° СЌС‚Сѓ РїРѕСЂРЅРѕРіСЂР°С„РёСЋ!
                 if(b!=null) {
                     b.setBorder(new LineBorder(Color.RED));
                     b.setEnabled(false);

@@ -48,7 +48,7 @@ public class SshSource implements LogSource {
         String linesCount = SshUtil.exec(host, "wc -l " + logFile.getPath() + " | awk \"{print $1}\"").getData().trim();
         System.out.println("Lines count in log file: " + linesCount);
         channel.setCommand("tail -1000f " + logFile.getPath());
-        //channel.setCommand("tail -c +0 -f " + logFile.getPath()); //Так можно загрузить весь файл
+        //channel.setCommand("tail -c +0 -f " + logFile.getPath()); //РўР°Рє РјРѕР¶РЅРѕ Р·Р°РіСЂСѓР·РёС‚СЊ РІРµСЃСЊ С„Р°Р№Р»
         reader = new BufferedReader(new InputStreamReader(channel.getInputStream(), host.getDefaultEncoding()));
         channel.connect(3 * 1000);
 
