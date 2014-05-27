@@ -1,6 +1,7 @@
 package ru.lanit.dibr.utils.gui;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 import javax.swing.text.BadLocationException;
@@ -44,6 +45,8 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     private int offset = 0;
     boolean lastSearchDirectionIsForward = true;
 
+    AtomicBoolean mouseClickedOnScrollBar = new AtomicBoolean(false);
+
     public Filters filtersWindow;
 
     public LogPanel(LogSource logSource, String blockPattern) {
@@ -72,6 +75,42 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
         area.setWrapStyleWord(true);
         area.setLineWrap(true);
+
+        setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
+
+
+        getVerticalScrollBar().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                mouseClickedOnScrollBar.set(true);
+                System.out.println("mouseClickedOnScrollBar.get() = " + mouseClickedOnScrollBar.get());
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                mouseClickedOnScrollBar.set(false);
+                System.out.println("mouseClickedOnScrollBar.get() = " + mouseClickedOnScrollBar.get());
+            }
+        });
+        getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+                int extent = getVerticalScrollBar().getModel().getExtent();
+                if(mouseClickedOnScrollBar.get()) {
+                    int pos = getVerticalScrollBar().getValue() + extent;
+                    int maxPos = getVerticalScrollBar().getMaximum();
+                    System.out.println("Value: " + pos + " Max: " + maxPos);
+                    if(pos!=maxPos && autoScroll){
+                        setAutoScroll(false);
+                    }
+                    if(pos==maxPos && !autoScroll) {
+                        setAutoScroll(true);
+                    }
+                }
+            }
+        });
+
+        setAutoScroll(true);
     }
 
     public void connect() throws Exception {
@@ -86,7 +125,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 public void run() {
                     while (!stopped) {
                         try {
-                            int cnt = 0;
+//                            int cnt = 0;
                             if (autoScroll) {
                                 getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
                             }
@@ -95,7 +134,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                                 getParent().repaint(0);
                                 repaint(0);
                             }*/
-                            Thread.sleep(100);
+                            Thread.sleep(300);
                         } catch (InterruptedException e) {
                             break;
                         }
@@ -130,11 +169,11 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 int pos = area.getText().length()-1;
                 area.append("\n" + nextLine);
                 highlightFromCursor(area.getHighlighter(), pos);
+                if (autoScroll) {
+                        getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
+                }
             }
         });
-        if (autoScroll) {
-            getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
-        }
         needRepaint.set(true);
     }
 
@@ -144,6 +183,10 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
     public void setAutoScroll(boolean autoScroll) {
         this.autoScroll = autoScroll;
+        if(autoScroll)
+            getVerticalScrollBar().setBorder(new LineBorder(Color.GREEN,2));
+        else
+            getVerticalScrollBar().setBorder(null);
     }
 
     public void keyPressed(KeyEvent ke) {
