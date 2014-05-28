@@ -4,7 +4,7 @@
     <artifact name="ConturMonitor:jar">
       <output-path>$PROJECT_DIR$</output-path>
       <root id="root">
-        <element id="archive" name="LogMonitor_3.6.jar">
+        <element id="archive" name="LogMonitor_3.8.jar">
           <element id="module-output" name="ConturMonitor" />
           <element id="directory" name="META-INF">
             <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
