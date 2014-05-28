@@ -127,6 +127,8 @@ public class Configuration {
         }
 
         String proxyHost = null;
+        String proxyLogin = null;
+        String proxyPasswd = null;
         String proxyType = null;
         String proxyPort = null;
         if(server.getAttributes().getNamedItem("proxyHost")!=null) {
@@ -136,6 +138,12 @@ public class Configuration {
             }
             if(server.getAttributes().getNamedItem("proxyPort")!=null) {
                 proxyPort = server.getAttributes().getNamedItem("proxyPort").getNodeValue();
+            }
+            if(server.getAttributes().getNamedItem("proxyLogin")!=null) {
+                proxyLogin = server.getAttributes().getNamedItem("proxyLogin").getNodeValue();
+            }
+            if(server.getAttributes().getNamedItem("proxyPasswd")!=null) {
+                proxyPasswd = server.getAttributes().getNamedItem("proxyPasswd").getNodeValue();
             }
         }
 
@@ -149,7 +157,12 @@ public class Configuration {
             if(proxyPort==null || proxyPort.trim().length()==0) {
                 proxyPort="0";
             }
-            nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding, proxyHost, Integer.parseInt(proxyPort), proxyType, tunnel);
+            if (proxyLogin==null) {
+                nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding, proxyHost, Integer.parseInt(proxyPort), proxyType, tunnel);
+            } else {
+                nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding, proxyHost, Integer.parseInt(proxyPort), proxyType, proxyLogin, proxyPasswd, tunnel);
+            }
+
         } else {
             nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding, tunnel);
         }
