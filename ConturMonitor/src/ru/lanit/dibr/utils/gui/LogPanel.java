@@ -32,7 +32,6 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     private boolean stopped = false;
     private JTextArea area;
     private boolean autoScroll = true;
-    private AtomicBoolean needRepaint = new AtomicBoolean(true);
     private String find = null;
 
 
@@ -131,6 +130,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                             if (autoScroll) {
                                 getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
                             }
+                            area.repaint();
                             /*if (needRepaint.getAndSet(false) || (cnt++) == 8) {
                                 cnt = 0;
                                 getParent().repaint(0);
@@ -176,7 +176,6 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 }
             }
         });
-        needRepaint.set(true);
     }
 
     public void close() {
@@ -381,22 +380,27 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     private int highlightFromCursor(Highlighter h, int pos) {
+        logSource.setPaused(true);
         int cnt = 0;
-        while (pos >= 0) {
-            //pos = area.getText().indexOf(find, pos);
-            pos = Utils.indexOf(area.getText(), false, pos, find);
-            System.out.println("pos: " + pos);
-            if (pos > -1) {
-                try {
-                    cnt++;
-                    h.addHighlight(pos, find.length() + pos, DefaultHighlighter.DefaultPainter);
-                    int y = area.getHeight() / (area.getText().length() / pos);
-                    area.getGraphics().drawLine(0, y, 25, y);
-                    pos += find.length();
-                } catch (BadLocationException e) {
-                    e.printStackTrace();
+        try {
+            while (pos >= 0) {
+                //pos = area.getText().indexOf(find, pos);
+                pos = Utils.indexOf(area.getText(), false, pos, find);
+                System.out.println("pos: " + pos);
+                if (pos > -1) {
+                    try {
+                        cnt++;
+                        h.addHighlight(pos, find.length() + pos, DefaultHighlighter.DefaultPainter);
+                        int y = area.getHeight() / (area.getText().length() / pos);
+                        area.getGraphics().drawLine(0, y, 25, y);
+                        pos += find.length();
+                    } catch (BadLocationException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+        } finally {
+            logSource.setPaused(false);
         }
         return cnt;
     }
