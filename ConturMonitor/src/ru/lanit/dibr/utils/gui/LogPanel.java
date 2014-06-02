@@ -45,6 +45,8 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     private int offset = 0;
     boolean lastSearchDirectionIsForward = true;
 
+    private boolean isClosed = false;
+
     AtomicBoolean mouseClickedOnScrollBar = new AtomicBoolean(false);
 
     public Filters filtersWindow;
@@ -123,7 +125,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
             new Thread(new Runnable() {
                 public void run() {
-                    while (!stopped) {
+                    while (!isClosed) {
                         try {
 //                            int cnt = 0;
                             if (autoScroll) {
@@ -177,8 +179,28 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         needRepaint.set(true);
     }
 
-    public void stop() {
-        stopped = true;
+    public void close() {
+        if(isClosed) {
+            System.out.println("Log Panel already closed!");
+        }
+        System.out.println("Closing log panel..");
+        isClosed = true;
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                area.setText("");
+            }
+        });
+        try {
+            logSource.close();
+        } catch (Exception e) {
+            System.out.println("Can't close log source:");
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isClosed() {
+        return isClosed;
     }
 
     public void setAutoScroll(boolean autoScroll) {

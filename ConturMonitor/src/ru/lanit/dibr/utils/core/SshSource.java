@@ -21,6 +21,7 @@ public class SshSource implements LogSource {
     private boolean isClosed = false;
     private boolean paused = false;
     private boolean writeLineNumbers = false;
+    private Thread readThread;
 
     List<String> buffer;
 
@@ -52,7 +53,7 @@ public class SshSource implements LogSource {
         reader = new BufferedReader(new InputStreamReader(channel.getInputStream(), host.getDefaultEncoding()));
         channel.connect(3 * 1000);
 
-        final Thread readThread = new Thread(new Runnable() {
+        readThread = new Thread(new Runnable() {
             public void run() {
                 String nextLine;
                 try {
@@ -68,25 +69,31 @@ public class SshSource implements LogSource {
                     }
                     e.printStackTrace();
                 }
+                System.out.println("Stopped SSH read thread.");
             }
         });
 
         new Thread(new Runnable() {
             public void run() {
-                while(channel.isConnected()) {
+                while(channel.isConnected() && !isClosed) {
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(200);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                System.out.println("Connection closed!");
-                readThread.interrupt();
-                try {
-                    close();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if(!isClosed) {
+                    System.out.println("Connection failed!");
+                    readThread.interrupt();
+                    try {
+                        close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.out.println("Stopped SSH connection monitor thread.");
                 }
+
             }
         }, "Conn monitor").start();
         readThread.start();
@@ -97,7 +104,7 @@ public class SshSource implements LogSource {
         try {
             while (paused && !isClosed) {
                 System.out.println("I'm asleep..");
-                Thread.sleep(200);
+                Thread.sleep(50);
             }
             if(isClosed) {
                 throw new IOException("Connection lost.");
@@ -109,7 +116,7 @@ public class SshSource implements LogSource {
                     return buffer.get(readedLines++);
                 }
             } else {
-                Thread.sleep(200);
+                Thread.sleep(50);
             }
 
         } catch (InterruptedException e) {
@@ -131,7 +138,13 @@ public class SshSource implements LogSource {
     }
 
     public void close() throws Exception {
+        if(isClosed) {
+            System.out.println("SSH source already closed!");
+            return;
+        }
+        System.out.println("Closing SSH log source..");
         isClosed = true;
+        readThread.interrupt();
         if (reader != null)
             try {
                 reader.close();
@@ -139,11 +152,16 @@ public class SshSource implements LogSource {
                 e.printStackTrace();
             }
         if (channel != null && channel.isConnected()) {
+            System.out.println("try to disconnect SSH channel");
             channel.disconnect();
+            System.out.println("SSH channel disconnected");
         }
         if (session != null && session.isConnected()) {
+            System.out.println("try to disconnect SSH session");
             session.disconnect();
+            System.out.println("SSH session disconnected");
         }
+        buffer.clear();
     }
 
     public void setPaused(boolean paused) {

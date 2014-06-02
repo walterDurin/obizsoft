@@ -50,7 +50,7 @@ public class PopupBlock extends JFrame {
 
             @Override
             public void interrupt() {
-                logPanel.stop();
+                logPanel.close();
             }
         };
         t.start();

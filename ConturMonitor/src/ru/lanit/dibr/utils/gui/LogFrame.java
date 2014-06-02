@@ -1,9 +1,6 @@
 package ru.lanit.dibr.utils.gui;
 
 import ru.lanit.dibr.utils.core.LogSource;
-import ru.lanit.dibr.utils.core.SshSource;
-import ru.lanit.dibr.utils.gui.configuration.Host;
-import ru.lanit.dibr.utils.gui.configuration.LogFile;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -75,7 +72,7 @@ public class LogFrame  extends JDialog {
 
 			@Override
 			public void interrupt() {
-				lp.stop();
+				lp.close();
 			}
 		};
 		t.start();
