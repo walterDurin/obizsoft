@@ -38,7 +38,7 @@ public class MainWindow {
     public MainWindow(Configuration cfg) {
 //        configuration = cfg;
         window = new JFrame();
-        window.setTitle("Log monitor 3.7");
+        window.setTitle("Log monitor 3.8");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         window.add(rootPanel);
@@ -63,7 +63,6 @@ public class MainWindow {
             }
             logList.add(hostPane);
         }
-//        logList.updateUI();
         window.setVisible(true);
     }
 
@@ -74,28 +73,24 @@ public class MainWindow {
         b.setBorder(new LineBorder(Color.GRAY));
         final MenuButton menuButton = logFile.isLocal()? null : new MenuButton(host, logFile.getPath(), logFile.getName(), this, logFile.getBlockPattern());
         b.addActionListener(new AbstractAction() {
-            LogPanel lp = null;
-            Component tab;
             public void actionPerformed(ActionEvent e) {
                 System.out.println(e.paramString());
-                if(lp ==null) {
-                    if(logFile.isLocal()) {
-                        //TODO: реализовать нормальный Source для локальных файлов, используюя org.apache.commons.io.input.Tailer
-                        //lp = new LogFrame(b, menuButton, logFile.getName(), new TestSource(logFile.getPath()), logFile.getBlockPattern());
-                    } else {
-                        lp = new LogPanel(new SshSource(host, logFile), logFile.getBlockPattern());
-                        tab = createTab(lp, host.getDescription()+ " : " + logFile.getName());
-                        new FileDrop(System.out, lp.getViewport().getView(), new FileDrop.Listener() {
-                            @Override
-                            public void filesDropped(File[] files) {
-                                for (int i = 0; i < files.length; i++) {
-                                    createTab(new LogPanel(new TestSource(files[i].getAbsolutePath(), 0), logFile.getBlockPattern()), "[" + files[i].getName() + "]");
-                                }
+                LogPanel lp = null;
+                if(logFile.isLocal()) {
+                    //TODO: реализовать нормальный Source для локальных файлов, используюя org.apache.commons.io.input.Tailer
+                    //lp = new LogFrame(b, menuButton, logFile.getName(), new TestSource(logFile.getPath()), logFile.getBlockPattern());
+                } else {
+                    lp = new LogPanel(new SshSource(host, logFile), logFile.getBlockPattern());
+                    createTab(lp, host.getDescription()+ " : " + logFile.getName());
+                    new FileDrop(System.out, lp.getViewport().getView(), new FileDrop.Listener() {
+                        @Override
+                        public void filesDropped(File[] files) {
+                            for (int i = 0; i < files.length; i++) {
+                                createTab(new LogPanel(new TestSource(files[i].getAbsolutePath(), 0), logFile.getBlockPattern()), "[" + files[i].getName() + "]");
                             }
-                        });
-                    }
+                        }
+                    });
                 }
-                tabbedPane1.setSelectedComponent(tab);
                 lp.getViewport().getView().requestFocusInWindow();
             }
 
@@ -130,8 +125,28 @@ public class MainWindow {
                 }
             }
         }.start();
-        Component newTab = tabbedPane1.add(name, contentPanel);
+        final Component newTab = tabbedPane1.add(name, contentPanel);
         tabbedPane1.setSelectedComponent(newTab);
+
+        JPanel pnl = new JPanel();
+        pnl.add(new JLabel(name + " "));
+        ((FlowLayout)pnl.getLayout()).setVgap(0);
+        ((FlowLayout)pnl.getLayout()).setHgap(0);
+        JButton goAwayButton = new JButton("X");
+        goAwayButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabbedPane1.remove(newTab);
+                lp.close();
+            }
+        });
+        goAwayButton.setMargin(new Insets(0,0,0,0));
+        goAwayButton.setPreferredSize(new Dimension(15, 15));
+        goAwayButton.setFont(new Font("Courier New", 0, CmdLineConfiguration.fontSize));
+        pnl.setOpaque(false);
+        pnl.add(goAwayButton);
+        tabbedPane1.setTabComponentAt(tabbedPane1.getSelectedIndex(), pnl);
+
         return newTab;
     }
 
