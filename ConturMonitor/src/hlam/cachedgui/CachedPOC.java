@@ -2,6 +2,8 @@ package hlam.cachedgui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
@@ -14,6 +16,7 @@ public class CachedPOC {
     private JPanel panel1;
     private JTextArea textArea1;
     private JScrollPane scrollPane;
+    private JScrollBar scrollBar1;
     private String fileName;
 
     //    private BufferedReader reader;
@@ -68,7 +71,7 @@ public class CachedPOC {
                 lastLineEnd = readedChars;
             }
         }
-        System.out.println("linesStarts = " + linesStarts.size());
+//        System.out.println("linesStarts = " + linesStarts.size());
     }
 
     private void wrapLinesToWindow(int lineLen) {
@@ -91,7 +94,8 @@ public class CachedPOC {
                 }
             }
         }
-        System.out.println("wrappedLinesStarts = " + wrappedLinesStarts.size());
+        scrollBar1.setMaximum(wrappedLinesStarts.size()-lrcnt);
+//        System.out.println("wrappedLinesStarts = " + wrappedLinesStarts.size());
     }
 
     public void loadFile() throws IOException {
@@ -121,15 +125,9 @@ public class CachedPOC {
                 if (e.getModifiers() == 0) {
                     if ((e.getKeyCode() == KeyEvent.VK_PAGE_UP)) {
                         currentFirstLine -= lrcnt;
-                        if (currentFirstLine < 0) {
-                            currentFirstLine = 0;
-                        }
                         readWindow();
                     } else if ((e.getKeyCode() == KeyEvent.VK_PAGE_DOWN)) {
                         currentFirstLine += lrcnt;
-                        if (currentFirstLine > wrappedLinesStarts.size() - lrcnt) {
-                            currentFirstLine = wrappedLinesStarts.size() - lrcnt;
-                        }
                         readWindow();
                     }
                 } else if (e.getModifiers() == KeyEvent.CTRL_MASK) {
@@ -148,24 +146,43 @@ public class CachedPOC {
 
             }
         });
+
+        scrollBar1.addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+//                int extent = scrollBar1.getModel().getExtent();
+                currentFirstLine = scrollBar1.getValue();
+                readWindow();
+            }
+        });
+    }
+
+    private void checkAndFixLineNum() {
+        if (currentFirstLine < 0) {
+            currentFirstLine = 0;
+        } else if (currentFirstLine > wrappedLinesStarts.size() - lrcnt) {
+            currentFirstLine = wrappedLinesStarts.size() - lrcnt;
+        }
     }
 
     StringBuffer text = new StringBuffer();
     StringBuffer line = new StringBuffer();
     private void readWindow() {
+        checkAndFixLineNum();
+        scrollBar1.setValue(currentFirstLine);
         try {
             text.setLength(0);
             for (int j = currentFirstLine; j < currentFirstLine + lrcnt; j++) {
-                System.out.println("wrappedLinesStarts[" + j + "] = " + wrappedLinesStarts.get(j));
+//                System.out.println("wrappedLinesStarts[" + j + "] = " + wrappedLinesStarts.get(j));
                 randomAccessFile.seek(wrappedLinesStarts.get(j));
                 line.setLength(0);
-                System.out.println("wrappedLinesLens.get[" + j + "] = " + wrappedLinesLens.get(j));
+//                System.out.println("wrappedLinesLens.get[" + j + "] = " + wrappedLinesLens.get(j));
                 for (int k = 0; k < wrappedLinesLens.get(j); k++) {
                     line.append((char) randomAccessFile.readByte());
                 }
                 text.append(line.toString().replaceAll("[\n\r]", "")).append("\n");
             }
-            textArea1.setText(text.substring(0, text.length()-1));
+            textArea1.setText(text.substring(0, text.length() - 1));
         } catch (IOException e) {
             e.printStackTrace();
         }
