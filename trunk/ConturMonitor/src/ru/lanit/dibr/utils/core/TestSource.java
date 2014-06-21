@@ -1,14 +1,9 @@
 package ru.lanit.dibr.utils.core;
 
-import com.jcraft.jsch.*;
-import ru.lanit.dibr.utils.gui.configuration.Host;
-import ru.lanit.dibr.utils.gui.configuration.LogFile;
-import ru.lanit.dibr.utils.utils.MyUserInfo;
-
-import javax.swing.text.TableView;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * User: Vova
@@ -18,19 +13,18 @@ import java.util.List;
 public class TestSource implements LogSource {
 
     private boolean isClosed = false;
-    private boolean paused = false;
-    List<String> buffer = new ArrayList<String>();
+    private AtomicBoolean paused = new AtomicBoolean(false);
+    SynchronousQueue<String> readQueue = new SynchronousQueue<String>();
     private long SLEEP = 100;
     private boolean writeLineNumbers = false;
 
     private File fileToRead;
-    int readedLines = 0;
-    //    StringBuffer buffer = new StringBuffer();
+    int writedLines = 0;
     BufferedReader reader = null;
 
     public TestSource(String filename, long sleep) {
         this(filename);
-        SLEEP = 0;
+        SLEEP = sleep;
     }
     public TestSource(String filename) {
         fileToRead = new File(filename);
@@ -49,13 +43,18 @@ public class TestSource implements LogSource {
                 String nextLine;
                 try {
                     while ((nextLine = reader.readLine()) != null && !isClosed) {
-                        if(buffer.size() > 400 && SLEEP > 0) {
-                            Thread.sleep(SLEEP);
+                        while (paused.get() && !isClosed) {
+                            Thread.sleep(100);
                         }
+//                        buffer.add(nextLine);
                         if(writeLineNumbers) {
-                            buffer.add(String.format("%6d: %s", (buffer.size()+1), nextLine));
+                            readQueue.put(String.format("%6d: %s", (++writedLines), nextLine));
                         } else {
-                            buffer.add(nextLine);
+                            readQueue.put(nextLine);
+                        }
+
+                        if(SLEEP > 0) {
+                            Thread.sleep(SLEEP);
                         }
                     }
                 } catch (IOException e) {
@@ -83,16 +82,15 @@ public class TestSource implements LogSource {
 
     public String readLine() throws IOException {
         try {
-            while (paused) {
-                System.out.println("I'm asleep..");
-                Thread.sleep(SLEEP);
+            while (paused.get() && !isClosed) {
+                System.out.println("I'm asleep.. ( " + fileToRead + " )");
+                Thread.sleep(100);
             }
-            if (buffer.size() > readedLines) {
-                return buffer.get(readedLines++);
-            } else {
-                Thread.sleep(SLEEP);
+            if(isClosed) {
+                throw new IOException("Source is closed!");
             }
-
+            String str = readQueue.poll(100, TimeUnit.MILLISECONDS);
+            return str!=null?str:LogSource.SKIP_LINE;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -100,16 +98,30 @@ public class TestSource implements LogSource {
     }
 
     public void reset() {
-        readedLines = 0;
-        //reader.reset();
+        paused.set(true);
+        writedLines = 0;
+        try {
+            freeResources();
+            readQueue.clear();
+            startRead();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        paused.set(false);
     }
 
     public void reloadFull() throws Exception {
-        //todo
+        reset();
     }
 
     public void close() throws Exception {
         isClosed = true;
+        freeResources();
+    }
+
+    private void freeResources() throws Exception {
         if (reader != null)
             try {
                 reader.close();
@@ -135,10 +147,10 @@ public class TestSource implements LogSource {
 
     public void setPaused(boolean paused) {
         System.out.println("set paused: " + paused);
-        this.paused = paused;
+        this.paused.set(paused);
     }
 
     public boolean isPaused() {
-        return paused;
+        return paused.get();
     }
 }
