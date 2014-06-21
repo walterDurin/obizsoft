@@ -2,11 +2,10 @@ package hlam.cachedgui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.*;
+import java.util.*;
 
 /**
  * Created by Vova on 06.05.14.
@@ -16,51 +15,160 @@ public class CachedPOC {
     private JTextArea textArea1;
     private JScrollPane scrollPane;
     private String fileName;
-    private ArrayList<Integer> lnpos = new ArrayList<Integer>();
 
-    public CachedPOC(String fileName) {
+    //    private BufferedReader reader;
+    private FileInputStream inputStreamReader;
+    private RandomAccessFile randomAccessFile;
+
+    private java.util.List<Long> linesStarts = new ArrayList<Long>();
+    private java.util.List<Integer> linesLens = new ArrayList<Integer>();
+
+    private java.util.List<Long> wrappedLinesStarts = new ArrayList<Long>();
+    private java.util.List<Integer> wrappedLinesLens = new ArrayList<Integer>();
+
+    int currentFirstLine = 0;
+    private int lrcnt;
+
+
+    public CachedPOC(String fileName) throws IOException {
         this.fileName = fileName;
+//        init();
         JFrame frame = new JFrame("tst");
         frame.add(panel1);
-        frame.setSize(500, 300);
+        //frame.setSize(1500, 1300);
         frame.pack();
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public CachedPOC init() {
+    public CachedPOC init() throws IOException {
 //        panel1.add(textArea1);
+        randomAccessFile = new RandomAccessFile(fileName, "r");
+
+
         return this;
     }
 
 
     private void analyseFile() throws IOException {
-        FileReader file = new FileReader(fileName);
-        char buff[] = new char[8192];
-        int prevReaded = 0;
-        int readed = 0;
-        while((readed = (file.read(buff)))>=0) {
-            for(int i = 0; i < readed; i++) {
-                if(buff[i]=='\n') {
+        inputStreamReader = new FileInputStream(fileName);
+//        reader = new BufferedReader(inputStreamReader);
+        int charVal;
+        int prevCharVal = 0;
+        long readedChars = 0;
+        long lastLineEnd = 0;
+        while ((charVal = inputStreamReader.read()) >= 0) {
+            readedChars++;
+            if (prevCharVal == '\n' || charVal == '\r') {
+                continue;
+            }
+            if (charVal == '\n' || charVal == '\r') {
+                linesStarts.add(lastLineEnd);
+                linesLens.add((int) (readedChars - lastLineEnd));
+                lastLineEnd = readedChars;
+            }
+        }
+        System.out.println("linesStarts = " + linesStarts.size());
+    }
 
+    private void wrapLinesToWindow(int lineLen) {
+        int curLineLen;
+        for (int i = 0; i < linesStarts.size(); i++) {
+            curLineLen = linesLens.get(i);
+            wrappedLinesStarts.add(linesStarts.get(i));
+            if (curLineLen > lineLen) {
+                wrappedLinesLens.add(lineLen);
+            } else {
+                wrappedLinesLens.add(curLineLen);
+            }
+
+            for (int wrappedLine = 0; wrappedLine < curLineLen / lineLen; wrappedLine++) {
+                wrappedLinesStarts.add(linesStarts.get(i) + (wrappedLine + 1) * lineLen);
+                if (lineLen * (wrappedLine + 2) < curLineLen) {
+                    wrappedLinesLens.add(lineLen);
+                } else {
+                    wrappedLinesLens.add(curLineLen - lineLen * (wrappedLine + 1));
                 }
             }
         }
+        System.out.println("wrappedLinesStarts = " + wrappedLinesStarts.size());
     }
 
     public void loadFile() throws IOException {
         analyseFile();
-        textArea1.setFont(Font.getFont(Font.MONOSPACED));
-        int mcnt = textArea1.getWidth()/textArea1.getFontMetrics(textArea1.getFont()).charWidth('m');
-        int lrcnt = textArea1.getHeight()/textArea1.getFontMetrics(textArea1.getFont()).getHeight();
-        StringBuffer text = new StringBuffer();
-        for (int j = 0; j < lrcnt; j++) {
-            for (int i = 0; i < mcnt; i++) {
-                text.append("m");
+        textArea1.setFont(new Font("Courier new", 0, 12));
+        int mcnt = textArea1.getWidth() / textArea1.getFontMetrics(textArea1.getFont()).charWidth('m');
+        lrcnt = textArea1.getHeight() / textArea1.getFontMetrics(textArea1.getFont()).getHeight();
+        wrapLinesToWindow(mcnt);
+
+        readWindow();
+//        for (int j = 0; j < lrcnt; j++) {
+//            for (int i = 0; i < mcnt; i++) {
+//                text.append("m");
+//            }
+//            text.append('\n');
+//        }
+
+
+        textArea1.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
             }
-            text.append('\n');
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getModifiers() == 0) {
+                    if ((e.getKeyCode() == KeyEvent.VK_PAGE_UP)) {
+                        currentFirstLine -= lrcnt;
+                        if (currentFirstLine < 0) {
+                            currentFirstLine = 0;
+                        }
+                        readWindow();
+                    } else if ((e.getKeyCode() == KeyEvent.VK_PAGE_DOWN)) {
+                        currentFirstLine += lrcnt;
+                        if (currentFirstLine > wrappedLinesStarts.size() - lrcnt) {
+                            currentFirstLine = wrappedLinesStarts.size() - lrcnt;
+                        }
+                        readWindow();
+                    }
+                } else if (e.getModifiers() == KeyEvent.CTRL_MASK) {
+                    if ((e.getKeyCode() == KeyEvent.VK_END)) {
+                        currentFirstLine = wrappedLinesStarts.size() - lrcnt;
+                        readWindow();
+                    } else if ((e.getKeyCode() == KeyEvent.VK_HOME)) {
+                        currentFirstLine = 0;
+                        readWindow();
+                    }
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+    }
+
+    StringBuffer text = new StringBuffer();
+    StringBuffer line = new StringBuffer();
+    private void readWindow() {
+        try {
+            text.setLength(0);
+            for (int j = currentFirstLine; j < currentFirstLine + lrcnt; j++) {
+                System.out.println("wrappedLinesStarts[" + j + "] = " + wrappedLinesStarts.get(j));
+                randomAccessFile.seek(wrappedLinesStarts.get(j));
+                line.setLength(0);
+                System.out.println("wrappedLinesLens.get[" + j + "] = " + wrappedLinesLens.get(j));
+                for (int k = 0; k < wrappedLinesLens.get(j); k++) {
+                    line.append((char) randomAccessFile.readByte());
+                }
+                text.append(line.toString().replaceAll("[\n\r]", "")).append("\n");
+            }
+            textArea1.setText(text.substring(0, text.length()-1));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        textArea1.setText(text.deleteCharAt(text.length() - 1).toString());
     }
 
     public static void main(String[] args) throws IOException {
