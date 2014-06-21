@@ -152,12 +152,16 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 }
             });
 
+            StringBuffer buff = new StringBuffer();
 
-            while ((nextLine = filtersChain.readLine()) != null && !stopped) {
-                if (nextLine == LogSource.SKIP_LINE) { //сравнение именно по ссылке, а не по значению!
-                    continue;
+            while (!stopped) {
+                buff.setLength(0);
+                while ((nextLine = filtersChain.readLine()) != LogSource.SKIP_LINE ) {
+                    buff.append(nextLine+"\n");
                 }
-                appendLine(nextLine);
+                if(buff.length()>0) {
+                    appendLine(buff.substring(0, buff.length()-1));
+                }
             }
         } finally {
             logSource.close();
@@ -170,7 +174,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             public void run() {
                 int pos = area.getText().length()-1;
                 area.append("\n" + nextLine);
-                highlightFromCursor(area.getHighlighter(), pos);
+                if(find!=null && find.length()>0) {
+                    highlightFromCursor(area.getHighlighter(), pos);
+                }
                 if (autoScroll) {
                         getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
                 }
@@ -226,11 +232,11 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 setAutoScroll(false);
             } else if ((ke.getKeyCode() == KeyEvent.VK_W)) { //Нажали W - перенос строк
                 area.setLineWrap(!area.getLineWrap());
-            } else if ((ke.getKeyCode() == KeyEvent.VK_N) && (logSource instanceof SshSource)) { //Нажали N - номера строк
+            } else if ((ke.getKeyCode() == KeyEvent.VK_N)) { //Нажали N - номера строк
                 logSource.setPaused(true);
                 area.setText("");
                 autoScroll = true;
-                ((SshSource) logSource).setWriteLineNumbers(!((SshSource) logSource).isWriteLineNumbers());
+                logSource.setWriteLineNumbers(!logSource.isWriteLineNumbers());
                 logSource.reset();
                 logSource.setPaused(false);
             } else if (ke.getKeyCode() == KeyEvent.VK_F1) { // F1
