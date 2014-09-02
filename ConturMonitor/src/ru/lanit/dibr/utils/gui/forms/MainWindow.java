@@ -129,7 +129,9 @@ public class MainWindow {
         tabbedPane1.setSelectedComponent(newTab);
 
         JPanel pnl = new JPanel();
-        pnl.add(new JLabel(name + " "));
+        JLabel label = new JLabel(name + " ");
+        label.setFont(new Font("Courier New", 0, CmdLineConfiguration.fontSize));
+        pnl.add(label);
         ((FlowLayout)pnl.getLayout()).setVgap(0);
         ((FlowLayout)pnl.getLayout()).setHgap(0);
         JButton goAwayButton = new JButton("X");
@@ -141,7 +143,8 @@ public class MainWindow {
             }
         });
         goAwayButton.setMargin(new Insets(0,0,0,0));
-        goAwayButton.setPreferredSize(new Dimension(15, 15));
+        int closeBtnSize = (int) (CmdLineConfiguration.fontSize * 1.2);
+        goAwayButton.setPreferredSize(new Dimension(closeBtnSize, closeBtnSize));
         goAwayButton.setFont(new Font("Courier New", 0, CmdLineConfiguration.fontSize));
         pnl.setOpaque(false);
         pnl.add(goAwayButton);
