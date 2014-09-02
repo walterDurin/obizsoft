@@ -96,8 +96,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
             @Override
             public void adjustmentValueChanged(AdjustmentEvent e) {
-                int extent = getVerticalScrollBar().getModel().getExtent();
                 if(mouseClickedOnScrollBar.get()) {
+                    System.out.println("ScrollBar drag event");
+                    int extent = getVerticalScrollBar().getModel().getExtent();
                     int pos = getVerticalScrollBar().getValue() + extent;
                     int maxPos = getVerticalScrollBar().getMaximum();
                     System.out.println("Value: " + pos + " Max: " + maxPos);

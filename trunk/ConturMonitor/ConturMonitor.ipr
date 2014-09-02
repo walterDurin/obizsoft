@@ -250,6 +250,13 @@
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="libraryTable">
+    <library name="commons-codec-1.4">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/commons-codec-1.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
     <library name="mochito">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/lib/mockito-all-1.9.5.jar!/" />

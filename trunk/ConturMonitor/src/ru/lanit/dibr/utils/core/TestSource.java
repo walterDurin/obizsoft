@@ -42,11 +42,11 @@ public class TestSource implements LogSource {
             public void run() {
                 String nextLine;
                 try {
+                    System.out.println("Start read file \"" + fileToRead + "\"");
                     while ((nextLine = reader.readLine()) != null && !isClosed) {
                         while (paused.get() && !isClosed) {
                             Thread.sleep(100);
                         }
-//                        buffer.add(nextLine);
                         if(writeLineNumbers) {
                             readQueue.put(String.format("%6d: %s", (++writedLines), nextLine));
                         } else {
@@ -57,6 +57,7 @@ public class TestSource implements LogSource {
                             Thread.sleep(SLEEP);
                         }
                     }
+                    System.out.println("Finish read file \"" + fileToRead + "\"");
                 } catch (IOException e) {
                     try {
                         close();
