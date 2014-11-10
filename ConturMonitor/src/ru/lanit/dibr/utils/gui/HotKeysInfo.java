@@ -3,7 +3,9 @@ package ru.lanit.dibr.utils.gui;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * User: Vova
@@ -21,7 +23,16 @@ public class HotKeysInfo extends JFrame implements KeyListener {
         jTextPane.setEditable(false);
         jTextPane.addKeyListener(this);
         try {
-            jTextPane.setPage(getClass().getResource("/res/Shortcuts.html"));
+            jTextPane.getDocument().putProperty("IgnoreCharsetDirective", Boolean.TRUE);
+            jTextPane.setContentType( "text/html" );
+            InputStreamReader isr = new InputStreamReader(getClass().getResource("/res/Shortcuts.html").openStream(), "utf-8");
+            BufferedReader d = new BufferedReader(isr);
+            String str=null;
+            StringBuilder sb = new StringBuilder();
+            while( (str = d.readLine()) !=null) {
+                sb.append(str);
+            }
+            jTextPane.setText(sb.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }

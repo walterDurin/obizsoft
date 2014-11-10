@@ -31,7 +31,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     private String blockPattern;
     private boolean stopped = false;
     private JTextArea area;
-    private boolean autoScroll = true;
+    private AtomicBoolean autoScroll = new AtomicBoolean(true);
     private String find = null;
 
 
@@ -102,10 +102,10 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                     int pos = getVerticalScrollBar().getValue() + extent;
                     int maxPos = getVerticalScrollBar().getMaximum();
                     System.out.println("Value: " + pos + " Max: " + maxPos);
-                    if(pos!=maxPos && autoScroll){
+                    if(pos!=maxPos && autoScroll.get()){
                         setAutoScroll(false);
                     }
-                    if(pos==maxPos && !autoScroll) {
+                    if(pos==maxPos && !autoScroll.get()) {
                         setAutoScroll(true);
                     }
                 }
@@ -128,9 +128,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                     while (!isClosed) {
                         try {
 //                            int cnt = 0;
-                            if (autoScroll) {
-                                getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
-                            }
+//                            if (autoScroll) {
+//                                getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
+//                            }
                             area.repaint();
                             /*if (needRepaint.getAndSet(false) || (cnt++) == 8) {
                                 cnt = 0;
@@ -178,8 +178,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 if(find!=null && find.length()>0) {
                     highlightFromCursor(area.getHighlighter(), pos);
                 }
-                if (autoScroll) {
-                        getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
+                System.out.println("Get autoscroll as " + (autoScroll+ "").toUpperCase() );
+                if (autoScroll.get()) {
+                    getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
                 }
             }
         });
@@ -210,11 +211,16 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     public void setAutoScroll(boolean autoScroll) {
-        this.autoScroll = autoScroll;
-        if(autoScroll)
+        this.autoScroll.set(autoScroll);
+        System.out.println("Set autoscroll to " + (autoScroll+ "").toUpperCase() );
+        if(autoScroll) {
             getVerticalScrollBar().setBorder(new LineBorder(Color.GREEN,2));
-        else
+        }
+        else {
+            if(area.getCaretPosition()>0 && area.getCaretPosition() == area.getText().length())
+                area.setCaretPosition(area.getCaretPosition()-1);
             getVerticalScrollBar().setBorder(null);
+        }
     }
 
     public void keyPressed(KeyEvent ke) {
@@ -236,7 +242,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             } else if ((ke.getKeyCode() == KeyEvent.VK_N)) { //Нажали N - номера строк
                 logSource.setPaused(true);
                 area.setText("");
-                autoScroll = true;
+                setAutoScroll(true);
                 logSource.setWriteLineNumbers(!logSource.isWriteLineNumbers());
                 logSource.reset();
                 logSource.setPaused(false);
@@ -341,7 +347,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         logSource.reset();
         logSource.setPaused(false);
 
-        autoScroll = true;
+        setAutoScroll(true);
     }
 
     public boolean findWord(boolean isBackWard) {
@@ -377,7 +383,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     }
 
     public int highlightFound() {
-        autoScroll = false;
+        setAutoScroll(false);
         Highlighter h = area.getHighlighter();
         h.removeAllHighlights();
         int pos = 0;
@@ -594,7 +600,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     public void mouseReleased(MouseEvent e) {
         if (area.getSelectedText() != null) {
             String selected = area.getSelectedText();
-            if (logSource instanceof SshSource && ((SshSource) logSource).isWriteLineNumbers()) {
+            if (logSource.isWriteLineNumbers()) {
                 selected = removeLineNumbers(selected);
             }
             setAutoScroll(false);
