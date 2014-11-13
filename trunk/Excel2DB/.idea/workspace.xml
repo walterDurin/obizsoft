@@ -2,21 +2,20 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="Excel2DB:jar" />
+      <artifact name="CSV2DB:jar" />
     </artifacts-to-build>
   </component>
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/src/ru/btc/utils/utils/DataBaseWorker.java" line="36" mnemonic="7" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1396ae32-337a-4e93-bb77-6b9909714aed" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadCSV.java" afterPath="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadCSV.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadXLSX.java" afterPath="$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadXLSX.java" />
+    <list default="true" readonly="true" id="1396ae32-337a-4e93-bb77-6b9909714aed" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Excel2CSV.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/fragment.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391695071506" ignored="false" />
+    <file path="/fragment.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1415807816827" ignored="false" />
     <file path="/Main.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391692226565" ignored="false" />
     <file path="/DataBaseWorker.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391170682984" ignored="false" />
     <file path="/log4j.properties" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391174538027" ignored="false" />
@@ -43,7 +42,7 @@
     <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/gui/LogPanel.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391767043786" ignored="false" />
     <file path="/LogPanel.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391691244488" ignored="false" />
     <file path="/a.dummy" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391692388875" ignored="false" />
-    <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/gui/LogChoicer.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391767043786" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/gui/LogChoicer.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1392971454171" ignored="false" />
     <file path="/LogChoicer.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391694964130" ignored="false" />
     <file path="$PROJECT_DIR$/../ConturMonitor/src/hlam/newWindow1/JTabbedPaneCustom.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391692457987" ignored="false" />
     <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/gui/FunctionPanel.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391767043786" ignored="false" />
@@ -57,6 +56,7 @@
     <file path="$PROJECT_DIR$/../ConturMonitor/ToDo.txt" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391768423733" ignored="false" />
     <file path="/ToDo.txt" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391768423733" ignored="false" />
     <file path="/LoadXLSX.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1391778566413" ignored="false" />
+    <file path="$PROJECT_DIR$/../ConturMonitor/src/ru/lanit/dibr/utils/gui/LogFrame.java" changelist="1396ae32-337a-4e93-bb77-6b9909714aed" time="1392971454171" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,7 +109,7 @@
       </breakpoint>
     </breakpoint_any>
     <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true">
-      <breakpoint url="file://$PROJECT_DIR$/src/ru/btc/utils/utils/DataBaseWorker.java" line="143" class="ru.btc.utils.excel2csv.DataBaseWorker" package="ru.btc.utils.excel2csv">
+      <breakpoint url="file://$PROJECT_DIR$/src/ru/btc/utils/utils/DataBaseWorker.java" line="143" class="ru.btc.utils.utils.DataBaseWorker" package="ru.btc.utils.utils">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -139,7 +139,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadXLSX.java" line="62" class="ru.btc.utils.excel2csv.Main2$1" package="ru.btc.utils.excel2csv">
+      <breakpoint url="file://$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadXLSX.java" line="62" class="ru.btc.utils.excel2csv.LoadXLSX$1" package="ru.btc.utils.excel2csv">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -182,25 +182,16 @@
       <file leaf-file-name="LoadXLSX.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadXLSX.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="49" column="52" selection-start="1536" selection-end="1536" vertical-scroll-proportion="0.12045454">
+            <state line="46" column="58" selection-start="1361" selection-end="1361" vertical-scroll-proportion="0.26984128">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MANIFEST.MF" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/META-INF/MANIFEST.MF">
+      <file leaf-file-name="XLSX2CSV.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/apache/poi/xssf/eventusermodel/XLSX2CSV.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="0" selection-start="66" selection-end="66" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MANIFEST2.MF" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/META-INF/MANIFEST2.MF">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="1" column="42" selection-start="64" selection-end="64" vertical-scroll-proportion="0.0">
+            <state line="221" column="38" selection-start="8369" selection-end="8369" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -209,7 +200,7 @@
       <file leaf-file-name="LoadCSV.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadCSV.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="90" column="36" selection-start="3424" selection-end="3424" vertical-scroll-proportion="-263.5">
+            <state line="53" column="188" selection-start="1701" selection-end="1701" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -219,9 +210,7 @@
         <entry file="file://$PROJECT_DIR$/src/com/github/junrar/io/InputStreamReadOnlyAccessFile.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="42" column="4" selection-start="900" selection-end="900" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -229,11 +218,8 @@
       <file leaf-file-name="CompressUtil.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ru/btc/utils/utils/CompressUtil.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="0" selection-start="242" selection-end="242" vertical-scroll-proportion="-2.38">
-              <folding>
-                <element signature="e#2006#3160#0" expanded="true" />
-                <element signature="e#3149#3150#0" expanded="true" />
-              </folding>
+            <state line="7" column="0" selection-start="242" selection-end="242" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -242,10 +228,7 @@
         <entry file="file://$PROJECT_DIR$/src/com/github/junrar/impl/FileVolume.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="51" column="4" selection-start="1398" selection-end="1398" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#0#1526#0" expanded="false" />
-                <element signature="imports" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -254,10 +237,7 @@
         <entry file="file://$PROJECT_DIR$/src/com/github/junrar/impl/FileVolumeManager.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="50" column="51" selection-start="1667" selection-end="1667" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#0#1673#0" expanded="false" />
-                <element signature="imports" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -345,7 +325,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -479,6 +458,7 @@
         </subPane>
       </pane>
       <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="Favorites" />
     </panes>
   </component>
@@ -643,6 +623,11 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="Excel2DB" />
       <envs />
+      <RunnerSettings RunnerId="JProfiler">
+        <option name="WINDOW" value="false" />
+        <option name="JVMPI" value="false" />
+        <option name="INTERPRETED" value="false" />
+      </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
@@ -797,6 +782,7 @@
     <option name="IGNORE_EXTERNALS" value="false" />
     <configuration useDefault="true">C:\Users\Vladimir\AppData\Roaming\Subversion</configuration>
     <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
+    <supportedVersion>125</supportedVersion>
   </component>
   <component name="SvnFileUrlMappingImpl">
     <option name="myMappingRoots">
@@ -830,7 +816,11 @@
       <created>1391689312104</created>
       <updated>1391689312104</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="minor chages">
+      <created>1391782517103</created>
+      <updated>1391782517103</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -854,28 +844,28 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1066" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3289183" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3289183" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39955848" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2555066" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27704194" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3289183" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="JProfiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32929516" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1670224" sideWeight="0.722958" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14621131" sideWeight="0.74449337" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.48454747" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3289183" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -950,23 +940,9 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/org/apache/poi/xssf/eventusermodel/XLSXReader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="261" column="56" selection-start="10262" selection-end="10262" vertical-scroll-proportion="4.394558">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/log4j.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="26" column="57" selection-start="1144" selection-end="1144" vertical-scroll-proportion="0.51098263">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/apache/poi/xssf/eventusermodel/XLSX2CSV.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="221" column="38" selection-start="8369" selection-end="8369" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -994,54 +970,39 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/META-INF/MANIFEST.MF">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="0" selection-start="66" selection-end="66" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="2" column="0" selection-start="66" selection-end="66" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/META-INF/MANIFEST2.MF">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="42" selection-start="64" selection-end="64" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="1" column="42" selection-start="64" selection-end="64" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/github/junrar/io/InputStreamReadOnlyAccessFile.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="42" column="4" selection-start="900" selection-end="900" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ru/btc/utils/utils/CompressUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="0" selection-start="242" selection-end="242" vertical-scroll-proportion="-2.38">
-          <folding>
-            <element signature="e#2006#3160#0" expanded="true" />
-            <element signature="e#3149#3150#0" expanded="true" />
-          </folding>
+        <state line="7" column="0" selection-start="242" selection-end="242" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/github/junrar/impl/FileVolume.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="51" column="4" selection-start="1398" selection-end="1398" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#0#1526#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/github/junrar/impl/FileVolumeManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="50" column="51" selection-start="1667" selection-end="1667" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#0#1673#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1059,16 +1020,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/apache/poi/xssf/eventusermodel/XLSX2CSV.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="221" column="38" selection-start="8369" selection-end="8369" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/javacsv.jar!/com/csvreader/CsvReader.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="57" column="16" selection-start="2325" selection-end="2325" vertical-scroll-proportion="0.3430572">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadCSV.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="90" column="36" selection-start="3424" selection-end="3424" vertical-scroll-proportion="-263.5">
+        <state line="53" column="188" selection-start="1701" selection-end="1701" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ru/btc/utils/excel2csv/LoadXLSX.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="49" column="52" selection-start="1536" selection-end="1536" vertical-scroll-proportion="0.12045454">
+        <state line="46" column="58" selection-start="1361" selection-end="1361" vertical-scroll-proportion="0.26984128">
           <folding />
         </state>
       </provider>
