@@ -1,0 +1,1 @@
+java -cp "sqlite-jdbc-3.8.7.jar;CsvExcelXLSX2DB.jar" ru.btc.utils.excel2csv.LoadXLSX SampleWorkBook.xlsx DataList Y USERS "NAME, DATE_OF_BIRTH" " '#C', date('#D')" "jdbc:sqlite:sample.db" dbuser dbpasswd 0 2000
