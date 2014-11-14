@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ArtifactManager">
-    <artifact name="ConturMonitor:jar">
-      <output-path>$PROJECT_DIR$</output-path>
+    <artifact name="LogMonitor:jar">
+      <output-path>$PROJECT_DIR$/build</output-path>
       <root id="root">
-        <element id="archive" name="LogMonitor_3.9.jar">
-          <element id="module-output" name="ConturMonitor" />
-          <element id="directory" name="META-INF">
-            <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+        <element id="directory" name="LogMonitor">
+          <element id="dir-copy" path="$PROJECT_DIR$/build_stub" />
+          <element id="archive" name="LogMonitor.jar">
+            <element id="module-output" name="ConturMonitor" />
+            <element id="directory" name="META-INF">
+              <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+            </element>
           </element>
         </element>
       </root>
