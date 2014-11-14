@@ -1,7 +1,7 @@
 #summary One-sentence summary of this page.
 #labels Featured
 
-==LogMonitor==
+==`LogMonitor`==
 [[https://doc-0c-50-docs.googleusercontent.com/docs/securesc/a1v53ojae023kapno4l53iu0kbre8kfa/0oa4m00gvotfjrofpiajc33j7uga4a8o/1415923200000/02740723016843416380/02740723016843416380/0Byy578G35tC_dHk2eHYwWDZ4b3M?e=download LogMonitor 3.9]]
 Changes:
  * исправлена бага: продолжался авто скорлл после скролла колесом мыши, несмотря на исчезновение зелёной рамки вокруг скролл бара
