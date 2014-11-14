@@ -103,7 +103,7 @@ public class DataBaseWorker {
         if (isDirty) {
             if (unsavedRecords > 0) {
 //                log.info("Save next " + unsavedRecords + " records.");
-                int statemntsCount = 0;
+                double statemntsCount = 0;
                 try {
                     executeCount++;
                     statemntsCount = stmt.executeBatch().length;
@@ -115,22 +115,25 @@ public class DataBaseWorker {
                     unsavedRecords = 0;
 //                    stmt = conn.createStatement();
                    } catch (BatchUpdateException e) {
-                    totalErrorsCount++;
+                    //log.error("Error when try commit batch: ", e);
                     String wrongSql = "";
                     boolean hasExecuteFailed = false;
                     for (int i = 0; i < e.getUpdateCounts().length; i++) {
                         int state = e.getUpdateCounts()[i];
-                        if(state == Statement.EXECUTE_FAILED) {
+                        if(state == Statement.EXECUTE_FAILED || state==0) {
                             hasExecuteFailed = true;
-                            wrongSql+= "SQL: \"" + sqls.remove(0)+"\"" ;
+                            wrongSql+= "SQL: \"" + sqls.remove(0)+"\"\n" ;
+                            totalErrorsCount++;
                         } else {
                             sqls.remove(0);
                         }
                     }
                     if(!hasExecuteFailed) {
+                        totalErrorsCount++;
                         wrongSql+= "SQL: \"" + sqls.remove(0)+"\"";
                     }
-                    statemntsCount = unsavedRecords - sqls.size() - 1;
+                    wrongSql = wrongSql.substring(0, wrongSql.length()-1);
+                    statemntsCount = unsavedRecords - sqls.size() - totalErrorsCount;
                     log.error("Found error \"" + e.getMessage() + "\n" + wrongSql);
 //                    sqls = sqls.subList(sucessCount + 1, sqls.size());
                     stmt.clearWarnings();

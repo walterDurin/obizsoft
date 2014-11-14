@@ -32,12 +32,13 @@ public class LoadXLSX {
         String dbUser = args[argNum++];
         String dbPass = args[argNum++];
         final int rowsToProcess = Integer.parseInt(args[argNum++]);
+        final int batchSize = Integer.parseInt(args[argNum++]);
         System.out.println("Параметры запуска:");
         for (String arg : args) {
             System.out.print("\"" + arg + "\" ");
         }
 
-        dataBaseWorker = new DataBaseWorker(dbURI, dbUser, dbPass, 1000);
+        dataBaseWorker = new DataBaseWorker(dbURI, dbUser, dbPass, batchSize);
 
         try {
 
