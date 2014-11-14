@@ -1,0 +1,1 @@
+start java -jar LogMonitor.jar
