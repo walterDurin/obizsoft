@@ -29,7 +29,7 @@ public class TestSource implements LogSource {
     public TestSource(String filename) {
         fileToRead = new File(filename);
         if(!fileToRead.exists() || !fileToRead.isFile() || !fileToRead.canRead()) {
-            throw new RuntimeException("�� ���� ������� ����!");
+            throw new RuntimeException("Не могу открыть файл!");
         }
     }
 
