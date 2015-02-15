@@ -40,9 +40,7 @@
       </profile>
     </annotationProcessing>
   </component>
-  <component name="CopyrightManager" default="">
-    <module2copyright />
-  </component>
+  <component name="CopyrightManager" default="" />
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
@@ -62,7 +60,6 @@
     <file url="file://$PROJECT_DIR$/src/ru/lanit/dibr/utils/gui/MenuButton.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/ru/lanit/dibr/utils/gui/forms/MainWindow.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/ru/lanit/dibr/utils/utils/SshUtil.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/versions.txt" charset="UTF-8" />
   </component>
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
@@ -260,6 +257,13 @@
       <JAVADOC />
       <SOURCES />
     </library>
+    <library name="ftpserver-core-1.0.6">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/ftpserver-core-1.0.6.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
     <library name="mochito">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/lib/mockito-all-1.9.5.jar!/" />
@@ -269,4 +273,3 @@
     </library>
   </component>
 </project>
-
