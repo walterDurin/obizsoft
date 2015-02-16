@@ -10,11 +10,17 @@ import java.io.IOException;
 public class LogGenerator {
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        File oldLog = new File("test.log");
+        String filename = "test.log";
+        generateTo(filename);
+
+    }
+
+    public static void generateTo(String filename) throws IOException, InterruptedException {
+        File oldLog = new File(filename);
         if(oldLog.exists()) {
             oldLog.delete();
         }
-        FileWriter writer  = new FileWriter("test.log");
+        FileWriter writer  = new FileWriter(filename);
         long num = 0;
         while(true) {
             Thread.sleep(1500);
@@ -23,6 +29,5 @@ public class LogGenerator {
             writer.append(s);
             writer.flush();
         }
-
     }
 }

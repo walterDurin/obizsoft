@@ -257,9 +257,20 @@
       <JAVADOC />
       <SOURCES />
     </library>
+    <library name="ftp4j-1.7.2">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/ftp4j-1.7.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
     <library name="ftpserver-core-1.0.6">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/lib/ftpserver-core-1.0.6.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/slf4j-api-1.5.2.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/slf4j-log4j12-1.5.2.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/log4j-1.2.14.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/mina-core-2.0.4.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
