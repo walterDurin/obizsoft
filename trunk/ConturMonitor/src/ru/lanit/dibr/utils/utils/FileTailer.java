@@ -1,7 +1,5 @@
 package ru.lanit.dibr.utils.utils;
 
-import sun.awt.windows.ThemeReader;
-
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.concurrent.BlockingQueue;
@@ -18,7 +16,6 @@ public class FileTailer {
     private long _updateInterval = 50;
     private File _file;
     private long _filePointer;
-//    private List<String> lines = new ArrayList<String>();
     private BlockingQueue<String> buffer = new LinkedBlockingQueue<String>();
     private boolean isStarted = false;
 
