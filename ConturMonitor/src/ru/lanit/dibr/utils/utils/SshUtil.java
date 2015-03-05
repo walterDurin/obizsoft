@@ -42,7 +42,7 @@ public class SshUtil {
 
             InputStream in = channel.getInputStream();
 
-            channel.connect();
+            channel.connect(30000);
 
 
             StringBuffer out = new StringBuffer();

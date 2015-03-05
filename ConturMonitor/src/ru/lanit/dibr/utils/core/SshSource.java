@@ -46,12 +46,12 @@ public class SshSource implements LogSource {
         session = host.connect();
         isClosed = false;
         channel = (ChannelExec) session.openChannel("exec");
-        String linesCount = SshUtil.exec(host, "wc -l " + logFile.getPath() + " | awk \"{print $1}\"").getData().trim();
-        System.out.println("Lines count in log file: " + linesCount);
+//        String linesCount = SshUtil.exec(host, "wc -l " + logFile.getPath() + " | awk \"{print $1}\"").getData().trim();
+//        System.out.println("Lines count in log file: " + linesCount);
         channel.setCommand("tail -1000f " + logFile.getPath());
         //channel.setCommand("tail -c +0 -f " + logFile.getPath()); //Так можно загрузить весь файл
         reader = new BufferedReader(new InputStreamReader(channel.getInputStream(), host.getDefaultEncoding()));
-        channel.connect(3 * 1000);
+        channel.connect(30000);
 
         readThread = new Thread(new Runnable() {
             public void run() {
