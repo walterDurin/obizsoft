@@ -28,7 +28,7 @@ public class Tunnel {
         return str + "; " + super.toString();
     }
 
-    public void connect() {
+    public synchronized void connect() {
         if(isConnected)
             return;
         try {
@@ -36,27 +36,32 @@ public class Tunnel {
             for (Portmap portmap : portmaps) {
                 session.setPortForwardingL(portmap.getLocalPort(), portmap.getDestHost(), portmap.getDestPort());
             }
-            session.connect(3000);
+            System.out.println("Try to open tunnel on: " + host.getDescription());
+            session.connect(30000);
             isConnected = true;
+            System.out.println("Tunnel are connected on: " + host.getDescription());
 
             new Thread(new Runnable() {
                 public void run() {
                     while (session.isConnected()) {
                         try {
                             session.sendKeepAliveMsg();
-                            Thread.sleep(500);
+                            Thread.sleep(1500);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
+                    System.out.println("Session disconnected!");
                     isConnected = false;
                     session.disconnect();
                 }
             }, "tunel connection monitor").start();
 
+
         } catch (Exception e) {
+            System.out.println("Error on open tunnel to host: " + host.getDescription());
             e.printStackTrace();
         }
 

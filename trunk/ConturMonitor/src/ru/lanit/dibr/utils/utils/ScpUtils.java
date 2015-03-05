@@ -29,7 +29,7 @@ public class ScpUtils {
             OutputStream out = channel.getOutputStream();
             InputStream in = channel.getInputStream();
 
-            channel.connect();
+            channel.connect(30000);
 
             byte[] buf = new byte[1024];
 
