@@ -78,6 +78,8 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         area.setLineWrap(true);
 
         setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
+//        System.out.println(getVerticalScrollBar().getPreferredSize().toString());
+        getVerticalScrollBar().setPreferredSize(new Dimension((int) Math.round(CmdLineConfiguration.fontSize*1.25), 0));
 
 
         getVerticalScrollBar().addMouseListener(new MouseAdapter() {
@@ -239,6 +241,13 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 setAutoScroll(false);
             } else if ((ke.getKeyCode() == KeyEvent.VK_W)) { //Нажали W - перенос строк
                 area.setLineWrap(!area.getLineWrap());
+            } else if ((ke.getKeyCode() == KeyEvent.VK_P)) { //Нажали P - вывод текущего лога в попапе
+                try {
+                    new PopupBlock("Log snapshot",area.getText(), false);
+                } catch (Exception e) {
+                    System.out.println("Error while open current log snapshot in popup window.");
+                    e.printStackTrace();
+                }
             } else if ((ke.getKeyCode() == KeyEvent.VK_N)) { //Нажали N - номера строк
                 logSource.setPaused(true);
                 area.setText("");
@@ -452,7 +461,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                         firstLineOfBlockEndPos = block.length();
                     }
                     String title = block.substring(0, firstLineOfBlockEndPos);
-                    new PopupBlock(title, block);
+                    new PopupBlock(title, block, true);
                 }
 
             } catch (PatternSyntaxException ex) {
@@ -587,7 +596,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
         System.out.println(result);
         try {
-            new PopupBlock("Similar blocks", result.toString());
+            new PopupBlock("Similar blocks", result.toString(), false);
         } catch (Exception e) {
             e.printStackTrace();
         }

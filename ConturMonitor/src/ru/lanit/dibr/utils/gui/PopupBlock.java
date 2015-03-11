@@ -1,11 +1,9 @@
 package ru.lanit.dibr.utils.gui;
 
-import hlam.TestStringSource;
-import ru.lanit.dibr.utils.CmdLineConfiguration;
+import ru.lanit.dibr.utils.core.TestStringSource;
 import ru.lanit.dibr.utils.utils.XmlUtils;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 
 /**
@@ -15,11 +13,14 @@ import java.awt.*;
  */
 public class PopupBlock extends JFrame {
 
-    public PopupBlock(final String title, String data) throws Exception {
+    public PopupBlock(final String title, String data, boolean formatXml) throws Exception {
 
         setTitle(title);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        final LogPanel logPanel = new LogPanel(new TestStringSource(XmlUtils.formatXml(data), 0, false), null);
+        if(formatXml) {
+            data = XmlUtils.formatXml(data);
+        }
+        final LogPanel logPanel = new LogPanel(new TestStringSource(data, 0, false), null);
         setContentPane(logPanel);
         Thread t = new Thread() {
             @Override

@@ -1,4 +1,4 @@
-package hlam;
+package ru.lanit.dibr.utils.core;
 
 import ru.lanit.dibr.utils.core.LogSource;
 
