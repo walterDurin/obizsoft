@@ -1,7 +1,7 @@
 package hlam;
 
 import ru.lanit.dibr.utils.core.LogSource;
-import ru.lanit.dibr.utils.core.TestSource;
+import ru.lanit.dibr.utils.core.TestStringSource;
 import ru.lanit.dibr.utils.gui.LogFrame;
 
 import javax.swing.*;

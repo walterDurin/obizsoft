@@ -17,7 +17,7 @@ public final class CmdLineConfiguration {
     @Option(name = "-fontSize", usage = "Font size")
     public static int fontSize = DEFAULT_FONT_SIZE;
 
-    @Argument(usage = "Name of XML xonfig file. Default: settings.xml")
+    @Argument(usage = "Name of XML config file. Default value: settings.xml")
     public static String settingsFileName = "settings.xml";
 
 }
