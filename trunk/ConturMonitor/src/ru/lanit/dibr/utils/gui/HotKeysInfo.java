@@ -38,7 +38,7 @@ public class HotKeysInfo extends JFrame implements KeyListener {
         }
         panel.add(jTextPane);
         add(panel);
-        setSize(685, 800);
+        setSize(680, 810);
         this.setLocationRelativeTo(getRootPane());
         setResizable(false);
         setVisible(true);
