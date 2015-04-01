@@ -2,6 +2,9 @@ package ru.lanit.dibr.utils.gui.configuration;
 
 import com.jcraft.jsch.*;
 import ru.lanit.dibr.utils.utils.MyUserInfo;
+import ru.lanit.dibr.utils.utils.Utils;
+
+import java.util.concurrent.BlockingQueue;
 
 public class Host {
 	private String description;
@@ -66,10 +69,12 @@ public class Host {
         this.proxyPasswd = proxyPasswd;
     }
 
-    public Session createSession() throws Exception {
+    public Session createSession(BlockingQueue<String> debugOutput, boolean useCompression) throws Exception {
 
         if(tunnel!=null) {
-            tunnel.connect();
+            Utils.writeToDebugQueue(debugOutput, "Open tunnels..");
+            tunnel.connect(debugOutput, useCompression);
+            useCompression = false;
         }
 
         JSch jsch = new JSch();
@@ -98,9 +103,11 @@ public class Host {
         }
         session.setConfig("StrictHostKeyChecking", "no"); //принимать неизвестные ключи от серверов
         //сжатие потока
-        session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
-        session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
-        session.setConfig("compression_level", "9");
+        if(useCompression) {
+            session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
+            session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
+            session.setConfig("compression_level", "9");
+        }
 
         if (pem != null) {
             jsch.addIdentity(pem);
@@ -111,9 +118,12 @@ public class Host {
         return session;
     }
 
-    public Session connect() throws Exception {
-        Session session = createSession();
+    public Session connect(BlockingQueue<String> debugOutput) throws Exception {
+        Utils.writeToDebugQueue(debugOutput, "Create session for host " + description + "..");
+        Session session = createSession(debugOutput, true);
+        Utils.writeToDebugQueue(debugOutput, "Connect session for host " + description + ".." );
         session.connect(30000);   // making a connection with timeout.
+        Utils.writeToDebugQueue(debugOutput, "Session for host " + description + " are connected." );
         return session;
     }
 
@@ -157,4 +167,7 @@ public class Host {
 		return toString().hashCode();
 	}
 
+    public Tunnel getTunnel() {
+        return tunnel;
+    }
 }

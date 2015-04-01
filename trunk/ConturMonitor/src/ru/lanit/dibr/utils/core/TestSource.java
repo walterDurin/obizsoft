@@ -1,6 +1,7 @@
 package ru.lanit.dibr.utils.core;
 
 import java.io.*;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -144,6 +145,16 @@ public class TestSource implements LogSource {
     @Override
     public void setWriteLineNumbers(boolean writeLineNumbers) {
         this.writeLineNumbers = writeLineNumbers;
+    }
+
+    @Override
+    public BlockingQueue<String> getDebugOutput() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setDebugOutput(BlockingQueue<String> debugOutput) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void setPaused(boolean paused) {

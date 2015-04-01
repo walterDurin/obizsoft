@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * User: Vova
@@ -118,6 +119,16 @@ public class TestStringSource implements LogSource {
     @Override
     public void setWriteLineNumbers(boolean writeLineNumbers) {
 
+    }
+
+    @Override
+    public BlockingQueue<String> getDebugOutput() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setDebugOutput(BlockingQueue<String> debugOutput) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void setPaused(boolean paused) {

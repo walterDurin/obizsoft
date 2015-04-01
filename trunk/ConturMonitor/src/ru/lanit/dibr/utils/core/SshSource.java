@@ -3,13 +3,15 @@ package ru.lanit.dibr.utils.core;
 import com.jcraft.jsch.*;
 import ru.lanit.dibr.utils.gui.configuration.Host;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
-import ru.lanit.dibr.utils.utils.SshUtil;
+import ru.lanit.dibr.utils.utils.Utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * User: Vova
@@ -22,6 +24,7 @@ public class SshSource implements LogSource {
     private boolean paused = false;
     private boolean writeLineNumbers = false;
     private Thread readThread;
+    private BlockingQueue<String> debugOutput = new LinkedBlockingQueue<String>();
 
     List<String> buffer;
 
@@ -42,8 +45,7 @@ public class SshSource implements LogSource {
         readedLines = 0;
         paused = false;
         buffer = new ArrayList<String>();
-
-        session = host.connect();
+        session = host.connect(debugOutput);
         isClosed = false;
         channel = (ChannelExec) session.openChannel("exec");
 //        String linesCount = SshUtil.exec(host, "wc -l " + logFile.getPath() + " | awk \"{print $1}\"").getData().trim();
@@ -51,7 +53,9 @@ public class SshSource implements LogSource {
         channel.setCommand("tail -1000f " + logFile.getPath());
         //channel.setCommand("tail -c +0 -f " + logFile.getPath()); //Так можно загрузить весь файл
         reader = new BufferedReader(new InputStreamReader(channel.getInputStream(), host.getDefaultEncoding()));
+        Utils.writeToDebugQueue(debugOutput, "Starting tailing '" + logFile.getName() + "' for host '" + host.getDescription() + "'..");
         channel.connect(30000);
+        Utils.writeToDebugQueue(debugOutput, "Tailing '" + logFile.getName() + "' for host '" + host.getDescription() + "' are started.");
 
         readThread = new Thread(new Runnable() {
             public void run() {
@@ -75,10 +79,19 @@ public class SshSource implements LogSource {
 
         new Thread(new Runnable() {
             public void run() {
-                while(channel.isConnected() && !isClosed) {
+                while(channel.isConnected() && !isClosed && (host.getTunnel()==null || host.getTunnel().isConnectionAlive())) {
                     try {
-                        Thread.sleep(200);
+                        if(host.getTunnel()!=null) {
+                            if(!host.getTunnel().isConnectionAlive()) {
+                                System.out.println("Tunnel are disconnected!");
+                                close();
+                                break;
+                            }
+                        }
+                        Thread.sleep(500);
                     } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -95,7 +108,7 @@ public class SshSource implements LogSource {
                 }
 
             }
-        }, "Conn monitor").start();
+        }, "Connection monitor").start();
         readThread.start();
 
     }
@@ -104,7 +117,7 @@ public class SshSource implements LogSource {
         try {
             while (paused && !isClosed) {
                 System.out.println("I'm asleep..");
-                Thread.sleep(50);
+                Thread.sleep(10);
             }
             if(isClosed) {
                 throw new IOException("Connection lost.");
@@ -116,7 +129,7 @@ public class SshSource implements LogSource {
                     return buffer.get(readedLines++);
                 }
             } else {
-                Thread.sleep(50);
+                Thread.sleep(10);
             }
 
         } catch (InterruptedException e) {
@@ -184,5 +197,15 @@ public class SshSource implements LogSource {
     @Override
     public String getName() {
         return host.getHost()+logFile.getPath()+logFile.getName();
+    }
+
+    @Override
+    public BlockingQueue<String> getDebugOutput() {
+        return debugOutput;
+    }
+
+    @Override
+    public void setDebugOutput(BlockingQueue<String> debugOutput) {
+        this.debugOutput = debugOutput;
     }
 }

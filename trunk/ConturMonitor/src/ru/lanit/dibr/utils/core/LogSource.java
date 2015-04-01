@@ -1,5 +1,7 @@
 package ru.lanit.dibr.utils.core;
 
+import java.util.concurrent.BlockingQueue;
+
 /**
  * User: Vova
  * Date: 13.11.12
@@ -15,4 +17,7 @@ public interface LogSource extends Source {
 
     public void setWriteLineNumbers(boolean writeLineNumbers);
 
+    public BlockingQueue<String> getDebugOutput();
+
+    public void setDebugOutput(BlockingQueue<String> debugOutput);
 }
