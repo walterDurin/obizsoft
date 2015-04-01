@@ -186,7 +186,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
             appendLine("============ LOG STARTS AFTER THIS LINE ============");
 
             StringBuffer buff = new StringBuffer();
-            while (!stopped) {
+            while (!stopped && !isClosed) {
                 buff.setLength(0);
                 while ((nextLine = filtersChain.readLine()) != LogSource.SKIP_LINE ) {
                     buff.append(nextLine+"\n");
