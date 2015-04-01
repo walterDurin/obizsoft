@@ -3,6 +3,7 @@ package ru.lanit.dibr.utils.utils;
 import com.jcraft.jsch.*;
 
 import java.io.*;
+import java.util.concurrent.BlockingQueue;
 
 import ru.lanit.dibr.utils.gui.configuration.Host;
 
@@ -13,12 +14,12 @@ import ru.lanit.dibr.utils.gui.configuration.Host;
  */
 public class ScpUtils {
 
-    public static String getFile(Host host, String file, String localFileNamePrefix) throws JSchException, IOException {
+    public static String getFile(Host host, String file, String localFileNamePrefix, BlockingQueue<String> debugOutput) throws JSchException, IOException {
         FileOutputStream fos = null;
         try {
 
             JSch jsch = new JSch();
-            Session session = host.connect();
+            Session session = host.connect(debugOutput);
 
             // exec 'scp -f rfile' remotely
             String command = "scp -f " + file;

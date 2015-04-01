@@ -2,6 +2,7 @@ package ru.lanit.dibr.utils.utils;
 
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * User: Vova
@@ -240,5 +241,12 @@ public class Utils {
             return p[n];
         }
         return -1;
+    }
+
+    public static void writeToDebugQueue(BlockingQueue queue, String message) {
+        System.out.println(message);
+        if(queue!=null && queue.remainingCapacity()>0) {
+            queue.add(message);
+        }
     }
 }

@@ -10,7 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.util.Map;
 
 import com.jcraft.jsch.JSchException;
 
@@ -64,30 +63,30 @@ public class MenuButton extends JButton {
         String savedFileName = null;
         try {
             // `basename /smartpaas-app/was/node1/WAShome/profiles/AppSrv01/logs/server1/stopServer.log`.` date +%Y%m%d%H%M%S -r /smartpaas-app/was/node1/WAShome/profiles/AppSrv01/logs/server1/stopServer.log`.zip
-            String tmpDir = SshUtil.exec(host, "if [ -z \"$TMPDIR\" ]; then echo \"/tmp\"; else echo $TMPDIR; fi;").getData().trim();
+            String tmpDir = SshUtil.exec(host, "if [ -z \"$TMPDIR\" ]; then echo \"/tmp\"; else echo $TMPDIR; fi;", null).getData().trim();
             if(forcePlain) {
                 savedFileName = savePlain(host, file, fileDescription);
-            } else if(SshUtil.exec(host, "zip --help").getStatusCode()==0) {
+            } else if(SshUtil.exec(host, "zip --help", null).getStatusCode()==0) {
                 //Use ZIP
-                String zipFileName = SshUtil.exec(host, "echo " + tmpDir + "/`basename "+file+"`.`date +%Y%m%d%H%M%S -r " + file +"`.zip ").getData().trim();
+                String zipFileName = SshUtil.exec(host, "echo " + tmpDir + "/`basename "+file+"`.`date +%Y%m%d%H%M%S -r " + file +"`.zip ", null).getData().trim();
                 System.out.println("zipFileName: " + zipFileName);
-                SshUtil.ExecResult execResult = SshUtil.exec(host, "zip -j -9 " + zipFileName + " " + file);
+                SshUtil.ExecResult execResult = SshUtil.exec(host, "zip -j -9 " + zipFileName + " " + file, null);
                 if(!(execResult.getData().contains("error") || execResult.getStatusCode()!=0)) {
-                    savedFileName = ScpUtils.getFile(host, zipFileName, host.getDescription() + "_" + fileDescription);
-                    SshUtil.exec(host, "rm " + zipFileName);
+                    savedFileName = ScpUtils.getFile(host, zipFileName, host.getDescription() + "_" + fileDescription, null);
+                    SshUtil.exec(host, "rm " + zipFileName, null);
                     JOptionPane.showMessageDialog(this, "Файл \n'" + file + "'\nс хоста\n'" + host.getHost() + "'\nзаархивирован и сохранён в катлоге программы как\n'" + savedFileName + "'.");
                 } else {
                     savedFileName = savePlain(host, file, fileDescription);
                 }
 
-            } else if(SshUtil.exec(host, "gzip --help").getStatusCode()==0) {
+            } else if(SshUtil.exec(host, "gzip --help", null).getStatusCode()==0) {
                 //gzip
-                String gzipFileName = SshUtil.exec(host, "echo " + tmpDir + "/`basename "+file+"`.`date +%Y%m%d%H%M%S -r " + file +"`.gz ").getData().trim();
+                String gzipFileName = SshUtil.exec(host, "echo " + tmpDir + "/`basename "+file+"`.`date +%Y%m%d%H%M%S -r " + file +"`.gz ", null).getData().trim();
                 System.out.println("gzipFileName: " + gzipFileName);
-                SshUtil.ExecResult execResult = SshUtil.exec(host, "gzip -c9 " + file + " > " + gzipFileName);
+                SshUtil.ExecResult execResult = SshUtil.exec(host, "gzip -c9 " + file + " > " + gzipFileName, null);
                 if(!(execResult.getData().contains("error") || execResult.getStatusCode()!=0)) {
-                    savedFileName = ScpUtils.getFile(host, gzipFileName, host.getDescription()+"_"+fileDescription);
-                    SshUtil.exec(host, "rm " + gzipFileName);
+                    savedFileName = ScpUtils.getFile(host, gzipFileName, host.getDescription()+"_"+fileDescription, null);
+                    SshUtil.exec(host, "rm " + gzipFileName, null);
                     JOptionPane.showMessageDialog(this, "Файл \n'"+file+"'\nс хоста\n'"+host.getHost()+"'\nзаархивирован и сохранён в катлоге программы как\n'"+savedFileName+"'.");
                 } else {
                     savedFileName = savePlain(host, file, fileDescription);
@@ -106,7 +105,7 @@ public class MenuButton extends JButton {
 
     private String savePlain(Host host, String file, String fileDescription) throws JSchException, IOException {
         String savedFileName;
-        savedFileName = ScpUtils.getFile(host, file, host.getDescription() + "_" + fileDescription);
+        savedFileName = ScpUtils.getFile(host, file, host.getDescription() + "_" + fileDescription, null);
         JOptionPane.showMessageDialog(this, "Файл \n'" + file + "'\nс хоста\n'" + host.getHost() + "'\nсохранён в катлоге программы как\n'" + savedFileName + "'.");
         return savedFileName;
     }

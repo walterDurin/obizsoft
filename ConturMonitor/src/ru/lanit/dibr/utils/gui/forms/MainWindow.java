@@ -109,7 +109,7 @@ public class MainWindow {
         }
     }
 
-    public Component createTab(final LogPanel lp, String name) {
+    public Component createTab(final LogPanel lp, final String name) {
         JPanel contentPanel  = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.add(lp);
@@ -118,11 +118,27 @@ public class MainWindow {
         new Thread() {
             @Override
             public void run() {
-                try {
-                    lp.connect();
-                } catch (Exception e1) {
-                    e1.printStackTrace();
+                boolean retry = true;
+                while(retry) {
+                    try {
+                        lp.connect();
+                    } catch (Exception e) {
+                        e.printStackTrace(System.out);
+                        System.out.println(e);
+                        //					JOptionPane.showMessageDialog(LogFrame.this, "Can't open log '" + title + "'!\n" + e.getMessage());
+                        Object[] options = {"Yes, please",
+                                "No, thanks"};
+                        retry = JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(lp,
+                                "Can't open log '" + name + "'!\n" + e.getMessage() + "\nLet's try to reconnect?",
+                                "Error",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.ERROR_MESSAGE,
+                                null,
+                                options,
+                                options[1]);
+                    }
                 }
+
             }
         }.start();
         final Component newTab = tabbedPane1.add(name, contentPanel);

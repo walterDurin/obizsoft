@@ -16,6 +16,8 @@ import ru.lanit.dibr.utils.utils.Utils;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.awt.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -119,7 +121,33 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
     public void connect() throws Exception {
         try {
+            final BlockingQueue<String> dbg = logSource.getDebugOutput();
+
+            final AtomicBoolean stopReadDbg = new AtomicBoolean(false);
+            Thread dbgRead = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while(!stopReadDbg.get()) {
+                        try {
+                            String msg = dbg.poll();
+                            if(msg!=null) {
+                                appendLine(msg);
+                                continue;
+                            }
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                }
+            });
+
+            dbgRead.start();
             logSource.startRead();
+            Thread.sleep(300);
+            stopReadDbg.set(true);
+            dbgRead.interrupt();
+//            dbgRead.join();
+
             filtersChain = logSource;
             String nextLine;
             area.addKeyListener(this);
@@ -155,8 +183,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 }
             });
 
-            StringBuffer buff = new StringBuffer();
+            appendLine("============ LOG STARTS AFTER THIS LINE ============");
 
+            StringBuffer buff = new StringBuffer();
             while (!stopped) {
                 buff.setLength(0);
                 while ((nextLine = filtersChain.readLine()) != LogSource.SKIP_LINE ) {

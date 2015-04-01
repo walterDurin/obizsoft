@@ -3,7 +3,7 @@ package ru.lanit.dibr.utils.utils;
 import com.jcraft.jsch.*;
 
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.concurrent.BlockingQueue;
 
 import ru.lanit.dibr.utils.gui.configuration.Host;
 
@@ -27,11 +27,11 @@ public class SshUtil {
         }
     }
 
-    public static ExecResult exec(Host host, String command) {
+    public static ExecResult exec(Host host, String command, BlockingQueue<String> debugOutput) {
         ExecResult result = new ExecResult();
         System.out.println("SSH exec command: "+command);
         try {
-            Session session = host.connect();
+            Session session = host.connect(debugOutput);
 
             Channel channel = session.openChannel("exec");
             ((ChannelExec) channel).setCommand(command);
