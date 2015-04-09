@@ -7,67 +7,27 @@ import ru.lanit.dibr.utils.utils.Utils;
 
 import java.util.concurrent.BlockingQueue;
 
-public class Host {
-	private String description;
-	private String host;
-	private int port;
-	private String user;
-	private String password;
-	private String pem;
-    private String defaultEncoding;
-    private String proxyHost;
-    private int proxyPrort;
-    private String proxyType;
-    private String proxyLogin;
-    private String proxyPasswd;
-    private Tunnel tunnel;
-    public static final String SOCKS4="SOCKS4";
-    public static final String SOCKS5="SOCKS5";
-    public static final String HTTP="HTTP";
+public class SshHost extends AbstractHost{
 
-    public Host(String host, int port, String user, String password) {
+    private String pem;
+
+    public SshHost(String host, int port, String user, String password) {
 		this(null, host, port, user, password, null, null, null);
 	}
 
-	public Host(String description, String host, int port, String user, String password, String pem, String defaultEncoding, Tunnel tunnel) {
-		this.description = description;
-		this.host = host;
-        this.port = port;
-		this.user = user;
-		this.password = password;
+	public SshHost(String description, String host, int port, String user, String password, String pem, String defaultEncoding, Tunnel tunnel) {
+        super(description, host, port, user, password, defaultEncoding, tunnel);
 		this.pem = pem;
-        this.defaultEncoding = defaultEncoding;
-        this.tunnel = tunnel;
 	}
 
-    public Host(String description, String host, int port, String user, String password, String pem, String defaultEncoding, String proxyAddress, int proxyPrort, String proxyType, Tunnel tunnel) {
-        this.description = description;
-        this.host = host;
-        this.port = port;
-        this.user = user;
-        this.password = password;
+    public SshHost(String description, String host, int port, String user, String password, String pem, String defaultEncoding, String proxyAddress, int proxyPrort, String proxyType, Tunnel tunnel) {
+        super(description, tunnel, host, port, user, password, defaultEncoding, proxyAddress, proxyPrort, proxyType, null, null);
         this.pem = pem;
-        this.defaultEncoding = defaultEncoding;
-        this.tunnel = tunnel;
-        this.proxyHost = proxyAddress;
-        this.proxyPrort = proxyPrort;
-        this.proxyType = proxyType;
     }
 
-    public Host(String description, String host, int port, String user, String password, String pem, String defaultEncoding, String proxyAddress, int proxyPrort, String proxyType, String proxyLogin, String proxyPasswd, Tunnel tunnel) {
-        this.description = description;
-        this.host = host;
-        this.port = port;
-        this.user = user;
-        this.password = password;
+    public SshHost(String description, String host, int port, String user, String password, String pem, String defaultEncoding, String proxyAddress, int proxyPrort, String proxyType, String proxyLogin, String proxyPasswd, Tunnel tunnel) {
+        super(description, tunnel, host, port, user, password, defaultEncoding, proxyAddress, proxyPrort, proxyType, proxyLogin, proxyPasswd);
         this.pem = pem;
-        this.defaultEncoding = defaultEncoding;
-        this.tunnel = tunnel;
-        this.proxyHost = proxyAddress;
-        this.proxyPrort = proxyPrort;
-        this.proxyType = proxyType;
-        this.proxyLogin = proxyLogin;
-        this.proxyPasswd = proxyPasswd;
     }
 
     public Session createSession(BlockingQueue<String> debugOutput, boolean useCompression) throws Exception {
@@ -105,9 +65,9 @@ public class Host {
         session.setConfig("StrictHostKeyChecking", "no"); //принимать неизвестные ключи от серверов
         //сжатие потока
         if(useCompression) {
-            session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
-            session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
-            session.setConfig("compression_level", "9");
+        session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
+        session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
+        session.setConfig("compression_level", "9");
         }
 
         if (pem != null) {
@@ -128,34 +88,6 @@ public class Host {
         return session;
     }
 
-    public String getDescription() {
-		return description;
-	}
-
-	public String getHost() {
-		return host;
-	}
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getDefaultEncoding() {
-        return defaultEncoding;
-    }
-
     @Override
 	public String toString() {
 		return "host = " + host +
@@ -168,7 +100,4 @@ public class Host {
 		return toString().hashCode();
 	}
 
-    public Tunnel getTunnel() {
-        return tunnel;
-    }
 }

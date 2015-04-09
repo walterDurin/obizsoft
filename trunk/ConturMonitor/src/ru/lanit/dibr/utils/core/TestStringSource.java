@@ -123,12 +123,7 @@ public class TestStringSource implements LogSource {
 
     @Override
     public BlockingQueue<String> getDebugOutput() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void setDebugOutput(BlockingQueue<String> debugOutput) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        return debugOutput;
     }
 
     public void setPaused(boolean paused) {

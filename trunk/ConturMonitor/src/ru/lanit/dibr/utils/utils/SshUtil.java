@@ -5,7 +5,7 @@ import com.jcraft.jsch.*;
 import java.io.InputStream;
 import java.util.concurrent.BlockingQueue;
 
-import ru.lanit.dibr.utils.gui.configuration.Host;
+import ru.lanit.dibr.utils.gui.configuration.SshHost;
 
 /**
  * User: Vova
@@ -27,7 +27,7 @@ public class SshUtil {
         }
     }
 
-    public static ExecResult exec(Host host, String command, BlockingQueue<String> debugOutput) {
+    public static ExecResult exec(SshHost host, String command, BlockingQueue<String> debugOutput) {
         ExecResult result = new ExecResult();
         System.out.println("SSH exec command: "+command);
         try {

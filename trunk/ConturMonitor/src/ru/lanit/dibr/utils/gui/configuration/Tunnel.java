@@ -13,12 +13,12 @@ import java.util.concurrent.BlockingQueue;
  * Time: 0:39
  */
 public class Tunnel {
-    private Host host;
+    private SshHost host;
     private List<Portmap> portmaps;
     private boolean isConnected = false;
     private Session session;
 
-    public Tunnel(Host host, List<Portmap> portmaps) {
+    public Tunnel(SshHost host, List<Portmap> portmaps) {
         this.host = host;
         this.portmaps = portmaps;
     }

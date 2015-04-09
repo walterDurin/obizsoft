@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Date: 13.11.12
  * Time: 2:12
  */
-public class TestSource implements LogSource {
+public class SimpleLocalFileSource implements LogSource {
 
     private boolean isClosed = false;
     private AtomicBoolean paused = new AtomicBoolean(false);
@@ -23,11 +23,11 @@ public class TestSource implements LogSource {
     int writedLines = 0;
     BufferedReader reader = null;
 
-    public TestSource(String filename, long sleep) {
+    public SimpleLocalFileSource(String filename, long sleep) {
         this(filename);
         SLEEP = sleep;
     }
-    public TestSource(String filename) {
+    public SimpleLocalFileSource(String filename) {
         fileToRead = new File(filename);
         if(!fileToRead.exists() || !fileToRead.isFile() || !fileToRead.canRead()) {
             throw new RuntimeException("Не могу открыть файл!");
@@ -149,12 +149,7 @@ public class TestSource implements LogSource {
 
     @Override
     public BlockingQueue<String> getDebugOutput() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void setDebugOutput(BlockingQueue<String> debugOutput) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        return debugOutput;
     }
 
     public void setPaused(boolean paused) {

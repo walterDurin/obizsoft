@@ -1,7 +1,6 @@
 package hlam;
 
 import com.jcraft.jsch.*;
-import ru.lanit.dibr.utils.gui.configuration.Host;
 import ru.lanit.dibr.utils.utils.MyUserInfo;
 
 import java.io.*;

@@ -1,7 +1,8 @@
 package ru.lanit.dibr.utils.gui;
 
-import ru.lanit.dibr.utils.core.TestSource;
-import ru.lanit.dibr.utils.gui.configuration.Host;
+import ru.lanit.dibr.utils.core.AbstractHost;
+import ru.lanit.dibr.utils.core.SimpleLocalFileSource;
+import ru.lanit.dibr.utils.gui.configuration.SshHost;
 import ru.lanit.dibr.utils.gui.forms.MainWindow;
 import ru.lanit.dibr.utils.utils.ScpUtils;
 import ru.lanit.dibr.utils.utils.SshUtil;
@@ -19,31 +20,34 @@ import com.jcraft.jsch.JSchException;
  * Time: 23:47:43
  */
 public class MenuButton extends JButton {
-    public MenuButton(final Host host, final String file, final String fileDescription, final MainWindow mainWindow, final String blockPattern) {
+    public MenuButton(final AbstractHost host, final String file, final String fileDescription, final MainWindow mainWindow, final String blockPattern) {
         setText("...");
         setPreferredSize(new Dimension(15,15));
 
         final JPopupMenu opts = new JPopupMenu();
         opts.setInvoker(MenuButton.this);
 
+        JMenuItem menuItem;
         // Меню ======== СОХРАНИТЬ ============
-        JMenuItem menuItem = new JMenuItem("Сохранить весь файл");
-        menuItem.addActionListener(new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                saveFile(e, host, file, fileDescription, false);
+        //TODO ПЕРЕПИСАТЬ host на AbstractHost!!! Логику скачивания полного файла унести в хост или сорс!
+        if(host instanceof SshHost) {
+            menuItem = new JMenuItem("Сохранить весь файл");
+            menuItem.addActionListener(new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    saveFile(e, (SshHost) host, file, fileDescription, false);
 
-            }
-        });
-        opts.add(menuItem);
-
-        menuItem = new JMenuItem("Сохранить весь файл и открыть в табе");
-        menuItem.addActionListener(new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                String fileName = saveFile(e, host, file, fileDescription, true);
-                mainWindow.createTab(new LogPanel(new TestSource(fileName, 0), blockPattern), host.getDescription() + ": [saved] " + file);
-            }
-        });
-        opts.add(menuItem);
+                }
+            });
+            opts.add(menuItem);
+            menuItem = new JMenuItem("Сохранить весь файл и открыть в табе");
+            menuItem.addActionListener(new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    String fileName = saveFile(e, (SshHost) host, file, fileDescription, true);
+                    mainWindow.createTab(new LogPanel(new SimpleLocalFileSource(fileName, 0), blockPattern), host.getDescription() + ": [saved] " + file);
+                }
+            });
+            opts.add(menuItem);
+        }
 
         //  Показ меню
         addActionListener(new AbstractAction() {
@@ -58,7 +62,7 @@ public class MenuButton extends JButton {
         });
     }
 
-    private String saveFile(ActionEvent e, Host host, String file, String fileDescription, boolean forcePlain) {
+    private String saveFile(ActionEvent e, SshHost host, String file, String fileDescription, boolean forcePlain) {
         System.out.println(e);
         String savedFileName = null;
         try {
@@ -103,7 +107,7 @@ public class MenuButton extends JButton {
         return savedFileName;
     }
 
-    private String savePlain(Host host, String file, String fileDescription) throws JSchException, IOException {
+    private String savePlain(SshHost host, String file, String fileDescription) throws JSchException, IOException {
         String savedFileName;
         savedFileName = ScpUtils.getFile(host, file, host.getDescription() + "_" + fileDescription, null);
         JOptionPane.showMessageDialog(this, "Файл \n'" + file + "'\nс хоста\n'" + host.getHost() + "'\nсохранён в катлоге программы как\n'" + savedFileName + "'.");
