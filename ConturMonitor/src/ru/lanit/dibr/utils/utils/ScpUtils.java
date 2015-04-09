@@ -5,7 +5,7 @@ import com.jcraft.jsch.*;
 import java.io.*;
 import java.util.concurrent.BlockingQueue;
 
-import ru.lanit.dibr.utils.gui.configuration.Host;
+import ru.lanit.dibr.utils.gui.configuration.SshHost;
 
 /**
  * User: Vova
@@ -14,7 +14,7 @@ import ru.lanit.dibr.utils.gui.configuration.Host;
  */
 public class ScpUtils {
 
-    public static String getFile(Host host, String file, String localFileNamePrefix, BlockingQueue<String> debugOutput) throws JSchException, IOException {
+    public static String getFile(SshHost host, String file, String localFileNamePrefix, BlockingQueue<String> debugOutput) throws JSchException, IOException {
         FileOutputStream fos = null;
         try {
 

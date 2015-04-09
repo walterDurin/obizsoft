@@ -2,13 +2,15 @@ package ru.lanit.dibr.utils.gui.forms;
 
 import ru.lanit.dibr.utils.CmdLineConfiguration;
 import ru.lanit.dibr.utils.Configuration;
+import ru.lanit.dibr.utils.core.AbstractHost;
+import ru.lanit.dibr.utils.core.FtpSource;
 import ru.lanit.dibr.utils.core.SshSource;
-import ru.lanit.dibr.utils.core.TestSource;
+import ru.lanit.dibr.utils.core.SimpleLocalFileSource;
 import ru.lanit.dibr.utils.gui.FunctionPanel;
-import ru.lanit.dibr.utils.gui.LogFrame;
 import ru.lanit.dibr.utils.gui.LogPanel;
 import ru.lanit.dibr.utils.gui.MenuButton;
-import ru.lanit.dibr.utils.gui.configuration.Host;
+import ru.lanit.dibr.utils.gui.configuration.FTPHost;
+import ru.lanit.dibr.utils.gui.configuration.SshHost;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
 import ru.lanit.dibr.utils.utils.FileDrop;
 
@@ -17,7 +19,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -47,7 +49,7 @@ public class MainWindow {
         tabbedPane1.remove(0);
 
         logList.setLayout(new BoxLayout(logList, BoxLayout.Y_AXIS));
-        for (Map.Entry<Host, Map<String, LogFile>> entry : cfg.getServers().entrySet()) {
+        for (Map.Entry<AbstractHost, LinkedHashMap<String, LogFile>> entry : cfg.getServers().entrySet()) {
             JPanel hostPane = new JPanel();
             hostPane.setLayout(new BoxLayout(hostPane, BoxLayout.Y_AXIS));
             Label hostLabel = new Label(entry.getKey().getDescription(), Label.CENTER);
@@ -66,7 +68,7 @@ public class MainWindow {
         window.setVisible(true);
     }
 
-    private void addButton(JPanel buttons, final LogFile logFile, final Host host) {
+    private void addButton(JPanel buttons, final LogFile logFile, final AbstractHost host) {
         final JButton b = new JButton(logFile.getName());
         System.out.println(b.getFont());
         b.setFont(new Font("Courier", 0, CmdLineConfiguration.fontSize+2));
@@ -80,13 +82,18 @@ public class MainWindow {
                     //TODO: реализовать нормальный Source для локальных файлов, используюя org.apache.commons.io.input.Tailer
                     //lp = new LogFrame(b, menuButton, logFile.getName(), new TestSource(logFile.getPath()), logFile.getBlockPattern());
                 } else {
-                    lp = new LogPanel(new SshSource(host, logFile), logFile.getBlockPattern());
+                    //TODO: !!! убрать хосты внутрь лог файлов! и создавать соурсы методом на файлах!
+                    if(host instanceof SshHost) {
+                        lp = new LogPanel(new SshSource((SshHost) host, logFile), logFile.getBlockPattern());
+                    } else if (host instanceof FTPHost) {
+                        lp = new LogPanel(new FtpSource((FTPHost) host, logFile), logFile.getBlockPattern());
+                    }
                     createTab(lp, host.getDescription()+ " : " + logFile.getName());
                     new FileDrop(System.out, lp.getViewport().getView(), new FileDrop.Listener() {
                         @Override
                         public void filesDropped(File[] files) {
                             for (int i = 0; i < files.length; i++) {
-                                createTab(new LogPanel(new TestSource(files[i].getAbsolutePath(), 0), logFile.getBlockPattern()), "[" + files[i].getName() + "]");
+                                createTab(new LogPanel(new SimpleLocalFileSource(files[i].getAbsolutePath(), 0), logFile.getBlockPattern()), "[" + files[i].getName() + "]");
                             }
                         }
                     });

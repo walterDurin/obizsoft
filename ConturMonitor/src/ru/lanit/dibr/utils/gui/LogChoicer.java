@@ -2,9 +2,10 @@ package ru.lanit.dibr.utils.gui;
 
 import ru.lanit.dibr.utils.CmdLineConfiguration;
 import ru.lanit.dibr.utils.Configuration;
+import ru.lanit.dibr.utils.core.AbstractHost;
 import ru.lanit.dibr.utils.core.SshSource;
-import ru.lanit.dibr.utils.core.TestSource;
-import ru.lanit.dibr.utils.gui.configuration.Host;
+import ru.lanit.dibr.utils.core.SimpleLocalFileSource;
+import ru.lanit.dibr.utils.gui.configuration.SshHost;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
 import ru.lanit.dibr.utils.utils.FileDrop;
 
@@ -16,6 +17,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -40,7 +42,7 @@ public class LogChoicer extends JFrame implements WindowStateListener {
 		pane = new JPanel();
 		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
         setLocation((int) GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getLocation().getX(), 250);
-		for (Map.Entry<Host, Map<String, LogFile>> entry : cfg.getServers().entrySet()) {
+		for (Map.Entry<AbstractHost, LinkedHashMap<String, LogFile>> entry : cfg.getServers().entrySet()) {
 			JPanel hostPane = new JPanel();
 			hostPane.setLayout(new BoxLayout(hostPane, BoxLayout.Y_AXIS));
 			Label hostLabel = new Label(entry.getKey().getDescription(), Label.CENTER);
@@ -96,7 +98,7 @@ public class LogChoicer extends JFrame implements WindowStateListener {
 //		setSize(300, getHeight());
 	}
 
-	private void addButton(JPanel buttons, final LogFile logFile, final Host host) {
+	private void addButton(JPanel buttons, final LogFile logFile, final AbstractHost host) {
         final JButton b = new JButton(logFile.getName());
         System.out.println(b.getFont());
         b.setFont(new Font("Courier", 0, CmdLineConfiguration.fontSize+2));
@@ -109,9 +111,9 @@ public class LogChoicer extends JFrame implements WindowStateListener {
 				if(lf==null) {
 					if(logFile.isLocal()) {
                         //TODO: реализовать нормальный Source для локальных файлов, используюя org.apache.commons.io.input.Tailer
-                        lf = new LogFrame(b, menuButton, logFile.getName(), new TestSource(logFile.getPath()), logFile.getBlockPattern());
+                        lf = new LogFrame(b, menuButton, logFile.getName(), new SimpleLocalFileSource(logFile.getPath()), logFile.getBlockPattern());
                     } else {
-                        lf = new LogFrame(b, menuButton, host.getDescription()+ " : " + logFile.getName(), new SshSource(host, logFile), logFile.getBlockPattern());
+                        lf = new LogFrame(b, menuButton, host.getDescription()+ " : " + logFile.getName(), new SshSource((SshHost) host, logFile), logFile.getBlockPattern());
                     }
                     lf.setVisible(true);
 					b.setForeground(new Color(48, 129, 97));

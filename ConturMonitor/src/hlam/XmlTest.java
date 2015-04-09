@@ -12,7 +12,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.beans.XMLDecoder;
 
-import ru.lanit.dibr.utils.gui.configuration.Host;
+import ru.lanit.dibr.utils.gui.configuration.SshHost;
 
 /**
  * User: VTaran
@@ -35,7 +35,7 @@ public class XmlTest {
 				String host = list.item(i).getAttributes().getNamedItem("host").getNodeValue();
 				String user = list.item(i).getAttributes().getNamedItem("user").getNodeValue();
 				String password = list.item(i).getAttributes().getNamedItem("password").getNodeValue();
-				Host nextHost = new Host(host, 22, user, password);
+				SshHost nextHost = new SshHost(host, 22, user, password);
 				System.out.println(nextHost);
 
 //				for(int i; ) {

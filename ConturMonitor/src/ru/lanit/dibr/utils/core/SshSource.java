@@ -1,7 +1,7 @@
 package ru.lanit.dibr.utils.core;
 
 import com.jcraft.jsch.*;
-import ru.lanit.dibr.utils.gui.configuration.Host;
+import ru.lanit.dibr.utils.gui.configuration.SshHost;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
 import ru.lanit.dibr.utils.utils.Utils;
 
@@ -24,18 +24,17 @@ public class SshSource implements LogSource {
     private boolean paused = false;
     private boolean writeLineNumbers = false;
     private Thread readThread;
-    private BlockingQueue<String> debugOutput = new LinkedBlockingQueue<String>();
 
     List<String> buffer;
 
     int readedLines;
-    private Host host;
+    private SshHost host;
     private LogFile logFile;
     BufferedReader reader = null;
     ChannelExec channel = null;
     Session session = null;
 
-    public SshSource(Host host, LogFile logFile) {
+    public SshSource(SshHost host, LogFile logFile) {
         this.host = host;
         this.logFile = logFile;
     }
@@ -48,8 +47,6 @@ public class SshSource implements LogSource {
         session = host.connect(debugOutput);
         isClosed = false;
         channel = (ChannelExec) session.openChannel("exec");
-//        String linesCount = SshUtil.exec(host, "wc -l " + logFile.getPath() + " | awk \"{print $1}\"").getData().trim();
-//        System.out.println("Lines count in log file: " + linesCount);
         channel.setCommand("tail -1000f " + logFile.getPath());
         //channel.setCommand("tail -c +0 -f " + logFile.getPath()); //Так можно загрузить весь файл
         reader = new BufferedReader(new InputStreamReader(channel.getInputStream(), host.getDefaultEncoding()));
@@ -204,8 +201,4 @@ public class SshSource implements LogSource {
         return debugOutput;
     }
 
-    @Override
-    public void setDebugOutput(BlockingQueue<String> debugOutput) {
-        this.debugOutput = debugOutput;
-    }
 }

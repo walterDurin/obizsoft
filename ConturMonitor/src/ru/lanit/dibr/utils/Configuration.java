@@ -1,6 +1,5 @@
 package ru.lanit.dibr.utils;
 
-import com.sun.org.apache.xerces.internal.dom.DeferredElementImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -14,7 +13,8 @@ import java.util.*;
 import java.io.IOException;
 import java.io.File;
 
-import ru.lanit.dibr.utils.gui.configuration.Host;
+import ru.lanit.dibr.utils.core.AbstractHost;
+import ru.lanit.dibr.utils.gui.configuration.SshHost;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
 import ru.lanit.dibr.utils.gui.configuration.Portmap;
 import ru.lanit.dibr.utils.gui.configuration.Tunnel;
@@ -26,37 +26,37 @@ import ru.lanit.dibr.utils.gui.configuration.Tunnel;
  */
 public class Configuration {
 
-	private Map<Host, Map<String, LogFile>> servers;
+    private Map<AbstractHost, LinkedHashMap<String, LogFile>> servers;
     private Map<String, Tunnel> tunnels = new HashMap<String, Tunnel>();
 
-	public Map<Host, Map<String, LogFile>> getServers() {
-		return servers;
-	}
+    public Map<AbstractHost, LinkedHashMap<String, LogFile>> getServers() {
+        return servers;
+    }
 
-	public void setServers(Map<Host, Map<String, LogFile>> servers) {
-		this.servers = servers;
-	}
+    public void setServers(Map<AbstractHost, LinkedHashMap<String, LogFile>> servers) {
+        this.servers = servers;
+    }
 
-	public Configuration(String path) {
-		try {
-			
-			servers = new LinkedHashMap<Host, Map<String, LogFile>>();
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        	DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(new File(path));
+    public Configuration(String path) {
+        try {
+
+            servers = new LinkedHashMap<AbstractHost, LinkedHashMap<String, LogFile>>();
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new File(path));
 
             NodeList tunnelsList = doc.getElementsByTagName("tunnel");
             for (int i = 0; i < tunnelsList.getLength(); i++) {
                 Node item = tunnelsList.item(i);
-                Host nextHost = readHost(item);
+                AbstractHost nextHost = readHost(item);
                 String name = item.getAttributes().getNamedItem("name").getNodeValue();
 
                 List<Portmap> portmapList = new ArrayList<Portmap>();
 
                 NodeList portmapNodeList = item.getChildNodes();
-                for (int j =0; j < portmapNodeList.getLength(); j++) {
+                for (int j = 0; j < portmapNodeList.getLength(); j++) {
                     Node portmapNode = portmapNodeList.item(j);
-                    if(!portmapNode.getNodeName().equals("L")) {
+                    if (!portmapNode.getNodeName().equals("L")) {
                         continue;
                     }
                     int localPort = Integer.parseInt(portmapNode.getAttributes().getNamedItem("localPort").getNodeValue());
@@ -65,64 +65,61 @@ public class Configuration {
                     portmapList.add(new Portmap(localPort, destHost, destPort));
                 }
 
-                tunnels.put(name, new Tunnel(nextHost, portmapList));
+                tunnels.put(name, new Tunnel((SshHost) nextHost, portmapList));
             }
 
 
-			NodeList serversList = doc.getElementsByTagName("server");
-			for (int i = 0; i < serversList.getLength(); i++) {
+            NodeList serversList = doc.getElementsByTagName("server");
+            for (int i = 0; i < serversList.getLength(); i++) {
                 Node server = serversList.item(i);
-                Host nextHost = readHost(server);
+                AbstractHost nextHost = readHost(server);
 
-				System.out.println(nextHost);
-				NodeList logList = server.getChildNodes();
-				servers.put(nextHost, new LinkedHashMap<String, LogFile>());
-				for(int j = 0; j < logList.getLength() ; j++  ) {
-					if(logList.item(j).getNodeName().equals("log")) {
+                System.out.println(nextHost);
+                NodeList logList = server.getChildNodes();
+                servers.put(nextHost, new LinkedHashMap<String, LogFile>());
+                for (int j = 0; j < logList.getLength(); j++) {
+                    if (logList.item(j).getNodeName().equals("log")) {
                         NamedNodeMap logElement = logList.item(j).getAttributes();
                         String name = logElement.getNamedItem("name").getNodeValue();
                         String file = logElement.getNamedItem("file").getNodeValue();
                         String blockPattern = null;
-                        if(logElement.getNamedItem("blockPattern")!=null) {
+                        if (logElement.getNamedItem("blockPattern") != null) {
                             blockPattern = logElement.getNamedItem("blockPattern").getNodeValue().trim();
-                            if(blockPattern.length()==0) {
+                            if (blockPattern.length() == 0) {
                                 blockPattern = null;
                             }
                         }
                         servers.get(nextHost).put(name, new LogFile(name, file, blockPattern));
                     }
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		} catch (SAXException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		}
-	}
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (SAXException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 
-    private Host readHost(Node server) {
+    private AbstractHost readHost(Node server) {
         String descr = server.getAttributes().getNamedItem("name").getNodeValue();
         String host = server.getAttributes().getNamedItem("host").getNodeValue();
         String port = "22";
-        if(server.getAttributes().getNamedItem("port")!=null) {
+        if (server.getAttributes().getNamedItem("port") != null) {
             port = server.getAttributes().getNamedItem("port").getNodeValue();
         }
         String user = server.getAttributes().getNamedItem("user").getNodeValue();
         String password = null;
-        if(server.getAttributes().getNamedItem("password")!=null) {
+        if (server.getAttributes().getNamedItem("password") != null) {
             password = server.getAttributes().getNamedItem("password").getNodeValue();
         }
-        String pem = null;
-        if(server.getAttributes().getNamedItem("pem")!=null) {
-            pem = server.getAttributes().getNamedItem("pem").getNodeValue();
-        }
+
         String encoding = null;
-        if(server.getAttributes().getNamedItem("encoding")!=null) {
+        if (server.getAttributes().getNamedItem("encoding") != null) {
             encoding = server.getAttributes().getNamedItem("encoding").getNodeValue();
         }
-        if(encoding==null || encoding.trim().length()==0) {
+        if (encoding == null || encoding.trim().length() == 0) {
             encoding = System.getProperty("file.encoding");
         }
 
@@ -131,40 +128,56 @@ public class Configuration {
         String proxyPasswd = null;
         String proxyType = null;
         String proxyPort = null;
-        if(server.getAttributes().getNamedItem("proxyHost")!=null) {
+        if (server.getAttributes().getNamedItem("proxyHost") != null) {
             proxyHost = server.getAttributes().getNamedItem("proxyHost").getNodeValue();
-            if(server.getAttributes().getNamedItem("proxyType")!=null) {
+            if (server.getAttributes().getNamedItem("proxyType") != null) {
                 proxyType = server.getAttributes().getNamedItem("proxyType").getNodeValue();
             }
-            if(server.getAttributes().getNamedItem("proxyPort")!=null) {
+            if (server.getAttributes().getNamedItem("proxyPort") != null) {
                 proxyPort = server.getAttributes().getNamedItem("proxyPort").getNodeValue();
             }
-            if(server.getAttributes().getNamedItem("proxyLogin")!=null) {
+            if (server.getAttributes().getNamedItem("proxyLogin") != null) {
                 proxyLogin = server.getAttributes().getNamedItem("proxyLogin").getNodeValue();
             }
-            if(server.getAttributes().getNamedItem("proxyPasswd")!=null) {
+            if (server.getAttributes().getNamedItem("proxyPasswd") != null) {
                 proxyPasswd = server.getAttributes().getNamedItem("proxyPasswd").getNodeValue();
             }
         }
 
         Tunnel tunnel = null;
-        if(server.getAttributes().getNamedItem("tunnel")!=null) {
+        if (server.getAttributes().getNamedItem("tunnel") != null) {
             tunnel = tunnels.get(server.getAttributes().getNamedItem("tunnel").getNodeValue());
         }
 
-        Host nextHost;
-        if(proxyHost!=null) {
-            if(proxyPort==null || proxyPort.trim().length()==0) {
-                proxyPort="0";
-            }
-            if (proxyLogin==null) {
-                nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding, proxyHost, Integer.parseInt(proxyPort), proxyType, tunnel);
-            } else {
-                nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding, proxyHost, Integer.parseInt(proxyPort), proxyType, proxyLogin, proxyPasswd, tunnel);
+
+        String serverType = null;
+        if (server.getAttributes().getNamedItem("serverType") != null) {
+            serverType = server.getAttributes().getNamedItem("serverType").getNodeValue();
+        }
+
+        AbstractHost nextHost = null;
+
+        if (serverType == null || serverType.equalsIgnoreCase("SSH")) {
+
+            //SSH specific
+            String pem = null;
+            if (server.getAttributes().getNamedItem("pem") != null) {
+                pem = server.getAttributes().getNamedItem("pem").getNodeValue();
             }
 
-        } else {
-            nextHost = new Host(descr, host, Integer.parseInt(port), user, password, pem, encoding, tunnel);
+            if (proxyHost != null) {
+                if (proxyPort == null || proxyPort.trim().length() == 0) {
+                    proxyPort = "0";
+                }
+                if (proxyLogin == null) {
+                    nextHost = new SshHost(descr, host, Integer.parseInt(port), user, password, pem, encoding, proxyHost, Integer.parseInt(proxyPort), proxyType, tunnel);
+                } else {
+                    nextHost = new SshHost(descr, host, Integer.parseInt(port), user, password, pem, encoding, proxyHost, Integer.parseInt(proxyPort), proxyType, proxyLogin, proxyPasswd, tunnel);
+                }
+
+            } else {
+                nextHost = new SshHost(descr, host, Integer.parseInt(port), user, password, pem, encoding, tunnel);
+            }
         }
         return nextHost;
     }
