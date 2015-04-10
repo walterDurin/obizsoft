@@ -13,4 +13,6 @@ public class FTPHost extends AbstractHost {
     public FTPHost(String description, Tunnel tunnel, String host, int port, String user, String password, String defaultEncoding, String proxyHost, int proxyPrort, String proxyType, String proxyLogin, String proxyPasswd) {
         super(description, tunnel, host, port, user, password, defaultEncoding, proxyHost, proxyPrort, proxyType, proxyLogin, proxyPasswd);
     }
+
+
 }

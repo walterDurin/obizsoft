@@ -54,6 +54,7 @@ public class FtpSource implements LogSource {
         ftpReadThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                System.out.println("4");
                 java.util.Date md = null;
                 try {
                     md = client.modifiedDate(logFile.getPath());
@@ -62,7 +63,7 @@ public class FtpSource implements LogSource {
                         client.download(logFile.getPath(), pos, ftpFileSize, null);
                         ftpFileSize = client.fileSize(logFile.getPath());
                     }
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
 
                 } catch (Exception e) {
                     try {
@@ -77,6 +78,7 @@ public class FtpSource implements LogSource {
 
         readThread = new Thread(new Runnable() {
             public void run() {
+                System.out.println("5");
                 String nextLine;
                 try {
                     while ((nextLine = reader.readLine()) != null && !isClosed) {
@@ -91,15 +93,16 @@ public class FtpSource implements LogSource {
                     }
                     e.printStackTrace();
                 }
-                System.out.println("Stopped SSH read thread.");
+                System.out.println("Stopped FTP read thread.");
             }
         });
 
         new Thread(new Runnable() {
             public void run() {
+                System.out.println("6");
                 while(client.isConnected() && !isClosed) {
                     try {
-                        Thread.sleep(200);
+                        Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -114,13 +117,18 @@ public class FtpSource implements LogSource {
                         e.printStackTrace();
                     }
                 } else {
-                    System.out.println("Stopped SSH connection monitor thread.");
+                    System.out.println("Stopped FTP connection monitor thread.");
                 }
 
             }
         }, "Conn monitor").start();
-        ftpReadThread.start();
+
+        System.out.println("1");
         readThread.start();
+        Thread.sleep(500);
+        System.out.println("2");
+        ftpReadThread.start();
+        System.out.println("3");
 
     }
 
@@ -128,7 +136,7 @@ public class FtpSource implements LogSource {
         try {
             while (paused && !isClosed) {
                 System.out.println("I'm asleep..");
-                Thread.sleep(50);
+                Thread.sleep(200);
             }
             if(isClosed) {
                 throw new IOException("Connection lost.");
@@ -140,7 +148,7 @@ public class FtpSource implements LogSource {
                     return buffer.get(readedLines++);
                 }
             } else {
-                Thread.sleep(50);
+                Thread.sleep(150);
             }
 
         } catch (InterruptedException e) {
