@@ -1,4 +1,4 @@
-package ru.lanit.dibr.utils.utils;
+package test;
 
 import it.sauronsoftware.ftp4j.*;
 
@@ -36,7 +36,7 @@ public class TestFTPConnect {
         t.start();
 
         for(int i = 0; i < 20 ; i++) {
-            client.list();
+            //client.list();
             java.util.Date md = client.modifiedDate(path);
             System.out.println("Modification date :" + md + "; and size: " + size) ;
             if(client.fileSize(path)!=size) {

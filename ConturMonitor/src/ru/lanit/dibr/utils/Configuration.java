@@ -14,10 +14,7 @@ import java.io.IOException;
 import java.io.File;
 
 import ru.lanit.dibr.utils.core.AbstractHost;
-import ru.lanit.dibr.utils.gui.configuration.SshHost;
-import ru.lanit.dibr.utils.gui.configuration.LogFile;
-import ru.lanit.dibr.utils.gui.configuration.Portmap;
-import ru.lanit.dibr.utils.gui.configuration.Tunnel;
+import ru.lanit.dibr.utils.gui.configuration.*;
 
 /**
  * User: VTaran
@@ -178,6 +175,21 @@ public class Configuration {
             } else {
                 nextHost = new SshHost(descr, host, Integer.parseInt(port), user, password, pem, encoding, tunnel);
             }
+        } else if (serverType.equalsIgnoreCase("FTP")) {
+            if (proxyHost != null) {
+                if (proxyPort == null || proxyPort.trim().length() == 0) {
+                    proxyPort = "0";
+                }
+                if (proxyLogin == null) {
+                    nextHost = new FTPHost(descr, tunnel, host, Integer.parseInt(port), user, password, encoding, proxyHost, Integer.parseInt(proxyPort), proxyType, null, null);
+                } else {
+                    nextHost = new FTPHost(descr, tunnel, host, Integer.parseInt(port), user, password, encoding, proxyHost, Integer.parseInt(proxyPort), proxyType, proxyLogin, proxyPasswd);
+                }
+
+            } else {
+                nextHost = new FTPHost(descr, host, Integer.parseInt(port), user, password, encoding, tunnel);
+            }
+
         }
         return nextHost;
     }
