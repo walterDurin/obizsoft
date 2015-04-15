@@ -38,6 +38,10 @@ public class SshHost extends AbstractHost{
             useCompression = false;
         }
 
+        if(!checkConnection(debugOutput)) {
+            Utils.writeToDebugQueue(debugOutput, "ERROR: Can't connect to host!");
+        }
+
         JSch jsch = new JSch();
         Session session = jsch.getSession(user, host, port);
         if (proxyHost != null) {
