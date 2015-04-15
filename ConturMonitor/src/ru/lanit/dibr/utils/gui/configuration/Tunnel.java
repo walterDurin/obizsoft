@@ -93,4 +93,10 @@ public class Tunnel {
             return false;
         }
     }
+
+    public boolean checkConnection(BlockingQueue<String> debugOutput) {
+        Utils.writeToDebugQueue(debugOutput, "Check tunnel connection..");
+        return host.checkConnection(debugOutput);
+    }
+
 }
