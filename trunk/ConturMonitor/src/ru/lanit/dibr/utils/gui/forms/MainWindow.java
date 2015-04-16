@@ -49,12 +49,36 @@ public class MainWindow {
         tabbedPane1.remove(0);
 
         logList.setLayout(new BoxLayout(logList, BoxLayout.Y_AXIS));
-        for (Map.Entry<AbstractHost, LinkedHashMap<String, LogFile>> entry : cfg.getServers().entrySet()) {
+        for (final Map.Entry<AbstractHost, LinkedHashMap<String, LogFile>> entry : cfg.getServers().entrySet()) {
             JPanel hostPane = new JPanel();
             hostPane.setLayout(new BoxLayout(hostPane, BoxLayout.Y_AXIS));
-            Label hostLabel = new Label(entry.getKey().getDescription(), Label.CENTER);
+            final Label hostLabel = new Label(entry.getKey().getDescription(), Label.CENTER);
             hostLabel.setFont(new Font("Courier", Font.BOLD, CmdLineConfiguration.fontSize+4));
             hostPane.add(hostLabel);
+
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        while(true) {
+                            if(entry.getKey().getTunnel()==null || entry.getKey().getTunnel().isConnectionAlive()) {
+                                if (entry.getKey().checkCnnection()) {
+                                    hostLabel.setForeground(new Color(0x00B32D));
+                                } else {
+                                    hostLabel.setForeground(new Color(0xF53D00));
+                                }
+                            } else {
+                                hostLabel.setForeground(Color.BLACK);
+                            }
+                            Thread.sleep(500);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
             JPanel buttons = new JPanel();
             GridBagLayout mgr = new GridBagLayout();
             buttons.setLayout(mgr);
@@ -122,7 +146,7 @@ public class MainWindow {
         contentPanel.add(lp);
         contentPanel.add(new FunctionPanel(lp));
 
-        new Thread() {
+        final Thread connectionAlertThread = new Thread("ConnAlert: " + name) {
             @Override
             public void run() {
                 boolean retry = true;
@@ -147,7 +171,8 @@ public class MainWindow {
                 }
 
             }
-        }.start();
+        };
+        connectionAlertThread.start();
         final Component newTab = tabbedPane1.add(name, contentPanel);
         tabbedPane1.setSelectedComponent(newTab);
 
