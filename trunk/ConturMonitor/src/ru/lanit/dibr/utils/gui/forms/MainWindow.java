@@ -12,6 +12,7 @@ import ru.lanit.dibr.utils.gui.MenuButton;
 import ru.lanit.dibr.utils.gui.configuration.FTPHost;
 import ru.lanit.dibr.utils.gui.configuration.SshHost;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
+import ru.lanit.dibr.utils.gui.configuration.Tunnel;
 import ru.lanit.dibr.utils.utils.FileDrop;
 
 import javax.swing.*;
@@ -19,8 +20,8 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,12 +50,32 @@ public class MainWindow {
         tabbedPane1.remove(0);
 
         logList.setLayout(new BoxLayout(logList, BoxLayout.Y_AXIS));
+        final LinkedHashMap<Tunnel, List<Label>> tunnelsLabelsMap = new LinkedHashMap<Tunnel, List<Label>>();
         for (final Map.Entry<AbstractHost, LinkedHashMap<String, LogFile>> entry : cfg.getServers().entrySet()) {
             JPanel hostPane = new JPanel();
             hostPane.setLayout(new BoxLayout(hostPane, BoxLayout.Y_AXIS));
-            final Label hostLabel = new Label(entry.getKey().getDescription(), Label.CENTER);
+            JPanel hostPaneLabel = new JPanel();
+            hostPaneLabel.setLayout(new BoxLayout(hostPaneLabel, BoxLayout.X_AXIS));
+
+            //Tunnel prefix
+            final Tunnel tunnel = entry.getKey().getTunnel();
+            final Label hostLabelPrefix = new Label("[T]", Label.RIGHT);
+            if(tunnel!=null) {
+                hostLabelPrefix.setFont(new Font("Courier", Font.BOLD, CmdLineConfiguration.fontSize+4));
+                hostPaneLabel.add(hostLabelPrefix);
+                if(!tunnelsLabelsMap.containsKey(tunnel)){
+                    tunnelsLabelsMap.put(tunnel, new ArrayList<Label>());
+                }
+                tunnelsLabelsMap.get(tunnel).add(hostLabelPrefix);
+            }
+
+            //Host description
+            final Label hostLabel = new Label(entry.getKey().getDescription(), Label.LEFT);
             hostLabel.setFont(new Font("Courier", Font.BOLD, CmdLineConfiguration.fontSize+4));
-            hostPane.add(hostLabel);
+            hostPaneLabel.add(hostLabel);
+
+            hostPane.add(hostPaneLabel);
+            //hostPane.add(hostLabel);
 
 
             new Thread(new Runnable() {
@@ -62,7 +83,15 @@ public class MainWindow {
                 public void run() {
                     try {
                         while(true) {
-                            if(entry.getKey().getTunnel()==null || entry.getKey().getTunnel().isConnectionAlive()) {
+                            if(tunnel!=null) {
+                                if(tunnel.checkConnection()) {
+                                    hostLabelPrefix.setForeground(new Color(0x00B32D));
+                                } else {
+                                    hostLabelPrefix.setForeground(new Color(0xF53D00));
+                                }
+                            }
+
+                            if(tunnel==null || tunnel.isConnectionAlive()) {
                                 if (entry.getKey().checkCnnection()) {
                                     hostLabel.setForeground(new Color(0x00B32D));
                                 } else {
@@ -71,7 +100,7 @@ public class MainWindow {
                             } else {
                                 hostLabel.setForeground(Color.BLACK);
                             }
-                            Thread.sleep(500);
+                            Thread.sleep(1500);
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -89,6 +118,32 @@ public class MainWindow {
             }
             logList.add(hostPane);
         }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while(true) {
+                        for (Map.Entry<Tunnel, List<Label>> tunnelListEntry : tunnelsLabelsMap.entrySet()) {
+                            Color resultColor;
+                            if(tunnelListEntry.getKey().checkConnection()) {
+                                resultColor= new Color(0x00B32D);
+                            } else {
+                                resultColor = new Color(0xF53D00);
+                            }
+                            for (Label label : tunnelListEntry.getValue()) {
+                                label.setForeground(resultColor);
+                            }
+                        }
+                        Thread.sleep(500);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+
         window.setVisible(true);
     }
 
