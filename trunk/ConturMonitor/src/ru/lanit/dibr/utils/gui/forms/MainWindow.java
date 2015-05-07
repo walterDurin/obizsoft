@@ -41,7 +41,7 @@ public class MainWindow {
     public MainWindow(Configuration cfg) {
 //        configuration = cfg;
         window = new JFrame();
-        window.setTitle("Log monitor 3.10");
+        window.setTitle("Log monitor 3.11");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         window.add(rootPanel);
@@ -91,7 +91,7 @@ public class MainWindow {
                                 }
                             }
 
-                            if(tunnel==null || tunnel.isConnectionAlive()) {
+                            if(tunnel!=null || tunnel.isConnectionAlive()) {
                                 if (entry.getKey().checkCnnection()) {
                                     hostLabel.setForeground(new Color(0x00B32D));
                                 } else {
