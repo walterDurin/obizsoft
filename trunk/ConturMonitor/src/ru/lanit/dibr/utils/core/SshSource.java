@@ -85,7 +85,7 @@ public class SshSource implements LogSource {
                                 break;
                             }
                         }
-                        Thread.sleep(500);
+                        Thread.sleep(1500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (Exception e) {
@@ -154,7 +154,9 @@ public class SshSource implements LogSource {
         }
         System.out.println("Closing SSH log source..");
         isClosed = true;
-        readThread.interrupt();
+        if(readThread!=null) {
+            readThread.interrupt();
+        }
         if (reader != null)
             try {
                 reader.close();

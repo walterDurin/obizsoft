@@ -98,7 +98,7 @@ public class AbstractHost {
     }
 
 
-    public boolean checkConnection(BlockingQueue<String> debugOutput) {
+    public synchronized boolean checkConnection(BlockingQueue<String> debugOutput) {
         Utils.writeToDebugQueue(debugOutput, "Check connection to: '" + host + ":" + port + "'..");
         InetSocketAddress socketAddress = new InetSocketAddress(host, port);
         try {
