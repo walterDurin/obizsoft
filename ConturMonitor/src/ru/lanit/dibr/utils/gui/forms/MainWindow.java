@@ -22,6 +22,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created with IntelliJ IDEA.
@@ -106,7 +107,9 @@ public class MainWindow {
                         e.printStackTrace();
                     }
                 }
-            }).start();
+            })
+                    .start()
+            ;
 
             JPanel buttons = new JPanel();
             GridBagLayout mgr = new GridBagLayout();
@@ -135,13 +138,15 @@ public class MainWindow {
                                 label.setForeground(resultColor);
                             }
                         }
-                        Thread.sleep(500);
+                        Thread.sleep(1500);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        })
+                .start()
+        ;
 
 
         window.setVisible(true);
@@ -200,7 +205,7 @@ public class MainWindow {
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.add(lp);
         contentPanel.add(new FunctionPanel(lp));
-
+        final AtomicBoolean isManuallyClosed = new AtomicBoolean(false);
         final Thread connectionAlertThread = new Thread("ConnAlert: " + name) {
             @Override
             public void run() {
@@ -212,16 +217,18 @@ public class MainWindow {
                         e.printStackTrace(System.out);
                         System.out.println(e);
                         //					JOptionPane.showMessageDialog(LogFrame.this, "Can't open log '" + title + "'!\n" + e.getMessage());
-                        Object[] options = {"Yes, please",
-                                "No, thanks"};
-                        retry = JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(lp,
-                                "Can't open log '" + name + "'!\n" + e.getMessage() + "\nLet's try to reconnect?",
-                                "Error",
-                                JOptionPane.YES_NO_OPTION,
-                                JOptionPane.ERROR_MESSAGE,
-                                null,
-                                options,
-                                options[1]);
+                        if(isManuallyClosed.get()) {
+                            Object[] options = {"Yes, please",
+                                    "No, thanks"};
+                            retry = JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(lp,
+                                    "Can't open log '" + name + "'!\n" + e.getMessage() + "\nLet's try to reconnect?",
+                                    "Error",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.ERROR_MESSAGE,
+                                    null,
+                                    options,
+                                    options[1]);
+                        }
                     }
                 }
 
@@ -242,6 +249,7 @@ public class MainWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tabbedPane1.remove(newTab);
+                isManuallyClosed.set(true);
                 lp.close();
             }
         });

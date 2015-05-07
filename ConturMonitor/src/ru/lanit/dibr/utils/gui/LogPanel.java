@@ -220,6 +220,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
     public void close() {
         if(isClosed) {
             System.out.println("Log Panel already closed!");
+            return;
         }
         System.out.println("Closing log panel..");
         isClosed = true;

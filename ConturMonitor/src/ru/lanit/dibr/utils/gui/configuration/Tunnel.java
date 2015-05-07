@@ -39,6 +39,9 @@ public class Tunnel {
         }
         try {
             Utils.writeToDebugQueue(debugOutput, "Create tunnel session..");
+            if(!checkConnection(debugOutput)){
+                throw new RuntimeException("Tunnel host unreachable!");
+            }
             session = host.createSession(debugOutput, useCompression);
             Utils.writeToDebugQueue(debugOutput, "Create tunnel port mappings..");
             for (Portmap portmap : portmaps) {
