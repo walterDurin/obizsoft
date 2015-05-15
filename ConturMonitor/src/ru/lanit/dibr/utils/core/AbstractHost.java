@@ -99,14 +99,17 @@ public class AbstractHost {
 
 
     public synchronized boolean checkConnection(BlockingQueue<String> debugOutput) {
-        Utils.writeToDebugQueue(debugOutput, "Check connection to: '" + host + ":" + port + "'..");
+        if(tunnel!=null && !tunnel.isConnectionAlive()) {
+            return false;
+        }
+        //Utils.writeToDebugQueue(debugOutput, "Check connection to: '" + host + ":" + port + "'..");
         InetSocketAddress socketAddress = new InetSocketAddress(host, port);
         try {
             SocketChannel channel = SocketChannel.open();
             channel.configureBlocking(true);
             channel.connect(socketAddress);
             boolean result = channel.isConnected();
-            Utils.writeToDebugQueue(debugOutput, "Check connection result: " + result);
+            //Utils.writeToDebugQueue(debugOutput, "Check connection result: " + result);
             return channel.isConnected();
         } catch (UnresolvedAddressException e) {
             e.printStackTrace();
