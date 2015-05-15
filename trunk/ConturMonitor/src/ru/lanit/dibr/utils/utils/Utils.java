@@ -249,4 +249,13 @@ public class Utils {
             queue.add(message);
         }
     }
+
+    public static Throwable getFirstCause(Exception e) {
+        Throwable res = e;
+        while(res.getCause()!=null) {
+            res = res.getCause();
+        }
+        return res;
+    }
+
 }

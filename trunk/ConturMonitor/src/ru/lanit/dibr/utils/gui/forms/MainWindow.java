@@ -14,6 +14,7 @@ import ru.lanit.dibr.utils.gui.configuration.SshHost;
 import ru.lanit.dibr.utils.gui.configuration.LogFile;
 import ru.lanit.dibr.utils.gui.configuration.Tunnel;
 import ru.lanit.dibr.utils.utils.FileDrop;
+import ru.lanit.dibr.utils.utils.Utils;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -215,13 +216,11 @@ public class MainWindow {
                         lp.connect();
                     } catch (Exception e) {
                         e.printStackTrace(System.out);
-                        System.out.println(e);
-                        //					JOptionPane.showMessageDialog(LogFrame.this, "Can't open log '" + title + "'!\n" + e.getMessage());
-                        if(isManuallyClosed.get()) {
+                        if(!isManuallyClosed.get()) {
                             Object[] options = {"Yes, please",
                                     "No, thanks"};
                             retry = JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(lp,
-                                    "Can't open log '" + name + "'!\n" + e.getMessage() + "\nLet's try to reconnect?",
+                                    "Can't open log '" + name + "'!\n" + e.getMessage() + "\n" + Utils.getFirstCause(e).getMessage() + "\nLet's try to reconnect?",
                                     "Error",
                                     JOptionPane.YES_NO_OPTION,
                                     JOptionPane.ERROR_MESSAGE,

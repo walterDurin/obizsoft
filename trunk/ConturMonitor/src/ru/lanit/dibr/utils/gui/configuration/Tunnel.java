@@ -6,6 +6,7 @@ import ru.lanit.dibr.utils.utils.Utils;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * User: Vova
@@ -15,7 +16,7 @@ import java.util.concurrent.BlockingQueue;
 public class Tunnel {
     private SshHost host;
     private List<Portmap> portmaps;
-    private boolean isConnected = false;
+    private AtomicBoolean isConnected = new AtomicBoolean(false);
     private Session session;
 
     public Tunnel(SshHost host, List<Portmap> portmaps) {
@@ -33,24 +34,31 @@ public class Tunnel {
     }
 
     public synchronized void connect(final BlockingQueue<String> debugOutput, boolean useCompression) {
-        if(isConnected) {
-            Utils.writeToDebugQueue(debugOutput, "Tunnel already connected.");
-            return;
+        if(isConnected.get()) {
+            if(isConnectionAlive()) {
+                Utils.writeToDebugQueue(debugOutput, "Tunnel already connected.");
+                return;
+            } else {
+                close();
+            }
+        } else if(session!=null && session.isConnected()) {
+            close();
         }
         try {
-            Utils.writeToDebugQueue(debugOutput, "Create tunnel session..");
-            if(!checkConnection(debugOutput)){
-                throw new RuntimeException("Tunnel host unreachable!");
+            Utils.writeToDebugQueue(debugOutput, "Create tunnel [" + host.getDescription() + "]..");
+            if(!checkConnection(null)) {
+                throw new RuntimeException("Tunnel host " + host.getHost() + ":" + host.getPort() + " unreachable!");
             }
             session = host.createSession(debugOutput, useCompression);
-            Utils.writeToDebugQueue(debugOutput, "Create tunnel port mappings..");
+            Utils.writeToDebugQueue(debugOutput, "Create tunnel [" + host.getDescription() + "] port mappings..");
             for (Portmap portmap : portmaps) {
+                Utils.writeToDebugQueue(debugOutput, "L" + portmap.getLocalPort() + " -> " + portmap.getDestHost() + ":"+portmap.getDestPort());
                 session.setPortForwardingL(portmap.getLocalPort(), portmap.getDestHost(), portmap.getDestPort());
             }
-            Utils.writeToDebugQueue(debugOutput, "Try to open tunnel on: " + host.getDescription());
+            Utils.writeToDebugQueue(debugOutput, "Try to open tunnel [" + host.getDescription() + "]");
             session.connect(30000);
-            isConnected = true;
-            Utils.writeToDebugQueue(debugOutput, "Tunnel are connected on: " + host.getDescription() + ". Starting keepalive message thread..");
+            isConnected.set(true);
+            Utils.writeToDebugQueue(debugOutput, "Tunnel [" + host.getDescription() + "] are connected. Starting keepalive message thread..");
 
             new Thread(new Runnable() {
                 public void run() {
@@ -68,15 +76,7 @@ public class Tunnel {
                         }
                     }
                     Utils.writeToDebugQueue(debugOutput, "Tunnel session disconnected! error message: " + message);
-                    isConnected = false;
-                    for (Portmap portmap : portmaps) {
-                        try {
-                            session.delPortForwardingL(portmap.getLocalPort());
-                        } catch (JSchException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    session.disconnect();
+                    close();
                 }
             }, "tunel connection monitor").start();
 
@@ -90,7 +90,7 @@ public class Tunnel {
     }
 
     public boolean isConnectionAlive() {
-        if(isConnected && session.isConnected()) {
+        if(isConnected.get() && session.isConnected()) {
             return true;
         } else {
             return false;
@@ -102,8 +102,26 @@ public class Tunnel {
     }
 
     public boolean checkConnection(BlockingQueue<String> debugOutput) {
-        Utils.writeToDebugQueue(debugOutput, "Check tunnel connection..");
+//        Utils.writeToDebugQueue(debugOutput, "Check tunnel connection..");
         return host.checkConnection(debugOutput);
+    }
+
+    public void close() {
+        try {
+            if(session!=null && session.isConnected()) {
+                for (Portmap portmap : portmaps) {
+                    try {
+                        session.delPortForwardingL(portmap.getLocalPort());
+                    } catch (JSchException e) {
+                        e.printStackTrace();
+                    }
+                }
+                session.disconnect();
+            }
+        } finally {
+            isConnected.set(false);
+        }
+
     }
 
 }
