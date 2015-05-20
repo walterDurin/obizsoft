@@ -48,6 +48,9 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
     private boolean isClosed = false;
 
+    final Highlighter hilit;
+    final Highlighter.HighlightPainter painter;
+
     AtomicBoolean mouseClickedOnScrollBar = new AtomicBoolean(false);
 
     public Filters filtersWindow;
@@ -78,6 +81,10 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
         area.setWrapStyleWord(true);
         area.setLineWrap(true);
+
+        hilit = new DefaultHighlighter();
+        painter = new DefaultHighlighter.DefaultHighlightPainter(Color.GRAY);
+        area.setHighlighter(hilit);
 
         setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
 //        System.out.println(getVerticalScrollBar().getPreferredSize().toString());
@@ -207,7 +214,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                 int pos = area.getText().length()-1;
                 area.append("\n" + nextLine);
                 if(find!=null && find.length()>0) {
-                    highlightFromCursor(area.getHighlighter(), pos);
+                    highlightFromCursor(hilit, painter, pos);
                 }
                 System.out.println("Get autoscroll as " + (autoScroll+ "").toUpperCase() );
                 if (autoScroll.get()) {
@@ -423,29 +430,51 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
 
     public int highlightFound() {
         setAutoScroll(false);
-        Highlighter h = area.getHighlighter();
-        h.removeAllHighlights();
+        hilit.removeAllHighlights();
         int pos = 0;
-        int cnt = highlightFromCursor(h, pos);
+        int cnt = highlightFromCursor(hilit, painter, pos);
         JOptionPane.showMessageDialog(this, cnt + " matches found");
         return cnt;
     }
 
-    private int highlightFromCursor(Highlighter h, int pos) {
+    Object prevHighlightForRecreate = null;
+    int p0, p1;
+    private int highlightFromCursor(Highlighter h, Highlighter.HighlightPainter p, int pos) {
+        System.out.println("pos: " + pos);
         logSource.setPaused(true);
         int cnt = 0;
         try {
+            if(prevHighlightForRecreate!=null) {
+                System.out.println("Remove prev");
+                h.removeHighlight(prevHighlightForRecreate);
+                try {
+                    h.addHighlight(p0, p1, p);
+                } catch (BadLocationException e) {
+                    e.printStackTrace();
+                }
+                prevHighlightForRecreate = null;
+            }
+
             while (pos >= 0) {
-                //pos = area.getText().indexOf(find, pos);
                 pos = Utils.indexOf(area.getText(), false, pos, find);
                 System.out.println("pos: " + pos);
                 if (pos > -1) {
                     try {
                         cnt++;
-                        h.addHighlight(pos, find.length() + pos, DefaultHighlighter.DefaultPainter);
-                        int y = area.getHeight() / (area.getText().length() / pos);
-                        area.getGraphics().drawLine(0, y, 25, y);
-                        pos += find.length();
+                        int endPos = find.length() + pos;
+
+                        System.out.println("Highlight: " + pos + ":" + endPos + ". Area.size():" + area.getText().length());
+                        System.out.println("Doc positions: " + area.getDocument().createPosition(pos) + ":" + area.getDocument().createPosition(endPos));
+
+                        //area.repaint();
+                        Object o = h.addHighlight(pos, endPos, p);
+                        if(endPos >= area.getText().length()) {
+                            System.out.println("To be removed");
+                            prevHighlightForRecreate = o;
+                            p0 = pos;
+                            p1 = endPos;
+                        }
+                        pos = endPos;
                     } catch (BadLocationException e) {
                         e.printStackTrace();
                     }
