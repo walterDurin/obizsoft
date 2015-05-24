@@ -43,7 +43,7 @@ public class MainWindow {
     public MainWindow(Configuration cfg) {
 //        configuration = cfg;
         window = new JFrame();
-        window.setTitle("Log monitor 3.11");
+        window.setTitle("Log monitor 3.12");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         window.add(rootPanel);
