@@ -85,15 +85,16 @@ public class MainWindow {
                 public void run() {
                     try {
                         while(true) {
+                            boolean tunnelAlive = false;
                             if(tunnel!=null) {
                                 if(tunnel.checkConnection()) {
                                     hostLabelPrefix.setForeground(new Color(0x00B32D));
+                                    tunnelAlive = true;
                                 } else {
                                     hostLabelPrefix.setForeground(new Color(0xF53D00));
                                 }
                             }
-
-                            if(tunnel!=null || tunnel.isConnectionAlive()) {
+                            if(tunnel==null || tunnelAlive) {
                                 if (entry.getKey().checkCnnection()) {
                                     hostLabel.setForeground(new Color(0x00B32D));
                                 } else {

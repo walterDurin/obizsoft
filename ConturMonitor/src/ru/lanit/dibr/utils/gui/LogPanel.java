@@ -249,6 +249,11 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         return isClosed;
     }
 
+    public void follow() {
+        setAutoScroll(true);
+        getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
+    }
+
     public void setAutoScroll(boolean autoScroll) {
         this.autoScroll.set(autoScroll);
         System.out.println("Set autoscroll to " + (autoScroll+ "").toUpperCase() );
@@ -313,10 +318,10 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
         } else if ((ke.getModifiers() == KeyEvent.CTRL_MASK ) || ( ke.getModifiers() == (KeyEvent.SHIFT_MASK | KeyEvent.CTRL_MASK))) {
             boolean isOnlyShiftAdditionalPressed = (ke.getModifiers()&KeyEvent.SHIFT_MASK) != 0;
             if(!isOnlyShiftAdditionalPressed) {
-                if ((ke.getKeyCode() == KeyEvent.VK_HOME)) { //Нажали Cntrl + Home
+                if ((ke.getKeyCode() == KeyEvent.VK_HOME)) { //Нажали Ctrl + Home
                     setAutoScroll(false);
                     area.setCaretPosition(0);
-                } else if ((ke.getKeyCode() == KeyEvent.VK_END)) { //Нажали Cntrl + End
+                } else if ((ke.getKeyCode() == KeyEvent.VK_END)) { //Нажали Ctrl + End
                     setAutoScroll(true);
                 } else if (ke.getKeyCode() == KeyEvent.VK_S ) { // Key Ctrl + 'S'
                     logSource.setPaused(true);
