@@ -13,10 +13,9 @@ import java.util.concurrent.BlockingQueue;
  * Created by Vova on 19.02.2015.
  */
 public class FtpSource implements LogSource {
-    private boolean isClosed = false;
+    private boolean isClosed = false; //TODO: atomic
     private boolean paused = false;
     private boolean writeLineNumbers = false;
-    private Thread readThread;
     private Thread ftpReadThread;
 
 
@@ -51,19 +50,33 @@ public class FtpSource implements LogSource {
         final PipedOutputStream pos = new PipedOutputStream();
         reader = new BufferedReader(new InputStreamReader(new PipedInputStream(pos), host.defaultEncoding));
 
+
+        //FTP read thread
         ftpReadThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 System.out.println("4");
                 java.util.Date md = null;
                 try {
-                    md = client.modifiedDate(logFile.getPath());
-                    System.out.println("Modification date :" + md + "; and size: " + ftpFileSize) ;
-                    if(client.fileSize(logFile.getPath())!=ftpFileSize) {
-                        client.download(logFile.getPath(), pos, ftpFileSize, null);
-                        ftpFileSize = client.fileSize(logFile.getPath());
+                    String nextLine;
+                    while(!isClosed) {
+                        System.out.println("Ftp read thread run");
+                        if(!isPaused()) {
+                            md = client.modifiedDate(logFile.getPath());
+                            System.out.println("Modification date :" + md + "; and size: " + ftpFileSize);
+                            if (client.fileSize(logFile.getPath()) != ftpFileSize) {
+                                client.download(logFile.getPath(), pos, ftpFileSize, null);
+                                ftpFileSize = client.fileSize(logFile.getPath());
+
+                                if ((nextLine = reader.readLine()) != null && !isClosed) {
+//                        buffer.add(String.format("%6d: %s", (buffer.size()+1), nextLine));
+                                    buffer.add(nextLine);
+                                }
+
+                            }
+                        }
+                        Thread.sleep(500);
                     }
-                    Thread.sleep(100);
 
                 } catch (Exception e) {
                     try {
@@ -76,27 +89,7 @@ public class FtpSource implements LogSource {
             }
         });
 
-        readThread = new Thread(new Runnable() {
-            public void run() {
-                System.out.println("5");
-                String nextLine;
-                try {
-                    while ((nextLine = reader.readLine()) != null && !isClosed) {
-//                        buffer.add(String.format("%6d: %s", (buffer.size()+1), nextLine));
-                        buffer.add(nextLine);
-                    }
-                } catch (IOException e) {
-                    try {
-                        close();
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-                    e.printStackTrace();
-                }
-                System.out.println("Stopped FTP read thread.");
-            }
-        });
-
+        //Connection monitoring thread
         new Thread(new Runnable() {
             public void run() {
                 System.out.println("6");
@@ -109,7 +102,6 @@ public class FtpSource implements LogSource {
                 }
                 if(!isClosed) {
                     System.out.println("Connection failed!");
-                    readThread.interrupt();
                     ftpReadThread.interrupt();
                     try {
                         close();
@@ -124,7 +116,7 @@ public class FtpSource implements LogSource {
         }, "Conn monitor").start();
 
         System.out.println("1");
-        readThread.start();
+//        readThread.start();
         Thread.sleep(500);
         System.out.println("2");
         ftpReadThread.start();
@@ -173,7 +165,6 @@ public class FtpSource implements LogSource {
         }
         System.out.println("Closing SSH log source..");
         isClosed = true;
-        readThread.interrupt();
         ftpReadThread.interrupt();
         if (reader != null)
             try {

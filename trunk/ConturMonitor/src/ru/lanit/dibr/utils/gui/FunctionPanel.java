@@ -84,6 +84,15 @@ public class FunctionPanel extends JPanel {
             }
         });
 
+        button = new JButton("FOLLOW");
+        buttons.add(button);
+        button.setToolTipText("Scroll down and follow the tail <Ctrl + End>");
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                lp.follow();
+            }
+        });
+
 
         GridBagConstraints gbc =  new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
