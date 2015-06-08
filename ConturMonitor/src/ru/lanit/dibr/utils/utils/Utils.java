@@ -33,7 +33,10 @@ public class Utils {
                 c = Character.toLowerCase(c);
             }
             if (c != l) {
-                toFindIndex = 0;
+                if(toFindIndex!=0) {
+                    i-=toFindIndex;
+                    toFindIndex = 0;
+                }
             } else if (toFindIndex + 1 == toFind.length()) {
                 return i - toFind.length() + 1;
                 // all characters have been found, return index of match
@@ -66,7 +69,10 @@ public class Utils {
                 c = Character.toLowerCase(c);
             }
             if (c != l) {
-                toFindIndex = toFind.length()-1;
+                if(toFindIndex != toFind.length()-1) {
+                    i+=(toFind.length()-toFindIndex-1);
+                    toFindIndex = toFind.length()-1;
+                }
             } else if (toFindIndex == 0) {
                 return i;
                 // all characters have been found, return index of match
