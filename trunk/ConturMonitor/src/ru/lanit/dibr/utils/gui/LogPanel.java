@@ -180,7 +180,7 @@ public class LogPanel extends JScrollPane implements KeyListener, CaretListener,
                         }
                     }
                 }
-            }, "Repaint and Scroll").start();
+            }, "Repaint").start();
 
             this.addMouseWheelListener(new MouseAdapter() {
                 @Override
