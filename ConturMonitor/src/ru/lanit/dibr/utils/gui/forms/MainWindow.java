@@ -110,7 +110,7 @@ public class MainWindow {
                     }
                 }
             })
-                    .start()
+//                    .start()
             ;
 
             JPanel buttons = new JPanel();
@@ -147,7 +147,7 @@ public class MainWindow {
                 }
             }
         })
-                .start()
+//                .start()
         ;
 
 
